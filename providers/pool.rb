@@ -51,6 +51,9 @@ action :config do
 	cmd = "#{appcmd} set apppool /apppool.name:#{@new_resource.pool_name} /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
 	Chef::Log.debug(cmd)
 	shell_out!(cmd)
+	cmd = "#{appcmd} set apppool /apppool.name:#{@new_resource.pool_name} /managedRuntimeVersion:v#{@new_resource.runtime_version}"
+	Chef::Log.debug(cmd) if @new_resource.runtime_version
+	shell_out!(cmd)
 end
 
 action :delete do
@@ -65,7 +68,7 @@ end
 
 action :start do
   unless @current_resource.running
-    shell_out!("#{appcmd} start appool \"#{site_identifier}\"")
+    shell_out!("#{appcmd} start apppool \"#{site_identifier}\"")
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} started")
   else
@@ -75,7 +78,7 @@ end
 
 action :stop do
   if @current_resource.running
-    shell_out!("#{appcmd} stop appool \"#{site_identifier}\"")
+    shell_out!("#{appcmd} stop apppool \"#{site_identifier}\"")
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} stopped")
   else
