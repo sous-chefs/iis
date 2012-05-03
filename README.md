@@ -84,7 +84,7 @@ Allows easy management of IIS virtual sites (ie vhosts).
     end
 
 iis\_config
-
+-----------
 Runs a config command on your IIS instance.
 
 ### Actions
