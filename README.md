@@ -183,18 +183,18 @@ Creates a virtual directory in IIS.
 
 ### Example
 
-  #creates a new vdir
-  iis_vdir "myVdir" do
-    path "Default Web Site/"
-    physical_path "#{node['iis']['docroot']}/testfu/myVdir"
-    action :add
-  end
+    #creates a new vdir
+    iis_vdir "myVdir" do
+        path "Default Web Site/"
+        physical_path "#{node['iis']['docroot']}/testfu/myVdir"
+        action :add
+    end
 
-  #deletes a vdir
-  iis_vdir "myVdir" do
-    path "Default Web Site/"
-    action :delete
-  end
+    #deletes a vdir
+    iis_vdir "myVdir" do
+        path "Default Web Site/"
+        action :delete
+    end
 
 Usage
 =====
