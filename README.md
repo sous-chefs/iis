@@ -165,6 +165,37 @@ Creates an application in IIS.
 		action :add
 	end
 
+iis\_vdir
+--------
+
+Creates a virtual directory in IIS.
+
+### Actions
+
+- :add: - add a new virtual directory
+- :delete: - delete an existing virtual directory
+
+### Attribute Parameters
+
+- vdir_name: name attribute. The name of the virtual directory to add
+- path: The path to this virtual directory
+- physicalPath: The physical path where the content for the virtual directory resides.
+
+### Example
+
+  #creates a new vdir
+  iis_vdir "myVdir" do
+    path "Default Web Site/"
+    physical_path "#{node['iis']['docroot']}/testfu/myVdir"
+    action :add
+  end
+
+  #deletes a vdir
+  iis_vdir "myVdir" do
+    path "Default Web Site/"
+    action :delete
+  end
+
 Usage
 =====
 
