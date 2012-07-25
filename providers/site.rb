@@ -47,6 +47,40 @@ action :add do
   end
 end
 
+action :config do
+
+  if @new_resource.port
+    cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+    cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd) 
+  end
+
+  if @new_resource.path
+    cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
+    cmd << "/physicalPath:\"#{@new_resource.path}\""
+	  Chef::Log.debug(cmd)
+	  shell_out!(cmd)
+  end
+
+  # pools looks like it's actually part of the app
+  # if @new_resource.pool_name # it's actually set on the app
+	#   cmd = "#{appcmd} set app \"#{@new_resource.site_name}\"/ "
+  #   cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
+	#   Chef::Log.debug(cmd)
+	#   shell_out!(cmd) 
+  # end
+
+  if @new_resource.host_header
+    # Need to figure out how to set host_header
+	  #cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+    #cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
+	  #Chef::Log.debug(cmd)
+	  #shell_out!(cmd) 
+  end
+
+end
+
 action :delete do
   if @current_resource.exists
     shell_out!("#{appcmd} delete site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})

@@ -51,6 +51,9 @@ action :config do
 	cmd = "#{appcmd} set apppool /apppool.name:#{@new_resource.pool_name} /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
 	Chef::Log.debug(cmd)
 	shell_out!(cmd)
+	cmd = "#{appcmd} set apppool /apppool.name:#{@new_resource.pool_name} /managedRuntimeVersion:v#{@new_resource.runtime_version}"
+	Chef::Log.debug(cmd) if @new_resource.runtime_version
+	shell_out!(cmd)
 end
 
 action :delete do
