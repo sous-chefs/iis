@@ -29,6 +29,7 @@ Attributes
 * `node['iis']['docroot']` - IIS web site home directory. default is `%SYSTEMDRIVE%\inetpub\wwwroot`
 * `node['iis']['log_dir']` - location of IIS logs. default is `%SYSTEMDRIVE%\inetpub\logs\LogFiles`
 * `node['iis']['cache_dir']` - location of cached data. default is `%SYSTEMDRIVE%\inetpub\temp`
+* `node['iis']['components']` - comma separated list of IIS components to install using webpi.  Defaults to 'IIS7' which is the "IIS 7 Recommended Configuration".
 
 Resource/Provider
 =================

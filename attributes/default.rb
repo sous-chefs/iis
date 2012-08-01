@@ -20,9 +20,10 @@
 
 default['iis']['accept_eula'] = false
 
-default['iis']['home']      = "#{ENV['WINDIR']}\\System32\\inetsrv"
-default['iis']['conf_dir']  = "#{iis['home']}\\config"
-default['iis']['pubroot']   = "#{ENV['SYSTEMDRIVE']}\\inetpub"
-default['iis']['docroot']   = "#{iis['pubroot']}\\wwwroot"
-default['iis']['log_dir']   = "#{iis['pubroot']}\\logs\\LogFiles"
-default['iis']['cache_dir'] = "#{iis['pubroot']}\\temp"
+default['iis']['home']       = "#{ENV['WINDIR']}\\System32\\inetsrv"
+default['iis']['conf_dir']   = "#{iis['home']}\\config"
+default['iis']['pubroot']    = "#{ENV['SYSTEMDRIVE']}\\inetpub"
+default['iis']['docroot']    = "#{iis['pubroot']}\\wwwroot"
+default['iis']['log_dir']    = "#{iis['pubroot']}\\logs\\LogFiles"
+default['iis']['cache_dir']  = "#{iis['pubroot']}\\temp"
+default['iis']['components'] = "IIS7"
