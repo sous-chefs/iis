@@ -6,6 +6,7 @@
 
 ## 1.1.2
 
+* add config resource attribute :returns to accept non-zero return codes.
 * add support for configuring app pool identity
 * add attribute to install IIS with alternative list of components
 

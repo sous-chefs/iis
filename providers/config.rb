@@ -24,14 +24,15 @@ include Chef::Mixin::ShellOut
 include Windows::Helper
 
 action :config do
-	Chef::Log.debug("#{appcmd} set config #{@new_resource.cfg_cmd}")
-	shell_out!("#{appcmd} set config #{@new_resource.cfg_cmd}")
+	cmd = "#{appcmd} set config #{@new_resource.cfg_cmd}"
+	Chef::Log.debug(cmd)
+	shell_out!(cmd, :returns => @new_resource.returns)
 	Chef::Log.info("IIS Config command run")
 end
 
 private
 def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
-  end
+	@appcmd ||= begin
+		"#{node['iis']['home']}\\appcmd.exe"
+	end
 end
