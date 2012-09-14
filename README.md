@@ -90,6 +90,7 @@ Runs a config command on your IIS instance.
 ### Actions
 
 - :config: - Runs the configuration command
+- :backup: - Creates a backup of the current IIS configuration
 
 ### Attribute Parameters
 
@@ -109,6 +110,17 @@ Runs a config command on your IIS instance.
             action :config
         end
     end
+
+### Example
+
+    # let's create a backup of our configuration
+    iis_config 'comment here' do
+        action :backup
+    end
+
+- Backups are created at the default location: %systemroot%\system32\inetsrv\backup
+- The above example will create "%systemroot%\system32\inetsrv\backup\comment here"
+	
 
 iis\_pool
 ---------

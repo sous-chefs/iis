@@ -29,6 +29,12 @@ action :config do
 	Chef::Log.info("IIS Config command run")	
 end
 
+action :backup do
+	Chef::Log.info("#{appcmd} add backup \"#{@new_resource.cfg_cmd}\"")
+	shell_out!("#{appcmd} add backup \"#{@new_resource.cfg_cmd}\"")
+	Chef::Log.info("IIS Backup created: \"#{node['iis']['home']}\\backup\\#{@new_resource.cfg_cmd}\"")
+end
+
 private
 def appcmd
   @appcmd ||= begin
