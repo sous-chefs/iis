@@ -21,3 +21,8 @@
 actions :config
 
 attribute :cfg_cmd, :kind_of => String, :name_attribute => true
+
+def initialize(*args)
+  super
+  @action = :config
+end
