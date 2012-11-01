@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-actions :add, :config, :delete, :start, :stop, :restart
+actions :add, :config, :delete, :start, :stop, :restart, :recycle
 
 attribute :pool_name, :kind_of => String, :name_attribute => true
 attribute :runtime_version, :kind_of => String

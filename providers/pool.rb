@@ -94,6 +94,12 @@ action :restart do
   Chef::Log.info("#{@new_resource} restarted")
 end
 
+action :recycle do
+  shell_out!("#{appcmd} recycle APPPOOL \"#{site_identifier}\"")
+  @new_resource.updated_by_last_action(true)
+  Chef::Log.info("#{@new_resource} recycled")
+end
+
 def load_current_resource
   @current_resource = Chef::Resource::IisPool.new(@new_resource.name)
   @current_resource.pool_name(@new_resource.pool_name)
