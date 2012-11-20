@@ -23,8 +23,8 @@ actions :add, :config, :delete, :start, :stop, :restart, :recycle
 attribute :pool_name, :kind_of => String, :name_attribute => true
 attribute :runtime_version, :kind_of => String
 attribute :pipeline_mode, :kind_of => Symbol, :default => :Classic, :equal_to => [:Integrated, :Classic]
-attribute :private_mem, :kind_of => Integer, :default => 1048576
-attribute :max_proc, :kind_of => Integer, :default => 2
-attribute :thirty_two_bit, :kind_of => Symbol, :default => :false, :equal_to => [:true, :false]
+attribute :private_mem, :kind_of => Integer
+attribute :max_proc, :kind_of => Integer
+attribute :thirty_two_bit, :kind_of => Symbol, :equal_to => [:true, :false]
 
 attr_accessor :exists, :running
