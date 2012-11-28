@@ -31,9 +31,23 @@ action :config do
   Chef::Log.info("IIS Config command run")
 end
 
+action :backup do
+	@current = DateTimeStamp.get
+	Chef::Log.debug(%{#{appcmd} add backup "#{@new_resource.cfg_cmd}_#{@current}"})
+	shell_out!(%{#{appcmd} add backup "#{@new_resource.cfg_cmd}_#{@current}"})
+	Chef::Log.info("IIS Backup created: \"#{node['iis']['home']}\\backup\\\"#{@new_resource.cfg_cmd}_#{@current}\"")
+end
+
 private
 def appcmd
   @appcmd ||= begin
     "#{node['iis']['home']}\\appcmd.exe"
+  end
+end
+
+class DateTimeStamp
+  def self.get
+	time = Time.now
+	current_date_time_stamp = time.strftime('%Y%m%d%H%M%S')
   end
 end

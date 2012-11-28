@@ -90,6 +90,7 @@ Runs a config command on your IIS instance.
 ### Actions
 
 - :config: - Runs the configuration command
+- :backup: - Creates a backup of the current IIS configuration with at time stamp
 
 ### Attribute Parameters
 
@@ -109,6 +110,17 @@ Runs a config command on your IIS instance.
             action :config
         end
     end
+
+### Example
+
+    # let's create a backup of our configuration
+    iis_config 'comment_here' do
+        action :backup
+    end
+
+- Backups are created at the default location: %systemroot%\system32\inetsrv\backup
+- The above example will create "%systemroot%\system32\inetsrv\backup\comment_here_YYYYMMDDHHMMSS"
+	
 
 iis\_pool
 ---------
@@ -164,6 +176,37 @@ Creates an application in IIS.
 		physical_path "#{node['iis']['docroot']}/testfu/v1_1"
 		action :add
 	end
+
+iis\_vdir
+--------
+
+Creates a virtual directory in IIS.
+
+### Actions
+
+- :add: - add a new virtual directory
+- :delete: - delete an existing virtual directory
+
+### Attribute Parameters
+
+- vdir_name: name attribute. The name of the virtual directory to add
+- path: The path to this virtual directory
+- physicalPath: The physical path where the content for the virtual directory resides.
+
+### Example
+
+    #creates a new vdir
+    iis_vdir "myVdir" do
+        path "Default Web Site/"
+        physical_path "#{node['iis']['docroot']}/testfu/myVdir"
+        action :add
+    end
+
+    #deletes a vdir
+    iis_vdir "myVdir" do
+        path "Default Web Site/"
+        action :delete
+    end
 
 Usage
 =====

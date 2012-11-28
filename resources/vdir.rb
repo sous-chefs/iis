@@ -1,9 +1,15 @@
 #
+# Author:: Bryan Johnson (bryan.johnson@activenetwork.com>)
+# Cookbook Name:: iis
+# Resource:: vdir
+#
+# Copyright:: 2012, The Active Network, Inc.
+#
+# Based on previous work contributed by Kendrick Martin / Webtrends
 # Author:: Kendrick Martin (kendrick.martin@webtrends.com)
 # Cookbook Name:: iis
-# Resource:: config
 #
-# Copyright:: 2011, Webtrends Inc.
+# Copyright:: 2011, Webtrends
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +24,9 @@
 # limitations under the License.
 #
 
-actions :config, :backup
+actions :add, :delete
 
-attribute :cfg_cmd, :kind_of => String, :name_attribute => true
+attribute :vdir_name, :kind_of => String, :name_attribute => true
+attribute :path, :kind_of => String
+attribute :physical_path, :kind_of => String
+attr_accessor :exists, :running
