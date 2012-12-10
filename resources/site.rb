@@ -30,3 +30,8 @@ attribute :bindings, :kind_of => String, :default => nil
 attribute :application_pool, :kind_of => String, :default => nil
 
 attr_accessor :exists, :running
+
+def initialize(*args)
+  super
+  @action = :add
+end
