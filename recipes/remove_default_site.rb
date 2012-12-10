@@ -1,9 +1,9 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com)
+# Author:: Kendrick Martin (<kendrick.martin@webtrends.com>)
 # Cookbook Name:: iis
-# Resource:: config
+# Recipe:: remove_default_site
 #
-# Copyright:: 2011, Webtrends Inc.
+# Copyright 2012, Webtrends, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,10 @@
 # limitations under the License.
 #
 
-actions :config
+iis_site 'Default Web Site' do
+	action [:stop, :delete]
+end
 
-attribute :cfg_cmd, :kind_of => String, :name_attribute => true
-
-def initialize(*args)
-  super
-  @action = :config
+iis_pool 'DefaultAppPool' do
+	action [:stop , :delete]
 end

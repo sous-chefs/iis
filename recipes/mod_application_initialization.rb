@@ -20,7 +20,7 @@
 
 include_recipe "iis"
 
-webpi_product "ApplicationInitializationRC" do
+webpi_product "ApplicationInitialization" do
   accept_eula node['iis']['accept_eula']
   action :install
 end
