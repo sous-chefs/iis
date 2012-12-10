@@ -31,3 +31,8 @@ attribute :pool_username, :kind_of => String, :default => nil
 attribute :pool_password, :kind_of => String, :default => nil
 
 attr_accessor :exists, :running
+
+def initialize(*args)
+  super
+  @action = :add
+end
