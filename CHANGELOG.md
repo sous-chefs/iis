@@ -4,6 +4,10 @@
 * resource/provider for managing IIS virtual directories
 * IIS 6.0 support
 
+## v1.3.2:
+
+* [COOK-1251] - Fix LWRP "NotImplementedError"
+
 ## v1.3.0:
 
 * [COOK-1301] - Add a recycle action to the iis_pool resource
