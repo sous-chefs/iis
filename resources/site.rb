@@ -31,3 +31,8 @@ attribute :application_pool, :kind_of => String, :default => nil
 attribute :options, :kind_of => String, :default => ''
 
 attr_accessor :exists, :running
+
+def initialize(*args)
+  super
+  @action = :add
+end

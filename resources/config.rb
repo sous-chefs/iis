@@ -3,7 +3,7 @@
 # Cookbook Name:: iis
 # Resource:: config
 #
-# Copyright:: 2011, Webtrends
+# Copyright:: 2011, Webtrends Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,3 +21,9 @@
 actions :config
 
 attribute :cfg_cmd, :kind_of => String, :name_attribute => true
+attribute :returns, :kind_of => [Integer, Array], :default => 0
+
+def initialize(*args)
+  super
+  @action = :config
+end

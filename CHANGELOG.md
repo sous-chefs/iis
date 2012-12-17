@@ -4,6 +4,17 @@
 * resource/provider for managing IIS virtual directories
 * IIS 6.0 support
 
+## v1.3.2:
+
+* [COOK-1251] - Fix LWRP "NotImplementedError"
+
+## v1.3.0:
+
+* [COOK-1301] - Add a recycle action to the iis_pool resource
+* [COOK-1665] - app pool identity and new node[iis][component] attribute
+* [COOK-1666] - Recipe to remove default site and app pool
+* [COOK-1858] - Recipe misspelled
+
 ## v1.2.0:
 
 * [COOK-1061] - `iis_site` doesn't allow setting the pool
