@@ -4,6 +4,10 @@
 * resource/provider for managing IIS virtual directories
 * IIS 6.0 support
 
+## v1.3.4:
+
+* [COOK-2050] - IIS cookbook does not have returns resource defined
+
 ## v1.3.2:
 
 * [COOK-1251] - Fix LWRP "NotImplementedError"
