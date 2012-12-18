@@ -57,6 +57,7 @@ Allows easy management of IIS virtual sites (ie vhosts).
 - protocol: http protocol type the site should respond to. valid values are :http, :https. default is :http
 - port: port site will listen on. default is 80
 - host_header: host header (also known as domains or host names) the site should map to. default is all host headers
+- options: additional options to configure the site
 
 ### Examples
 
