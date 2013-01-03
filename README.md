@@ -216,6 +216,7 @@ This cookbook also contains recipes for installing individual IIS modules (exten
 * `mod_compress_dynamic` - installs dynamic content compression support. *PLEASE NOTE* - enabling dynamic compression always gives you more efficient use of bandwidth, but if your server's processor utilization is already very high, the CPU load imposed by dynamic compression might make your site perform more slowly.
 * `mod_compress_static` - installs static content compression support
 * `mod_deploy` - installs web deploy 2.0 support. Web Deploy (Web Deployment Tool) simplifies the migration, management and deployment of IIS Web servers, Web applications and Web sites.
+* `mod_iis6_metabase_compat` - installs IIS 6 Metabase Compatibility component.
 * `mod_isapi` - installs ISAPI (Internet Server Application Programming Interface) extension and filter support.
 * `mod_logging` - installs and enables HTTP Logging (logging of Web site activity), Logging Tools (logging tools and scripts) and Custom Logging (log any of the HTTP request/response headers, IIS server variables, and client-side fields with simple configuration) support
 * `mod_management` - installs Web server Management Console which supports management of local and remote Web servers
