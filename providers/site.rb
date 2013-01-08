@@ -35,6 +35,12 @@ action :add do
     cmd << ":#{@new_resource.port}:" if @new_resource.port
     cmd << "#{@new_resource.host_header}" if @new_resource.host_header
   end
+
+    # support for additional options -logDir, -limits, -ftpServer, etc...
+    if @new_resource.options
+      cmd << " #{@new_resource.options}"
+    end
+    
     shell_out!(cmd, {:returns => [0,42]})
 
   if @new_resource.application_pool
