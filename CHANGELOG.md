@@ -4,6 +4,11 @@
 * resource/provider for managing IIS virtual directories
 * IIS 6.0 support
 
+## v1.3.6:
+
+* [COOK-2084] - Add support for additional options during site creation
+* [COOK-2152] - Add recipe for IIS6 metabase compatibility
+
 ## v1.3.4:
 
 * [COOK-2050] - IIS cookbook does not have returns resource defined
