@@ -23,30 +23,34 @@ require 'chef/mixin/shell_out'
 include Chef::Mixin::ShellOut
 include Windows::Helper
 
+# Support whyrun
+def whyrun_supported?
+  true
+end
 
+# appcmd syntax for adding modules
 # appcmd add module /name:string /type:string /preCondition:string
-
 action :add do
   unless @current_resource.exists
-    cmd = "#{appcmd} add module /module.name:\"#{@new_resource.module_name}\""
+    converge_by("add IIS module #{@new_resource.module_name}") do
+      cmd = "#{appcmd} add module /module.name:\"#{@new_resource.module_name}\""
 
-    if @new_resource.application
-      cmd << " /app.name:\"#{@new_resource.application}\""
+      if @new_resource.application
+        cmd << " /app.name:\"#{@new_resource.application}\""
+      end
+
+      if @new_resource.type
+        cmd << " /type:\"#{@new_resource.type}\""
+      end
+
+      if @new_resource.precondition
+        cmd << " /preCondition:\"#{@new_resource.precondition}\""
+      end
+
+      shell_out!(cmd, {:returns => [0,42]})
+
+      Chef::Log.info("#{@new_resource} added module '#{@new_resource.module_name}'")
     end
-
-    if @new_resource.type
-      cmd << " /type:\"#{@new_resource.type}\""
-    end
-
-    if @new_resource.precondition
-      cmd << " /preCondition:\#{@new_resource.precondition}\""
-    end
-
-    shell_out!(cmd, {:returns => [0,42]})
-
-    @new_resource.updated_by_last_action(true)
-
-    Chef::Log.info("#{@new_resource} added module '#{@new_resource.module_name}'")
   else
     Chef::Log.debug("#{@new_resource} module already exists - nothing to do")
   end
@@ -54,14 +58,16 @@ end
 
 action :delete do
   if @current_resource.exists
-    cmd = "#{appcmd} delete module /module.name:\"#{@new_resource.module_name}\""
-    if @new_resource.application
-      cmd << " /app.name:\"#{@new_resource.application}\""
+    converge_by("delete IIS module #{@new_resource.module_name}") do
+
+      cmd = "#{appcmd} delete module /module.name:\"#{@new_resource.module_name}\""
+      if @new_resource.application
+        cmd << " /app.name:\"#{@new_resource.application}\""
+      end
+
+      shell_out!(cmd, {:returns => [0,42]})
     end
 
-    shell_out!(cmd, {:returns => [0,42]})
-
-    @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
     Chef::Log.debug("#{@new_resource} module does not exist - nothing to do")
@@ -95,7 +101,3 @@ def appcmd
     "#{node['iis']['home']}\\appcmd.exe"
   end
 end
-
-# def site_identifier
-#   @new_resource.host_header || @new_resource.site_name
-# end

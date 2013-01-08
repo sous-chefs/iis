@@ -25,7 +25,7 @@ attribute :type, :kind_of => String, :default => nil
 attribute :precondition, :kind_of => String, :default => nil
 attribute :application, :kind_of => String, :default => nil
 
-attr_accessor :exists, :running
+attr_accessor :exists
 
 def initialize(*args)
   super
