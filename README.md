@@ -166,6 +166,36 @@ Creates an application in IIS.
 		action :add
 	end
 
+iis\_module
+--------
+
+Manages modules globally or on a per site basis.
+
+### Actions
+
+- :add: - add a new module
+- :delete: - delete a module
+
+### Attribute Parameters
+
+- module_name: The name of the module to add or delete
+- type: The type of module
+- precondition: precondition for module
+- application: The application or site to add the module to
+
+### Example
+
+	# Adds a module called "My 3rd Party Module" to mySite/
+	iis_module "My 3rd Party Module" do
+		application "mySite/"
+		precondition "bitness64"
+		action :add
+	end
+    
+    # Adds a module called "MyModule" to all IIS sites on the server
+    iis_module "MyModule"
+
+
 Usage
 =====
 
