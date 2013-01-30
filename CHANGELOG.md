@@ -4,6 +4,10 @@
 * resource/provider for managing IIS virtual directories
 * IIS 6.0 support
 
+## v1.4.0:
+
+* [COOK-2181] -Adding full module support to iis cookbook
+
 ## v1.3.6:
 
 * [COOK-2084] - Add support for additional options during site creation
