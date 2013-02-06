@@ -27,7 +27,7 @@ action :add do
 	unless @current_resource.exists
     cmd = "#{appcmd} add app /site.name:\"#{@new_resource.app_name}\""
     cmd << " /path:#{@new_resource.path}"
-    cmd << " /applicationPool:#{@new_resource.application_pool}" if @new_resource.application_pool
+    cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
     cmd << " /physicalPath:\"#{@new_resource.physical_path}\"" if @new_resource.physical_path
     Chef::Log.debug(cmd)
     shell_out!(cmd)
