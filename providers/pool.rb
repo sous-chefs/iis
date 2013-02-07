@@ -52,18 +52,15 @@ action :config do
 	cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
 	Chef::Log.debug(cmd)
 	shell_out!(cmd)
-        # Eric added
         cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /recycling.periodicRestart.time:#{@new_resource.regular_time_interval}"
         Chef::Log.debug(cmd)
         shell_out!(cmd)
-        # Eric added
         cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
         Chef::Log.debug(cmd)
         shell_out!(cmd)
 	cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /managedRuntimeVersion:v#{@new_resource.runtime_version}"
 	Chef::Log.debug(cmd) if @new_resource.runtime_version
 	shell_out!(cmd)
-        # Eric added
         cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.idle_timeout}\""
         Chef::Log.debug(cmd)
         shell_out!(cmd)
