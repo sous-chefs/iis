@@ -25,6 +25,9 @@ attribute :pool_name, :kind_of => String, :name_attribute => true
 attribute :runtime_version, :kind_of => String
 attribute :pipeline_mode, :kind_of => Symbol, :default => :Classic, :equal_to => [:Integrated, :Classic]
 attribute :private_mem, :kind_of => Integer, :default => 1048576
+attribute :idle_timeout, :kind_of => String, :default => '0.00:20:00'
+attribute :regular_time_interval, :kind_of => String, :default => '0.29:00:00'
+attribute :recycle_at_time, :kind_of => String
 attribute :max_proc, :kind_of => Integer, :default => 2
 attribute :thirty_two_bit, :kind_of => Symbol, :default => :false, :equal_to => [:true, :false]
 attribute :pool_username, :kind_of => String, :default => nil
