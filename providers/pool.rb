@@ -115,7 +115,10 @@ def load_current_resource
   cmd = shell_out("#{appcmd} list apppool")
   # APPPOOL "DefaultAppPool" (MgdVersion:v2.0,MgdMode:Integrated,state:Started)
   Chef::Log.debug("#{@new_resource} list apppool command output: #{cmd.stdout}")
-  result = cmd.stdout.match(/^APPPOOL\s\"#{@new_resource.pool_name}\".*/) if cmd.stderr.empty?
+  if cmd.stderr.empty?
+    result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
+    result = result.match(/^APPPOOL\s\"(#{new_resource.pool_name})\"\s\(MgdVersion:(.*),MgdMode:(.*),state:(.*)\)$/)
+  end
   Chef::Log.debug("#{@new_resource} current_resource match output: #{result}")
   if result
     @current_resource.exists = true
