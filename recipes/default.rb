@@ -25,6 +25,8 @@ webpi_product node['iis']['components'] do
   action :install
 end
 
+windows_feature "IIS-WebServerRole"
+
 service "iis" do
   service_name "W3SVC"
   action :nothing
