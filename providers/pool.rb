@@ -55,6 +55,8 @@ action :config do
 	cmd = "#{appcmd} set apppool /apppool.name:#{@new_resource.pool_name} /managedRuntimeVersion:v#{@new_resource.runtime_version}"
 	Chef::Log.debug(cmd) if @new_resource.runtime_version
 	shell_out!(cmd)
+	cmd = "#{appcmd} set apppool /apppool.name:#{@new_resource.pool_name} /managedPipelineMode:#{@new_resource.pipeline_mode}"
+	shell_out!(cmd)
 	if @new_resource.pool_username != nil and @new_resource.pool_password != nil
 		cmd = "#{appcmd} set config /section:applicationPools"
 		cmd << " /[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser"
