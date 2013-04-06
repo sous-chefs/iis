@@ -1,7 +1,7 @@
 Description
 ===========
 
-Installs and configures Microsoft Internet Information Services (IIS) 7.0/7.5
+Installs and configures Microsoft Internet Information Services (IIS) 7.0/7.5/8.0
 
 Requirements
 ============
@@ -11,7 +11,9 @@ Platform
 
 * Windows Vista
 * Windows 7
+* Windows 8
 * Windows Server 2008 (R1, R2)
+* Windows Server 2012
 
 Cookbooks
 ---------
@@ -219,7 +221,7 @@ Installing any of the IIS or any of it's modules requires you to explicitly indi
 default
 -------
 
-Installs and configures IIS 7.0/7.5 using the recommended configuration, which includes the following modules/extensions:
+Installs and configures IIS 7.0/7.5/8.0 using the recommended configuration, which includes the following modules/extensions:
 
 * Static Content
 * Default Document
