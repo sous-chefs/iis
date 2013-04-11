@@ -43,27 +43,44 @@ action :config do
 	cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
 	Chef::Log.debug(cmd)
 	shell_out!(cmd)
-	cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}\""
-	Chef::Log.debug(cmd)
-	shell_out!(cmd)
-	cmd = "#{appcmd} set apppool \"#{@new_resource.pool_name}\" -processModel.maxProcesses:#{@new_resource.max_proc}"
-	Chef::Log.debug(cmd)
-	shell_out!(cmd)
-	cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
-	Chef::Log.debug(cmd)
-	shell_out!(cmd)
-        cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /recycling.periodicRestart.time:#{@new_resource.regular_time_interval}"
-        Chef::Log.debug(cmd)
-        shell_out!(cmd)
-        cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
-        Chef::Log.debug(cmd)
-        shell_out!(cmd)
-	cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /managedRuntimeVersion:v#{@new_resource.runtime_version}"
-	Chef::Log.debug(cmd) if @new_resource.runtime_version
-	shell_out!(cmd)
-        cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.idle_timeout}\""
-        Chef::Log.debug(cmd)
-        shell_out!(cmd)
+	if @new_resource.private_mem != nil
+		cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}\""
+		Chef::Log.debug(cmd)
+		shell_out!(cmd)
+	end
+        if @new_resource.max_proc != nil
+		cmd = "#{appcmd} set apppool \"#{@new_resource.pool_name}\" -processModel.maxProcesses:#{@new_resource.max_proc}"
+		Chef::Log.debug(cmd)
+		shell_out!(cmd)
+        end
+	if @new_resource.thirty_two_bit != nil
+		cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
+		Chef::Log.debug(cmd)
+		shell_out!(cmd)
+	end
+	if @new_resource.recycle_after_time != nil
+        	cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /recycling.periodicRestart.time:#{@new_resource.recycle_after_time}"
+        	Chef::Log.debug(cmd)
+        	shell_out!(cmd)
+	end
+	if @new_resource.recycle_at_time != nil
+        	cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /-recycling.periodicRestart.schedule"
+        	Chef::Log.debug(cmd)
+        	shell_out!(cmd) 
+        	cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
+        	Chef::Log.debug(cmd)
+        	shell_out!(cmd)
+	end
+	if @new_resource.runtime_version != nil
+		cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /managedRuntimeVersion:v#{@new_resource.runtime_version}"
+		Chef::Log.debug(cmd) if @new_resource.runtime_version
+		shell_out!(cmd)
+	end
+	if @new_resource.worker_idle_timeout != nil
+        	cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.worker_idle_timeout}\""
+        	Chef::Log.debug(cmd)
+        	shell_out!(cmd)
+	end
 	if @new_resource.pool_username != nil and @new_resource.pool_password != nil
 		cmd = "#{appcmd} set config /section:applicationPools"
 		cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
