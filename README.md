@@ -130,6 +130,12 @@ Creates an application pool in IIS.
 - pool_name: name attribute. Specifies the name of the pool to create.
 - runtime_version: specifies what .NET version of the runtime to use.
 - pipeline_mode: specifies what pipeline mode to create the pool with
+- private_mem: specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
+- worker_idle_timeout: specifies the idle time-out value for a pool, d.hh:mm:ss, d optional
+- recycle_after_time: specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
+- recycle_at_time: schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
+- max_proc: specifies the number of worker processes associated with the pool.
+- thirty_two_bit: set the pool to run in 32 bit mode, true or false
 
 ### Example
 
