@@ -21,7 +21,7 @@
 include_recipe "webpi"
 
 unless node['iis']['accept_eula'] then
-  Chef::Application.fatal!("You must accept the IIS EULA before installing IIS")
+  Chef::Application.fatal!("You must accept the EULA by setting the attribute node['iis']['accept_eula'] before installing IIS.")
 end
 
 webpi_product node['iis']['components'] do
