@@ -24,7 +24,7 @@ include Chef::Mixin::ShellOut
 include Windows::Helper
 
 action :add do
-	unless @current_resource.exists
+  unless @current_resource.exists
     cmd = "#{appcmd} add app /site.name:\"#{@new_resource.app_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
@@ -32,7 +32,7 @@ action :add do
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     Chef::Log.info("App created")
-	else
+  else
     Chef::Log.debug("#{@new_resource} app already exists - nothing to do")
   end
 end
@@ -40,8 +40,8 @@ end
 action :config do
 
   cmd = "#{appcmd} set app \"#{site_identifier}\""
-	cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path
-	cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
+  cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path
+  cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
   Chef::Log.debug(cmd)
   shell_out!(cmd)
 
