@@ -1,9 +1,7 @@
 #
-# Author:: Kendrick Martin (<kendrick.martin@webtrends.com>)
+# Author:: Eric Pardee (<eric@atlasdigital.tv>)
 # Cookbook Name:: iis
-# Recipe:: remove_default_site
-#
-# Copyright 2012, Webtrends, Inc.
+# Recipe:: mod_aspnet_mvc2
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +16,9 @@
 # limitations under the License.
 #
 
-iis_site 'Default Web Site' do
-  action [:stop, :delete]
-end
+include_recipe "iis"
 
-iis_pool 'DefaultAppPool' do
-  action [:stop , :delete]
+webpi_product "MVC2" do
+  accept_eula node['iis']['accept_eula']
+  action :install
 end
