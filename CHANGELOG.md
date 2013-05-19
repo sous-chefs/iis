@@ -4,6 +4,24 @@
 * resource/provider for managing IIS virtual directories
 * IIS 6.0 support
 
+## v1.5.0:
+
+### Improvement
+
+- [COOK-2370]: add MVC2, escape `application_pool` and add options for
+  recycling
+- [COOK-2694]: update iis documentation to show that Windows 2012 and
+  Windows 8 are supported
+
+### Bug
+
+- [COOK-2325]: `load_current_resource` does not load state of pool
+  correctly, always sets running to false
+- [COOK-2526]: Installing IIS after .NET framework will leave
+  installation in non-working state
+- [COOK-2596]: iis cookbook fails with indecipherable error if EULA
+  not accepted
+
 ## v1.4.0:
 
 * [COOK-2181] -Adding full module support to iis cookbook
