@@ -1,5 +1,6 @@
 #
 # Author:: Kendrick Martin (kendrick.martin@webtrends.com)
+# Contributor:: Adam Wayne (awayne@waynedigital.com)
 # Cookbook Name:: iis
 # Provider:: app
 #
@@ -46,7 +47,7 @@ action :config do
   shell_out!(cmd)
 
   if @new_resource.physical_path
-    cmd = "#{appcmd} set vdir \"#{site_identifier}\""
+    cmd = "#{appcmd} set vdir \"#{vdir_identifier}\""
     cmd << " /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd) 
@@ -92,4 +93,9 @@ end
 
 def site_identifier
   "#{@new_resource.app_name}#{@new_resource.path}"
+end
+
+#Ensure VDIR identifier has a trailing slash
+def vdir_identifier
+  site_identifier.end_with?("/") ? site_identifier : site_identifier + "/"
 end
