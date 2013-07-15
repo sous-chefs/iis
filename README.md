@@ -24,13 +24,13 @@ Cookbooks
 Attributes
 ==========
 
-* `node['iis']['accept_eula']` - indicate that you accept the terms of the end user license. default is 'false'
-* `node['iis']['home']` - IIS main home directory. default is `%WINDIR%\System32\inetsrv`
-* `node['iis']['conf_dir']` - location where main IIS configs lives. default is `%WINDIR%\System32\inetsrv\config`
-* `node['iis']['pubroot']` - . default is `%SYSTEMDRIVE%\inetpub`
-* `node['iis']['docroot']` - IIS web site home directory. default is `%SYSTEMDRIVE%\inetpub\wwwroot`
-* `node['iis']['log_dir']` - location of IIS logs. default is `%SYSTEMDRIVE%\inetpub\logs\LogFiles`
-* `node['iis']['cache_dir']` - location of cached data. default is `%SYSTEMDRIVE%\inetpub\temp`
+* `node['iis']['accept_eula']` - indicate that you accept the terms of the end user license. Default is `false`
+* `node['iis']['home']` - IIS main home directory. Default is `%WINDIR%\System32\inetsrv`
+* `node['iis']['conf_dir']` - location where main IIS configuration lives. Default is `%WINDIR%\System32\inetsrv\config`
+* `node['iis']['pubroot']` - default is `%SYSTEMDRIVE%\inetpub`
+* `node['iis']['docroot']` - IIS web site home directory. Default is `%SYSTEMDRIVE%\inetpub\wwwroot`
+* `node['iis']['log_dir']` - location of IIS logs. Default is `%SYSTEMDRIVE%\inetpub\logs\LogFiles`
+* `node['iis']['cache_dir']` - location of cached data. Default is `%SYSTEMDRIVE%\inetpub\temp`
 
 Resource/Provider
 =================
@@ -42,24 +42,21 @@ Allows easy management of IIS virtual sites (ie vhosts).
 
 ### Actions
 
-- :add: - add a new virtual site
-- :delete: - delete an existing virtual site
-- :start: - start a virtual site
-- :stop: - stop a virtual site
-- :restart: - restart a virtual site
+- `:add` - add a new virtual site
+- `:delete` - delete an existing virtual site
+- `:start` - start a virtual site
+- `:stop` - stop a virtual site
+- `:restart` - restart a virtual site
 
 ### Attribute Parameters
 
-- product_id: name attribute. Specifies the ID of a product to install.
-- accept_eula: specifies that WebpiCmdline should Auto-Accept Eula’s. default is false.
-
-- site_name: name attribute.
-- site_id: . if not given IIS generates a unique ID for the site
-- path: IIS will create a root application and a root virtual directory mapped to this specified local path
-- protocol: http protocol type the site should respond to. valid values are :http, :https. default is :http
-- port: port site will listen on. default is 80
-- host_header: host header (also known as domains or host names) the site should map to. default is all host headers
-- options: additional options to configure the site
+- `site_name` - name attribute. Specified the name of the virtual site
+- `site_id` - ID number for the site. If this is not provided, IIS generates a unique ID for the site
+- `path` - IIS will create a root application and a root virtual directory mapped to this specified local path
+- `protocol` - HTTP protocol type the site should respond to. Valid values are `:http` or `:https`. Default is `:http`
+- `port` - port that the site will listen on. Default is 80
+- `host_header` - host header (also known as domains or host names) that the site should map to. Default is all host headers
+- `options` - additional options to configure the site
 
 ### Examples
 
@@ -74,7 +71,7 @@ Allows easy management of IIS virtual sites (ie vhosts).
       protocol :http
       port 80
       path "#{node['iis']['docroot']}/testfu"
-      action [:add,:start]
+      action [:add, :start]
     end
 
     # do the same but map to testfu.opscode.com domain
@@ -83,34 +80,34 @@ Allows easy management of IIS virtual sites (ie vhosts).
       port 80
       path "#{node['iis']['docroot']}/testfu"
       host_header "testfu.opscode.com"
-      action [:add,:start]
+      action [:add, :start]
     end
 
 iis\_config
 -----------
-Runs a config command on your IIS instance.
+Runs a configuration command on your IIS instance.
 
 ### Actions
 
-- :config: - Runs the configuration command
+- `:config` - runs the configuration command
 
 ### Attribute Parameters
 
-- cfg_cmd: name attribute. What ever command you would pass in after "appcmd.exe set config"
+- `cfg_cmd` - name attribute. Specify whatever command you would pass in after `appcmd.exe set config`
 
 ### Example
 
-    #Sets up logging
+    # Sets up logging
     iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:"D:\\logs"" do
-        action :config
+      action :config
     end
 
-    #Loads an array of commands from the node
+    # Loads an array of commands from the node
     cfg_cmds = node['iis']['cfg_cmd']
     cfg_cmds.each do |cmd|
-        iis_config "#{cmd}" do
-            action :config
-        end
+      iis_config "#{cmd}" do
+        action :config
+      end
     end
 
 iis\_pool
@@ -119,32 +116,32 @@ Creates an application pool in IIS.
 
 ### Actions
 
-- :add: - add a new application pool
-- :delete: - delete an existing application pool
-- :start: - start a application pool
-- :stop: - stop a application pool
-- :restart: - restart a application pool
+- `:add` - add a new application pool
+- `:delete` - delete an existing application pool
+- `:start` - start an application pool
+- `:stop` - stop an application pool
+- `:restart` - restart an application pool
 
 ### Attribute Parameters
 
-- pool_name: name attribute. Specifies the name of the pool to create.
-- runtime_version: specifies what .NET version of the runtime to use.
-- pipeline_mode: specifies what pipeline mode to create the pool with
-- private_mem: specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
-- worker_idle_timeout: specifies the idle time-out value for a pool, d.hh:mm:ss, d optional
-- recycle_after_time: specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
-- recycle_at_time: schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
-- max_proc: specifies the number of worker processes associated with the pool.
-- thirty_two_bit: set the pool to run in 32 bit mode, true or false
+- `pool_name` - name attribute. Specifies the name of the pool to create
+- `runtime_version` - specifies what version of the .NET runtime to use
+- `pipeline_mode` - specifies what pipeline mode to create the pool with
+- `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
+- `worker_idle_timeout` - specifies the idle time-out value for the pool, d.hh:mm:ss, d optional
+- `recycle_after_time` - configures the pool to recycle at regular time intervals, d.hh:mm:ss, d optional
+- `recycle_at_time` - schedule the pool to recycle at a specific time, d.hh:mm:ss, d optional
+- `max_proc` - specifies the number of worker processes associated with the pool
+- `thirty_two_bit` - set the pool to run in 32-bit mode, `true` or `false`
 
 ### Example
 
-     #creates a new app pool
-     iis_pool 'myAppPool_v1_1' do
-         runtime_version "2.0"
-         pipeline_mode "Classic"
-         action :add
-     end
+    # creates a new application pool
+    iis_pool 'myAppPool_v1_1' do
+      runtime_version "2.0"
+      pipeline_mode "Classic"
+      action :add
+    end
 
 
 iis\_app
@@ -154,51 +151,51 @@ Creates an application in IIS.
 
 ### Actions
 
-- :add: - add a new application pool
-- :delete: - delete an existing application pool
+- `:add` - add a new application
+- `:delete` - delete an existing application
 
 ### Attribute Parameters
 
-- app_name: name attribute. The name of the site to add this app to
-- path: The virtual path for this application
-- applicationPool: The pool this application belongs to
-- physicalPath: The physical path where this app resides.
+- `app_name` - name attribute. The name of the site to add this application to
+- `path` - the virtual path for this application
+- `application_pool` - the pool this application belongs to
+- `physical_path` - the physical path where this app resides
 
 ### Example
 
-  #creates a new app
-  iis_app "myApp" do
-    path "/v1_1"
-    application_pool "myAppPool_v1_1"
-    physical_path "#{node['iis']['docroot']}/testfu/v1_1"
-    action :add
-  end
+    # creates a new application
+    iis_app "myApp" do
+      path "/v1_1"
+      application_pool "myAppPool_v1_1"
+      physical_path "#{node['iis']['docroot']}/testfu/v1_1"
+      action :add
+    end
 
 iis\_module
 --------
 
-Manages modules globally or on a per site basis.
+Manages modules globally or on a per-site basis.
 
 ### Actions
 
-- :add: - add a new module
-- :delete: - delete a module
+- `:add` - add a new module
+- `:delete` - delete a module
 
 ### Attribute Parameters
 
-- module_name: The name of the module to add or delete
-- type: The type of module
-- precondition: precondition for module
-- application: The application or site to add the module to
+- `module_name` - the name of the module to add or delete
+- `type` - the type of module
+- `precondition` - precondition for the module
+- `application` -  the application or site to add the module to
 
 ### Example
 
-  # Adds a module called "My 3rd Party Module" to mySite/
-  iis_module "My 3rd Party Module" do
-    application "mySite/"
-    precondition "bitness64"
-    action :add
-  end
+    # Adds a module called "My 3rd Party Module" to mySite/
+    iis_module "My 3rd Party Module" do
+      application "mySite/"
+      precondition "bitness64"
+      action :add
+    end
     
     # Adds a module called "MyModule" to all IIS sites on the server
     iis_module "MyModule"
@@ -207,7 +204,7 @@ Manages modules globally or on a per site basis.
 Usage
 =====
 
-Installing any of the IIS or any of it's modules requires you to explicitly indicate that you accept the terms of the end user license. The hooks have been added to all recipes to do this via an attribute.  Create a role to set the `node['iis']['accept_eula']` attribute to 'true'.  For example:
+Installing IIS or any of its modules requires you to explicitly indicate that you accept the terms of the end user license. The hooks have been added to all recipes to do this via an attribute.  Create a role to set the `node['iis']['accept_eula']` attribute to `true`.  For example:
 
     % cat roles/iis.rb
     name "iis"
@@ -224,7 +221,7 @@ Installing any of the IIS or any of it's modules requires you to explicitly indi
     )
 
 
-default
+Summary
 -------
 
 Installs and configures IIS 7.0/7.5/8.0 using the recommended configuration, which includes the following modules/extensions:
