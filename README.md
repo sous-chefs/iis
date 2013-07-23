@@ -137,6 +137,12 @@ Creates an application pool in IIS.
 - max_proc: specifies the number of worker processes associated with the pool.
 - thirty_two_bit: set the pool to run in 32 bit mode, true or false
 
+##### App Pool Credentials (optional)
+- pool_username: specifies the username that the app pool runs under
+- pool_password: specifices the password for the user specified by `pool_username`
+- Note: both the username and password must be set
+
+
 ### Example
 
      #creates a new app pool
