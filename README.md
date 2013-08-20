@@ -166,13 +166,13 @@ Creates an application in IIS.
 
 ### Example
 
-  #creates a new app
-  iis_app "myApp" do
-    path "/v1_1"
-    application_pool "myAppPool_v1_1"
-    physical_path "#{node['iis']['docroot']}/testfu/v1_1"
-    action :add
-  end
+    #creates a new app
+    iis_app "myApp" do
+      path "/v1_1"
+      application_pool "myAppPool_v1_1"
+      physical_path "#{node['iis']['docroot']}/testfu/v1_1"
+      action :add
+    end
 
 iis\_module
 --------
@@ -193,12 +193,12 @@ Manages modules globally or on a per site basis.
 
 ### Example
 
-  # Adds a module called "My 3rd Party Module" to mySite/
-  iis_module "My 3rd Party Module" do
-    application "mySite/"
-    precondition "bitness64"
-    action :add
-  end
+    # Adds a module called "My 3rd Party Module" to mySite/
+    iis_module "My 3rd Party Module" do
+      application "mySite/"
+      precondition "bitness64"
+      action :add
+    end
     
     # Adds a module called "MyModule" to all IIS sites on the server
     iis_module "MyModule"
