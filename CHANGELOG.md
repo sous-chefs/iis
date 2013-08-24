@@ -3,6 +3,11 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the #{cookbook.name} cookbook.
 
 
+v1.5.2
+------
+### Bug
+- **[COOK-3232](https://tickets.opscode.com/browse/COOK-3232)** - Allow `iis_app` resource `:config` action with a virtual path
+
 v1.5.0
 ------
 ### Improvement
