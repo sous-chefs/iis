@@ -66,7 +66,7 @@ action :config do
   unless @new_resource.recycle_at_time.nil?
     cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /-recycling.periodicRestart.schedule"
     Chef::Log.debug(cmd)
-    shell_out!(cmd) 
+    shell_out!(cmd)
     cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
     Chef::Log.debug(cmd)
     shell_out!(cmd)

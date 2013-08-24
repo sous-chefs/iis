@@ -50,7 +50,7 @@ action :config do
     cmd = "#{appcmd} set vdir \"#{vdir_identifier}\""
     cmd << " /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
-    shell_out!(cmd) 
+    shell_out!(cmd)
   end
 
 end

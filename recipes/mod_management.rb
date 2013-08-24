@@ -20,8 +20,8 @@
 
 include_recipe "iis"
 
-%w{ IISManagementConsole 
-    IISManagementScriptsAndTools 
+%w{ IISManagementConsole
+    IISManagementScriptsAndTools
     ManagementService }.each do |product|
 
   webpi_product product do

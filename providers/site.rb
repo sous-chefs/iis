@@ -40,7 +40,7 @@ action :add do
     if @new_resource.options
       cmd << " #{@new_resource.options}"
     end
-    
+
     shell_out!(cmd, {:returns => [0,42]})
 
   if @new_resource.application_pool
@@ -59,7 +59,7 @@ action :config do
     cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
     cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
     Chef::Log.debug(cmd)
-    shell_out!(cmd) 
+    shell_out!(cmd)
   end
 
   if @new_resource.path
@@ -74,7 +74,7 @@ action :config do
   #   cmd = "#{appcmd} set app \"#{@new_resource.site_name}\"/ "
   #   cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
   #   Chef::Log.debug(cmd)
-  #   shell_out!(cmd) 
+  #   shell_out!(cmd)
   # end
 
   if @new_resource.host_header
@@ -82,7 +82,7 @@ action :config do
     #cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
     #cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
     #Chef::Log.debug(cmd)
-    #shell_out!(cmd) 
+    #shell_out!(cmd)
   end
 
 end

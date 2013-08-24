@@ -199,7 +199,7 @@ Manages modules globally or on a per site basis.
       precondition "bitness64"
       action :add
     end
-    
+
     # Adds a module called "MyModule" to all IIS sites on the server
     iis_module "MyModule"
 
