@@ -23,6 +23,7 @@ actions :add, :config, :delete, :start, :stop, :restart, :recycle
 
 attribute :pool_name, :kind_of => String, :name_attribute => true
 attribute :runtime_version, :kind_of => String
+attribute :no_managed_code, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :pipeline_mode, :kind_of => Symbol, :equal_to => [:Integrated, :Classic]
 attribute :private_mem, :kind_of => Integer
 attribute :worker_idle_timeout, :kind_of => String
