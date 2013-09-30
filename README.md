@@ -163,6 +163,7 @@ Creates an application in IIS.
 - path: The virtual path for this application
 - applicationPool: The pool this application belongs to
 - physicalPath: The physical path where this app resides.
+- enabled_protocols: The enabled protocols that this app provides (http, https, net.pipe, net.tcp, etc)
 
 ### Example
 
@@ -171,6 +172,7 @@ Creates an application in IIS.
       path "/v1_1"
       application_pool "myAppPool_v1_1"
       physical_path "#{node['iis']['docroot']}/testfu/v1_1"
+	  enabled_protocols "http,net.pipe"
       action :add
     end
 
