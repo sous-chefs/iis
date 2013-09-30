@@ -30,6 +30,7 @@ action :add do
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
     cmd << " /physicalPath:\"#{@new_resource.physical_path}\"" if @new_resource.physical_path
+	cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     Chef::Log.info("App created")
@@ -43,6 +44,7 @@ action :config do
   cmd = "#{appcmd} set app \"#{site_identifier}\""
   cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path
   cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
+  cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols
   Chef::Log.debug(cmd)
   shell_out!(cmd)
 
