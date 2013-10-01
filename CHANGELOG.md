@@ -3,6 +3,11 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v1.5.4
+------
+### New Feature
+- **[COOK-3675](https://tickets.opscode.com/browse/COOK-3675)** - Add recipe for CGI module
+
 v1.5.2
 ------
 ### Bug
