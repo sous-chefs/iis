@@ -1,6 +1,6 @@
 IIS Cookbook CHANGELOG
 ======================
-This file is used to list changes made in each version of the #{cookbook.name} cookbook.
+This file is used to list changes made in each version of the IIS cookbook.
 
 
 v1.5.2
