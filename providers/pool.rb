@@ -29,6 +29,7 @@ action :add do
   cmd = "#{appcmd} add apppool /name:\"#{@new_resource.pool_name}\""
   cmd << " /managedRuntimeVersion:v#{@new_resource.runtime_version}" if @new_resource.runtime_version
   cmd << " /managedPipelineMode:#{@new_resource.pipeline_mode}" if @new_resource.pipeline_mode
+  cmd << @new_resource.properties if @new_resource.properties
   Chef::Log.debug(cmd)
   shell_out!(cmd)
   @new_resource.updated_by_last_action(true)
@@ -39,6 +40,11 @@ action :add do
 end
 
 action :config do
+  unless @new_resource.properties.nil?
+    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" #{@new_resource.properties}"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+  end
   cmd = "#{appcmd} set config /section:applicationPools "
   cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
   Chef::Log.debug(cmd)
