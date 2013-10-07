@@ -85,6 +85,14 @@ Allows easy management of IIS virtual sites (ie vhosts).
       host_header "testfu.opscode.com"
       action [:add,:start]
     end
+    
+    # or create as an FTP site
+    iis_site "FTP Site" do
+      protocol :ftp
+      port 21
+      path "#{node['iis']['docroot']}/testfu"
+      action :add
+    end
 
 iis\_config
 -----------
@@ -112,6 +120,14 @@ Runs a config command on your IIS instance.
             action :config
         end
     end
+
+    #Configure an FTP site to not *require* SSL:
+    iis_config "-section:system.applicationHost/sites /[name='FTP Site'].ftpServer.security.ssl.controlChannelPolicy:\"SslAllow\""
+    iis_config "-section:system.applicationHost/sites /[name='FTP Site'].ftpServer.security.ssl.dataChannelPolicy:\"SslAllow\""
+    iis_config "-section:system.applicationHost/sites /[name='FTP Site'].ftpServer.security.authentication.basicAuthentication.enabled:true"
+    
+    #Allow all users to connect to FTP Site:
+    iis_config "\"FTP Site\" /section:system.ftpserver/security/authorization /+[accessType='Allow',permissions='Read,Write',roles='',users='*'] /commit:apphost"
 
 iis\_pool
 ---------
