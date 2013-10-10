@@ -142,7 +142,7 @@ Creates an application pool in IIS.
      #creates a new app pool
      iis_pool 'myAppPool_v1_1' do
          runtime_version "2.0"
-         pipeline_mode "Classic"
+         pipeline_mode :"Classic"
          action :add
      end
 
