@@ -24,7 +24,6 @@ Cookbooks
 Attributes
 ==========
 
-* `node['iis']['accept_eula']` - indicate that you accept the terms of the end user license. default is 'false'
 * `node['iis']['home']` - IIS main home directory. default is `%WINDIR%\System32\inetsrv`
 * `node['iis']['conf_dir']` - location where main IIS configs lives. default is `%WINDIR%\System32\inetsrv\config`
 * `node['iis']['pubroot']` - . default is `%SYSTEMDRIVE%\inetpub`
@@ -209,42 +208,10 @@ Manages modules globally or on a per site basis.
 Usage
 =====
 
-Installing any of the IIS or any of it's modules requires you to explicitly indicate that you accept the terms of the end user license. The hooks have been added to all recipes to do this via an attribute.  Create a role to set the `node['iis']['accept_eula']` attribute to 'true'.  For example:
-
-    % cat roles/iis.rb
-    name "iis"
-    description "IIS Web Server"
-    run_list(
-      "recipe[iis]",
-      "recipe[iis::mod_mvc3]",
-      "recipe[iis::mod_urlrewrite]"
-    )
-    default_attributes(
-      "iis" => {
-        "accept_eula" => true
-      }
-    )
-
-
 default
 -------
 
-Installs and configures IIS 7.0/7.5/8.0 using the recommended configuration, which includes the following modules/extensions:
-
-* Static Content
-* Default Document
-* Directory Browse
-* HTTP Errors
-* HTTP Logging
-* Logging Libraries
-* Request Monitor
-* Request Filtering
-* HTTP Static Compression
-* Management Console
-* ASP.NET
-* NetFX Extensibility
-* ISAPI Filter
-* ISAPI Extensions
+Installs and configures IIS 7.0/7.5/8.0 using the default configuration.
 
 mod_*
 -----
@@ -256,22 +223,20 @@ This cookbook also contains recipes for installing individual IIS modules (exten
 * `mod_auth_windows` - installs Windows Authentication (authenticate clients by using NTLM or Kerberos) support
 * `mod_compress_dynamic` - installs dynamic content compression support. *PLEASE NOTE* - enabling dynamic compression always gives you more efficient use of bandwidth, but if your server's processor utilization is already very high, the CPU load imposed by dynamic compression might make your site perform more slowly.
 * `mod_compress_static` - installs static content compression support
-* `mod_deploy` - installs web deploy 2.0 support. Web Deploy (Web Deployment Tool) simplifies the migration, management and deployment of IIS Web servers, Web applications and Web sites.
 * `mod_iis6_metabase_compat` - installs IIS 6 Metabase Compatibility component.
 * `mod_isapi` - installs ISAPI (Internet Server Application Programming Interface) extension and filter support.
 * `mod_logging` - installs and enables HTTP Logging (logging of Web site activity), Logging Tools (logging tools and scripts) and Custom Logging (log any of the HTTP request/response headers, IIS server variables, and client-side fields with simple configuration) support
 * `mod_management` - installs Web server Management Console which supports management of local and remote Web servers
-* `mod_mvc3` - installs ASP.NET MVC 3 runtime components
 * `mod_security` - installs URL Authorization (Authorizes client access to the URLs that comprise a Web application), Request Filtering (configures rules to block selected client requests) and IP Security (allows or denies content access based on IP address or domain name) support.
 * `mod_tracing` -  installs support for tracing ASP.NET applications and failed requests.
-* `mod_urlrewrite` - installs support for url rewrite rules using rule templates, rewrite maps, .NET providers.
 
 License and Author
 ==================
 
-Author:: Seth Chisamore (<schisamo@opscode.com>)
+* Author:: Seth Chisamore (<schisamo@opscode.com>)
+* Author:: Julian Dunn (<jdunn@getchef.com>)
 
-Copyright:: 2011, Opscode, Inc.
+Copyright:: 2011-2013, Chef Software, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -20,7 +20,13 @@
 
 include_recipe "iis"
 
-webpi_product "CGI" do
-  accept_eula node['iis']['accept_eula']
+
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  feature = 'Web-CGI'
+else
+  feature = 'IIS-CGI'
+end
+
+windows_feature feature do
   action :install
 end
