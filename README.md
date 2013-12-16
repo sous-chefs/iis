@@ -14,12 +14,14 @@ Platform
 * Windows 8
 * Windows Server 2008 (R1, R2)
 * Windows Server 2012
+* Windows Server 2012R2
+
+Windows 2003R2 is *not* supported because it lacks Add/Remove Features.
 
 Cookbooks
 ---------
 
 * windows
-* webpi
 
 Attributes
 ==========
@@ -229,6 +231,8 @@ This cookbook also contains recipes for installing individual IIS modules (exten
 * `mod_management` - installs Web server Management Console which supports management of local and remote Web servers
 * `mod_security` - installs URL Authorization (Authorizes client access to the URLs that comprise a Web application), Request Filtering (configures rules to block selected client requests) and IP Security (allows or denies content access based on IP address or domain name) support.
 * `mod_tracing` -  installs support for tracing ASP.NET applications and failed requests.
+
+Note: Not every possible IIS module has a corresponding recipe. The foregoing recipes are included for convenience, but users may also place additional IIS modules that are installable as Windows features into the ``node['iis']['components']`` array.
 
 License and Author
 ==================
