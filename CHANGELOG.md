@@ -3,6 +3,12 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v1.5.6
+------
+### Improvement
+- **[COOK-3770](https://tickets.opscode.com/browse/COOK-3770)** - Add Enabled Protocols to IIS App Recipe
+
+
 v1.5.4
 ------
 ### New Feature
