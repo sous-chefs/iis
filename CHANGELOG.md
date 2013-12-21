@@ -3,6 +3,12 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v1.6.2
+------
+### Improvement
+- **[COOK-3634](https://tickets.opscode.com/browse/COOK-3634)** - provide ability to set app pool managedRuntimeVersion to "No Managed Code"
+
+
 v1.6.0
 ------
 ### Improvement
