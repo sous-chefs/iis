@@ -20,7 +20,12 @@
 
 include_recipe "iis"
 
-webpi_product "BasicAuthentication" do
-  accept_eula node['iis']['accept_eula']
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  feature = 'Web-Basic-Auth'
+else
+  feature = 'IIS-BasicAuthentication'
+end
+
+windows_feature feature do
   action :install
 end

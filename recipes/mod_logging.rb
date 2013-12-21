@@ -20,9 +20,12 @@
 
 include_recipe "iis"
 
-%w{ HTTPLogging LoggingTools CustomLogging }.each do |product|
-  webpi_product product do
-    accept_eula node['iis']['accept_eula']
-    action :install
-  end
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  feature = 'Web-Http-Logging'
+else
+  feature = 'IIS-CustomLogging'
+end
+
+windows_feature feature do
+  action :install
 end

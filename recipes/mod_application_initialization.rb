@@ -20,7 +20,10 @@
 
 include_recipe "iis"
 
-webpi_product "ApplicationInitialization" do
-  accept_eula node['iis']['accept_eula']
-  action :install
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  log "Application Initialization module is not supported on Windows 2008 or lower, ignoring"
+else
+  windows_feature "IIS-ApplicationInit" do
+    action :install
+  end
 end

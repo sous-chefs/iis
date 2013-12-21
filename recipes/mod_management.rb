@@ -20,13 +20,14 @@
 
 include_recipe "iis"
 
-%w{ IISManagementConsole
-    IISManagementScriptsAndTools
-    ManagementService }.each do |product|
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  features = %w{Web-Mgmt-Console Web-Mgmt-Service}
+else
+  features = %w{IIS-ManagementConsole IIS-ManagementService}
+end
 
-  webpi_product product do
-    accept_eula node['iis']['accept_eula']
+features.each do |feature|
+  windows_feature feature do
     action :install
   end
-
 end

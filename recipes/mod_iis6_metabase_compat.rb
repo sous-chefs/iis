@@ -20,7 +20,14 @@
 
 include_recipe "iis"
 
-webpi_product "MetabaseAndIIS6Compatibility" do
-  accept_eula node['iis']['accept_eula']
-  action :install
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  features = %w{Web-Metabase Web-Mgmt-Compat}
+else
+  features = %w{IIS-Metabase IIS-IIS6ManagementCompatibility}
+end
+
+features.each do |f|
+  windows_feature f do
+    action :install
+  end
 end

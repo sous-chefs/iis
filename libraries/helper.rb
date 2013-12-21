@@ -1,9 +1,10 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Cookbook Name:: iis
-# Recipe:: mod_compress_dynamic
+# Library:: helper
 #
-# Copyright 2011, Opscode, Inc.
+# Author:: Julian C. Dunn <jdunn@getchef.com>
+#
+# Copyright 2013, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,15 +19,20 @@
 # limitations under the License.
 #
 
-include_recipe "iis"
+require 'chef/win32/version'
 
+module Opscode::IIS
+  class Helper
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  feature = 'Web-Dyn-Compression'
-else
-  feature = 'IIS-HttpCompressionDynamic'
-end
-
-windows_feature feature do
-  action :install
+    def self.older_than_windows2008r2?
+      win_version = Chef::ReservedNames::Win32::Version.new
+      win_version.windows_server_2008? ||
+          win_version.windows_vista? ||
+          win_version.windows_server_2003_r2? ||
+          win_version.windows_home_server? ||
+          win_version.windows_server_2003? ||
+          win_version.windows_xp? ||
+          win_version.windows_2000?
+    end
+  end
 end

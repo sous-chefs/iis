@@ -20,9 +20,14 @@
 
 include_recipe "iis"
 
-%w{ URLAuthorization RequestFiltering IPSecurity }.each do |product|
-  webpi_product product do
-    accept_eula node['iis']['accept_eula']
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  features = %w{Web-Url-Auth Web-Filtering Web-IP-Security}
+else
+  features = %w{URLAuthorization RequestFiltering IPSecurity}
+end
+
+features.each do |feature|
+  windows_feature feature do
     action :install
   end
 end
