@@ -33,7 +33,7 @@ action :add do
   else
     cmd << " /bindings:#{@new_resource.protocol}/*"
     cmd << ":#{@new_resource.port}:" if @new_resource.port
-    cmd << "#{@new_resource.host_header}" if @new_resource.host_header
+    cmd << @new_resource.host_header if @new_resource.host_header
   end
 
     # support for additional options -logDir, -limits, -ftpServer, etc...
