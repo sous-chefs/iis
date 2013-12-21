@@ -3,6 +3,12 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v1.6.0
+------
+### Improvement
+- **[COOK-3922](https://tickets.opscode.com/browse/COOK-3922)** - refactor IIS cookbook to not require WebPI
+
+
 v1.5.6
 ------
 ### Improvement
