@@ -3,6 +3,12 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v1.6.4
+------
+### Bug
+- **[COOK-4138](https://tickets.opscode.com/browse/COOK-4138)** - iis cookbook won't load on non-Windows platforms
+
+
 v1.6.2
 ------
 ### Improvement
