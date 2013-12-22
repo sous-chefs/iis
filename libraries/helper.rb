@@ -19,7 +19,9 @@
 # limitations under the License.
 #
 
-require 'chef/win32/version'
+if RUBY_PLATFORM =~ /mswin|mingw32|windows/
+  require 'chef/win32/version'
+end
 
 module Opscode::IIS
   class Helper
