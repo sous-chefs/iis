@@ -23,18 +23,22 @@ if RUBY_PLATFORM =~ /mswin|mingw32|windows/
   require 'chef/win32/version'
 end
 
-module Opscode::IIS
-  class Helper
+module Opscode
+  module Opscode::IIS
+    class Helper
 
-    def self.older_than_windows2008r2?
-      win_version = Chef::ReservedNames::Win32::Version.new
-      win_version.windows_server_2008? ||
-          win_version.windows_vista? ||
-          win_version.windows_server_2003_r2? ||
-          win_version.windows_home_server? ||
-          win_version.windows_server_2003? ||
-          win_version.windows_xp? ||
-          win_version.windows_2000?
+      def self.older_than_windows2008r2?
+        if RUBY_PLATFORM =~ /mswin|mingw32|windows/
+          win_version = Chef::ReservedNames::Win32::Version.new
+          win_version.windows_server_2008? ||
+            win_version.windows_vista? ||
+            win_version.windows_server_2003_r2? ||
+            win_version.windows_home_server? ||
+            win_version.windows_server_2003? ||
+            win_version.windows_xp? ||
+            win_version.windows_2000?
+        end
+      end
     end
   end
 end
