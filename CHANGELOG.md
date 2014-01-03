@@ -3,6 +3,11 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v2.0.0 (2014-01-03)
+-------------------
+Major version bump
+
+
 v1.6.6
 ------
 Adding extra windows platform checks to helper library
