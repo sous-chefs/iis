@@ -61,6 +61,9 @@ Allows easy management of IIS virtual sites (ie vhosts).
 - port: port site will listen on. default is 80
 - host_header: host header (also known as domains or host names) the site should map to. default is all host headers
 - options: additional options to configure the site
+- bindings: Advanced options to configure the information required for requests to communicate with a Web site. See http://www.iis.net/configreference/system.applicationhost/sites/site/bindings/binding for parameter format. When binding is used, port protocol and host_header should not be used.
+- application_pool: set the application pool of the site
+- options: support for additional options -logDir, -limits, -ftpServer, etc...
 
 ### Examples
 
