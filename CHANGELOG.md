@@ -3,6 +3,11 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v2.0.2 (2014-02-25)
+-------------------
+- [COOK-4108] - Add documentation for the 'bindings' attribute in 'iis_site' LWRP
+
+
 v2.0.0 (2014-01-03)
 -------------------
 Major version bump
