@@ -1,0 +1,25 @@
+{
+  "sources": {
+    "iis": {
+      "path": "."
+    },
+    "powershell": {
+      "locked_version": "3.0.0"
+    },
+    "windows": {
+      "locked_version": "1.30.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    },
+    "ms_dotnet45": {
+      "locked_version": "1.1.2"
+    },
+    "ms_dotnet4": {
+      "locked_version": "1.0.2"
+    },
+    "ms_dotnet2": {
+      "locked_version": "1.0.0"
+    }
+  }
+}
