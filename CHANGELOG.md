@@ -3,6 +3,11 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v2.0.4 (2014-03-18)
+-------------------
+- [COOK-4420] Corrected incorrect feature names for mod_security
+
+
 v2.0.2 (2014-02-25)
 -------------------
 - [COOK-4108] - Add documentation for the 'bindings' attribute in 'iis_site' LWRP
