@@ -3,6 +3,12 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v2.1.0 (2014-03-25)
+-------------------
+[COOK-4426] -  feature order correction for proper installation
+[COOK-4428] -  Add IIS FTP Feature Installation
+
+
 v2.0.4 (2014-03-18)
 -------------------
 - [COOK-4420] Corrected incorrect feature names for mod_security
