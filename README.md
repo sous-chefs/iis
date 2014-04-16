@@ -52,8 +52,6 @@ Allows easy management of IIS virtual sites (ie vhosts).
 ### Attribute Parameters
 
 - product_id: name attribute. Specifies the ID of a product to install.
-- accept_eula: specifies that WebpiCmdline should Auto-Accept Eula. default is false.
-
 - site_name: name attribute.
 - site_id: . if not given IIS generates a unique ID for the site
 - path: IIS will create a root application and a root virtual directory mapped to this specified local path
