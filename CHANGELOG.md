@@ -1,7 +1,62 @@
 IIS Cookbook CHANGELOG
 ======================
-This file is used to list changes made in each version of the #{cookbook.name} cookbook.
+This file is used to list changes made in each version of the IIS cookbook.
 
+
+v2.1.0 (2014-03-25)
+-------------------
+[COOK-4426] -  feature order correction for proper installation
+[COOK-4428] -  Add IIS FTP Feature Installation
+
+
+v2.0.4 (2014-03-18)
+-------------------
+- [COOK-4420] Corrected incorrect feature names for mod_security
+
+
+v2.0.2 (2014-02-25)
+-------------------
+- [COOK-4108] - Add documentation for the 'bindings' attribute in 'iis_site' LWRP
+
+
+v2.0.0 (2014-01-03)
+-------------------
+Major version bump
+
+
+v1.6.6
+------
+Adding extra windows platform checks to helper library
+
+
+v1.6.4
+------
+### Bug
+- **[COOK-4138](https://tickets.opscode.com/browse/COOK-4138)** - iis cookbook won't load on non-Windows platforms
+
+
+v1.6.2
+------
+### Improvement
+- **[COOK-3634](https://tickets.opscode.com/browse/COOK-3634)** - provide ability to set app pool managedRuntimeVersion to "No Managed Code"
+
+
+v1.6.0
+------
+### Improvement
+- **[COOK-3922](https://tickets.opscode.com/browse/COOK-3922)** - refactor IIS cookbook to not require WebPI
+
+
+v1.5.6
+------
+### Improvement
+- **[COOK-3770](https://tickets.opscode.com/browse/COOK-3770)** - Add Enabled Protocols to IIS App Recipe
+
+
+v1.5.4
+------
+### New Feature
+- **[COOK-3675](https://tickets.opscode.com/browse/COOK-3675)** - Add recipe for CGI module
 
 v1.5.2
 ------

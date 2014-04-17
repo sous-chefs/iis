@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Kevin Rivers (<kevin@kevinrivers.com>)
 # Cookbook Name:: iis
-# Recipe:: mod_deploy
+# Recipe:: mod_ftp
 #
-# Copyright 2011, Opscode, Inc.
+# Copyright 2014, Kevin Rivers
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,14 @@
 
 include_recipe "iis"
 
-webpi_product "WDeploy" do
-  accept_eula node['iis']['accept_eula']
-  action :install
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  features = %w{Web-Ftp-Server Web-Ftp-Service Web-Ftp-Ext}
+else
+  features = %w{IIS-FTPServer IIS-FTPSvc IIS-FTPExtensibility}
+end
+
+features.each do |f|
+  windows_feature f do
+    action :install
+  end
 end

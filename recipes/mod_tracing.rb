@@ -20,7 +20,12 @@
 
 include_recipe "iis"
 
-webpi_product "Tracing" do
-  accept_eula node['iis']['accept_eula']
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  feature = 'Web-Http-Tracing'
+else
+  feature = 'IIS-HTTPTracing'
+end
+
+windows_feature feature do
   action :install
 end

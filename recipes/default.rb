@@ -18,34 +18,13 @@
 # limitations under the License.
 #
 
-include_recipe "webpi"
-
-unless node['iis']['accept_eula'] then
-  Chef::Application.fatal!("You must accept the EULA by setting the attribute node['iis']['accept_eula'] before installing IIS.")
-end
-
-webpi_product node['iis']['components'] do
-  accept_eula node['iis']['accept_eula']
-  action :install
-  notifies :run, "execute[Register ASP.NET v4]", :immediately
-  notifies :run, "execute[Register ASP.NET v4 (x64)]", :immediately
-end
-
-aspnet_regiis = "#{ENV['WinDir']}\\Microsoft.NET\\Framework\\v4.0.30319\\aspnet_regiis.exe"
-execute 'Register ASP.NET v4' do
-  command "#{aspnet_regiis} -i"
-  only_if { File.exists?(aspnet_regiis) }
-  action :nothing
-end
-
-aspnet_regiis64 = "#{ENV['WinDir']}\\Microsoft.NET\\Framework64\\v4.0.30319\\aspnet_regiis.exe"
-execute 'Register ASP.NET v4 (x64)' do
-  command "#{aspnet_regiis64} -i"
-  only_if { File.exists?(aspnet_regiis64) }
-  action :nothing
+node['iis']['components'].each do |feature|
+  windows_feature feature do
+    action :install
+  end
 end
 
 service "iis" do
   service_name "W3SVC"
-  action :nothing
+  action [:enable, :start]
 end

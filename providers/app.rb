@@ -49,7 +49,7 @@ action :config do
   shell_out!(cmd)
 
   if @new_resource.physical_path
-    cmd = "#{appcmd} set vdir \"#{vdir_identifier}\""
+    cmd = "#{appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
     cmd << " /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
