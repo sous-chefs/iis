@@ -3,6 +3,11 @@ IIS Cookbook CHANGELOG
 This file is used to list changes made in each version of the IIS cookbook.
 
 
+v2.1.2 (2014-04-23)
+-------------------
+- [COOK-4559] Remove invalid UTF-8 characters
+
+
 v2.1.0 (2014-03-25)
 -------------------
 [COOK-4426] -  feature order correction for proper installation
