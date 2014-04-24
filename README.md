@@ -36,7 +36,7 @@ Attributes
 Resource/Provider
 =================
 
-iis\_site
+iis_site
 ---------
 
 Allows easy management of IIS virtual sites (ie vhosts).
@@ -52,8 +52,6 @@ Allows easy management of IIS virtual sites (ie vhosts).
 ### Attribute Parameters
 
 - product_id: name attribute. Specifies the ID of a product to install.
-- accept_eula: specifies that WebpiCmdline should Auto-Accept Eula’s. default is false.
-
 - site_name: name attribute.
 - site_id: . if not given IIS generates a unique ID for the site
 - path: IIS will create a root application and a root virtual directory mapped to this specified local path
@@ -90,7 +88,7 @@ Allows easy management of IIS virtual sites (ie vhosts).
       action [:add,:start]
     end
 
-iis\_config
+iis_config
 -----------
 Runs a config command on your IIS instance.
 
@@ -117,7 +115,7 @@ Runs a config command on your IIS instance.
         end
     end
 
-iis\_pool
+iis_pool
 ---------
 Creates an application pool in IIS.
 
@@ -152,7 +150,7 @@ Creates an application pool in IIS.
      end
 
 
-iis\_app
+iis_app
 --------
 
 Creates an application in IIS.
@@ -181,7 +179,7 @@ Creates an application in IIS.
       action :add
     end
 
-iis\_module
+iis_module
 --------
 
 Manages modules globally or on a per site basis.
