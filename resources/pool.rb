@@ -41,11 +41,11 @@ def initialize(*args)
   @action = :add
 end
 
-def properties( arg=nil )
+def properties(arg=nil)
   if arg.is_a?(Hash)
     parameters = ''
     arg.each { |property, value| parameters << " /#{property}:#{value}" }
     arg = parameters
   end
-  set_or_return(:properties, arg, :kind_of => [ String, Hash ])
+  set_or_return(:properties, arg, :kind_of => [String])
 end
