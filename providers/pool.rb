@@ -90,6 +90,11 @@ action :config do
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
+  unless @new_resource.start_mode.nil?
+    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /startMode:#{@new_resource.start_mode}"
+    Chef::Log.debug(cmd) if @new_resource.start_mode
+    shell_out!(cmd)
+  end
 end
 
 action :delete do
