@@ -54,6 +54,12 @@ action :config do
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
+  
+  unless @new_resource.preload_enabled.nil?
+    cmd = "#{appcmd} set app \"#{vdir_identifier}\" /preloadEnabled:#{@new_resource.preload_enabled}"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+  end
 
 end
 
