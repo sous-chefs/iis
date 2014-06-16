@@ -76,7 +76,7 @@ def load_current_resource
   # APPPOOL "MyAppName" (applicationPool:MyAppPool)
   Chef::Log.debug("#{@new_resource} list app command output: #{cmd.stdout}")
   #result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"/) if cmd.stderr.empty?
-  result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/) if cmd.stderr.empty?
+  result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"\s\(applicationPool\:.+\)/) if cmd.stderr.empty?
          Chef::Log.debug("Running regex")
   Chef::Log.debug("#{@new_resource} current_resource match output:#{result}")
   if result
