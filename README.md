@@ -188,6 +188,7 @@ Manages modules globally or on a per site basis.
 
 - :add: - add a new module
 - :delete: - delete a module
+- :install: - installs new module
 
 ### Attribute Parameters
 
@@ -195,6 +196,8 @@ Manages modules globally or on a per site basis.
 - type: The type of module
 - precondition: precondition for module
 - application: The application or site to add the module to
+- image: The module's DLL image to install
+- enable: Boolean that specifies whether to also enable the module (default: true) or not (when false) during install
 
 ### Example
 
@@ -208,6 +211,11 @@ Manages modules globally or on a per site basis.
     # Adds a module called "MyModule" to all IIS sites on the server
     iis_module "MyModule"
 
+    # Register and Enable a Native Module on a Web server (IIS 7)
+    iis_module "ConfigurationValidationModule" do
+      image "#{node['iis']['home']}\\validcfg.dll"
+      action :install
+    end 
 
 Usage
 =====

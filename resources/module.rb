@@ -24,6 +24,8 @@ attribute :module_name, :kind_of => String, :name_attribute => true
 attribute :type, :kind_of => String, :default => nil
 attribute :precondition, :kind_of => String, :default => nil
 attribute :application, :kind_of => String, :default => nil
+attribute :image, :kind_of => String, :default => nil
+attribute :enable, :kind_of => [TrueClass, FalseClass], :default => true
 
 attr_accessor :exists
 
