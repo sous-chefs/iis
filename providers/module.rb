@@ -74,6 +74,24 @@ action :delete do
   end
 end
 
+action :install do
+  unless @current_resource.exists
+    converge_by("install IIS module #{@new_resource.module_name}") do
+      cmd = "#{appcmd} install module /name:\"#{@new_resource.module_name}\" /image:\"#{@new_resource.image}\""
+
+      if @new_resource.enable
+        cmd << " /add:true"
+      end
+
+      shell_out!(cmd, {:returns => [0,42]})
+
+      Chef::Log.info("#{@new_resource} installed module '#{@new_resource.module_name}'")
+    end
+  else
+    Chef::Log.debug("#{@new_resource} module already exists - nothing to do")
+  end
+end
+
 def load_current_resource
   @current_resource = Chef::Resource::IisModule.new(@new_resource.name)
   @current_resource.module_name(@new_resource.module_name)
