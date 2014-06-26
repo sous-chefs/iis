@@ -13,8 +13,7 @@ Platform
 * Windows 7
 * Windows 8
 * Windows Server 2008 (R1, R2)
-* Windows Server 2012
-* Windows Server 2012R2
+* Windows Server 2012 (R1, R2)
 
 Windows 2003R2 is *not* supported because it lacks Add/Remove Features.
 
@@ -79,12 +78,12 @@ Allows easy management of IIS virtual sites (ie vhosts).
       action [:add,:start]
     end
 
-    # do the same but map to testfu.opscode.com domain
+    # do the same but map to testfu.getchef.com domain
     iis_site 'Testfu Site' do
       protocol :http
       port 80
       path "#{node['iis']['docroot']}/testfu"
-      host_header "testfu.opscode.com"
+      host_header "testfu.getchef.com"
       action [:add,:start]
     end
 
@@ -239,10 +238,10 @@ Note: Not every possible IIS module has a corresponding recipe. The foregoing re
 License and Author
 ==================
 
-* Author:: Seth Chisamore (<schisamo@opscode.com>)
+* Author:: Seth Chisamore (<schisamo@getchef.com>)
 * Author:: Julian Dunn (<jdunn@getchef.com>)
 
-Copyright:: 2011-2013, Chef Software, Inc.
+Copyright:: 2011-2014, Chef Software, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
