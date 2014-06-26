@@ -24,7 +24,7 @@ node['iis']['components'].each do |feature|
   end
 end
 
-service "iis" do
-  service_name "W3SVC"
+service 'iis' do
+  service_name 'W3SVC'
   action [:enable, :start]
 end

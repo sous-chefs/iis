@@ -41,10 +41,10 @@ action :add do
       cmd << " #{@new_resource.options}"
     end
 
-    shell_out!(cmd, {:returns => [0,42]})
+    shell_out!(cmd, :returns => [0, 42])
 
   if @new_resource.application_pool
-    shell_out!("#{appcmd} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", :returns => [0, 42])
   end
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} added new site '#{@new_resource.site_name}'")
@@ -57,7 +57,7 @@ action :config do
 
   if @new_resource.port
     cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
-    cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
+    cmd << "/bindings:#{@new_resource.protocol}/*:#{@new_resource.port}:"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
@@ -79,17 +79,17 @@ action :config do
 
   if @new_resource.host_header
     # Need to figure out how to set host_header
-    #cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
-    #cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
-    #Chef::Log.debug(cmd)
-    #shell_out!(cmd)
+    # cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+    # cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
+    # Chef::Log.debug(cmd)
+    # shell_out!(cmd)
   end
 
 end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd} delete site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd} delete site /site.name:\"#{site_identifier}\"", :returns => [0, 42])
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -99,7 +99,7 @@ end
 
 action :start do
   unless @current_resource.running
-    shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", :returns => [0, 42])
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} started")
   else
@@ -109,7 +109,7 @@ end
 
 action :stop do
   if @current_resource.running
-    shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", :returns => [0, 42])
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} stopped")
   else
@@ -118,9 +118,9 @@ action :stop do
 end
 
 action :restart do
-  shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", :returns => [0, 42])
   sleep 2
-  shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", :returns => [0, 42])
   @new_resource.updated_by_last_action(true)
   Chef::Log.info("#{@new_resource} restarted")
 end
