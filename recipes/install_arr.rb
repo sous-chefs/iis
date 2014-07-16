@@ -1,7 +1,7 @@
 #
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Cookbook Name:: iis
-# Recipe:: mod_compress_static
+# Recipe:: mod_install_arr
 #
 # Copyright 2011, Opscode, Inc.
 #
