@@ -26,7 +26,7 @@ include Windows::Helper
 action :add do
   unless @current_resource.exists
     cmd = "#{appcmd} add vdir /app.name:\"#{@new_resource.application_name}\""
-    cmd << " /path:\"#{@new_resource.path}"
+    cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\""
     cmd << " /userName:\"#{@new_resource.username}\"" if @new_resource.username
     cmd << " /password:\"#{@new_resource.password}\"" if @new_resource.password
