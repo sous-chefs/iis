@@ -44,31 +44,31 @@ end
 
 action :config do
   if @new_resource.physical_path
-    cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /physicalPath:\"#{@new_resource.physical_path}\""
+    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.username
-    cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /userName:\"#{@new_resource.username}\""
+    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.password
-    cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /password:\"#{@new_resource.password}\""
+    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.logon_method
-    cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /logonMethod:#{@new_resource.logon_method.to_s}"
+    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.allow_sub_dir_config
-    cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
+    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
@@ -76,7 +76,7 @@ end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd} delete vdir \"#{@new_resource.application_name}#{@new_resource.path}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd} delete vdir \"#{application_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -93,7 +93,7 @@ def load_current_resource
   Chef::Log.debug("#{@new_resource} list site command output: #{cmd.stdout}")
   if cmd.stderr.empty?
     result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
-    result = result.match(/^VDIR\s\"(#{new_resource.application_name}#{new_resource.path})\"\s\(physicalPath:#{new_resource.physical_path}\)$/)
+    result = result.match(/^VDIR\s\"(#{application_identifier})\"\s\(physicalPath:#{new_resource.physical_path}\)$/)
   end
   Chef::Log.debug("#{@new_resource} current_resource match output: #{result}")
   if result
@@ -108,4 +108,8 @@ def appcmd
   @appcmd ||= begin
     "#{node['iis']['home']}\\appcmd.exe"
   end
+end
+
+def application_identifier
+  @new_resource.application_name.chomp('/') + @new_resource.path
 end
