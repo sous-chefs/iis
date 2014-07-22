@@ -28,8 +28,10 @@ action :add do
     cmd = "#{appcmd} add vdir /app.name:\"#{@new_resource.application_name}\""
     cmd << " /path:\"#{@new_resource.path}"
     cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\""
-    cmd << " /userName:#{@new_resource.username}:" if @new_resource.username
-    cmd << " /password:#{@new_resource.password}:" if @new_resource.password
+    cmd << " /userName:\"#{@new_resource.username}\"" if @new_resource.username
+    cmd << " /password:\"#{@new_resource.password}\"" if @new_resource.password
+    cmd << " /logonMethod:#{@new_resource.logon_method.to_s}" if @new_resource.logon_method
+    cmd << " /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}" if @new_resource.allow_sub_dir_config
 
     shell_out!(cmd, {:returns => [0,42]})
 
@@ -55,6 +57,18 @@ action :config do
 
   if @new_resource.password
     cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /password:\"#{@new_resource.password}\""
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+  end
+
+  if @new_resource.logon_method
+    cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /logonMethod:#{@new_resource.logon_method.to_s}"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+  end
+
+  if @new_resource.allow_sub_dir_config
+    cmd = "#{appcmd} set vdir \"#{@new_resource.application_name}#{@new_resource.path}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
