@@ -32,7 +32,8 @@ action :add do
     cmd << " /password:\"#{@new_resource.password}\"" if @new_resource.password
     cmd << " /logonMethod:#{@new_resource.logon_method.to_s}" if @new_resource.logon_method
     cmd << " /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}" if @new_resource.allow_sub_dir_config
-
+    
+    Chef::Log.info(cmd)
     shell_out!(cmd, {:returns => [0,42]})
 
     @new_resource.updated_by_last_action(true)
