@@ -195,7 +195,7 @@ Allows easy management of IIS virtual directories (ie vdirs).
 - application_name: name attribute. Specifies the name of the application (this ends with a /) attribute
 - path: The virtual directory path attribute.
 - physical_path: The physical path of the virtual directory attribute
-- username: (optional) The username required to logon to the physical_path
+- username: (optional) The username required to logon to the physical_path. If set to "" will clear username and password.
 - password: (optional) The password required to logon to the physical_path
 - logon_method: (optional, default: :ClearText) The method used to logon (:Interactive, :Batch, :Network, :ClearText). For more information on these types, see "LogonUser Function", Read more at [MSDN](http://msdn2.microsoft.com/en-us/library/aa378184.aspx)
 - allow_sub_dir_config: (optional, default: true) Boolean that specifies whether or not the Web server will look for configuration files located in the subdirectories of this virtual directory. Setting this to false can improve performance on servers with very large numbers of web.config files, but doing so prevents IIS configuration from being read in subdirectories.
@@ -207,6 +207,13 @@ Allows easy management of IIS virtual directories (ie vdirs).
       action :add
       path 'Content/Test'
       physical_path 'C:\wwwroot\shared\test'
+    end
+
+    # adds a virtual directory to default application which points to a smb share. (Remember to escape the "\"'s)
+    iis_vdir 'Default Web Site/' do
+      action :add
+      path 'Content/Test'
+      physical_path '\\\\sharename\\sharefolder\\1'
     end
 
     # configure a virtual directory to have a username and password
