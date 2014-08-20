@@ -90,15 +90,15 @@ def load_current_resource
   @current_resource.application_name(@new_resource.application_name)
   @current_resource.path(@new_resource.path)
   @current_resource.physical_path(@new_resource.physical_path)
-  cmd = shell_out("#{appcmd} list vdir /app.name:\"#{new_resource.application_name}\"")
-  Chef::Log.info("#{appcmd} list vdir /app.name:\"#{new_resource.application_name}\"")
-  Chef::Log.debug("#{@new_resource} list site command output: #{cmd.stdout}")
+
+  cmd = shell_out("#{ appcmd } list vdir #{ application_identifier }")
+  Chef::Log.debug("#{ @new_resource } list vdir command output: #{ cmd.stdout }")
+
   if cmd.stderr.empty?
-    result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
-    Chef::Log.info(result)
-    result = result.match(/^VDIR\s\"(#{application_identifier})\"\s\(physicalPath:#{new_resource.physical_path}\)$/)
+    result = cmd.stdout.match(/^VDIR\s\"#{ Regexp.escape(application_identifier) }\"\s\(physicalPath:#{ Regexp.escape(@new_resource.physical_path) }\)/)
   end
-  Chef::Log.debug("#{@new_resource} current_resource match output: #{result}")
+
+  Chef::Log.debug("#{ @new_resource } current_resource match output: #{ result }")
   if result
     @current_resource.exists = true
   else
