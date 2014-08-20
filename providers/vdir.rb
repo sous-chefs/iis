@@ -33,7 +33,7 @@ action :add do
     cmd << " /logonMethod:#{@new_resource.logon_method.to_s}" if @new_resource.logon_method
     cmd << " /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}" if @new_resource.allow_sub_dir_config
     
-    Chef::Log.debug(cmd)
+    Chef::Log.info(cmd)
     shell_out!(cmd, {:returns => [0,42]})
 
     @new_resource.updated_by_last_action(true)
@@ -91,9 +91,11 @@ def load_current_resource
   @current_resource.path(@new_resource.path)
   @current_resource.physical_path(@new_resource.physical_path)
   cmd = shell_out("#{appcmd} list vdir /app.name:\"#{new_resource.application_name}\"")
+  Chef::Log.info("#{appcmd} list vdir /app.name:\"#{new_resource.application_name}\"")
   Chef::Log.debug("#{@new_resource} list site command output: #{cmd.stdout}")
   if cmd.stderr.empty?
     result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
+    Chef::Log.info(result)
     result = result.match(/^VDIR\s\"(#{application_identifier})\"\s\(physicalPath:#{new_resource.physical_path}\)$/)
   end
   Chef::Log.debug("#{@new_resource} current_resource match output: #{result}")
