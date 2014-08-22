@@ -43,26 +43,26 @@ Allows easy management of IIS virtual sites (ie vhosts).
 
 ### Actions
 
-- :add: - add a new virtual site
-- :config: - apply configuration to an existing virtual site
-- :delete: - delete an existing virtual site
-- :start: - start a virtual site
-- :stop: - stop a virtual site
-- :restart: - restart a virtual site
+- `:add` - add a new virtual site
+- `:config` - apply configuration to an existing virtual site
+- `:delete` - delete an existing virtual site
+- `:start` - start a virtual site
+- `:stop` - stop a virtual site
+- `:restart` - restart a virtual site
 
 ### Attribute Parameters
 
-- product_id: name attribute. Specifies the ID of a product to install.
-- site_name: name attribute.
-- site_id: . if not given IIS generates a unique ID for the site
-- path: IIS will create a root application and a root virtual directory mapped to this specified local path
-- protocol: http protocol type the site should respond to. valid values are :http, :https. default is :http
-- port: port site will listen on. default is 80
-- host_header: host header (also known as domains or host names) the site should map to. default is all host headers
-- options: additional options to configure the site
-- bindings: Advanced options to configure the information required for requests to communicate with a Web site. See http://www.iis.net/configreference/system.applicationhost/sites/site/bindings/binding for parameter format. When binding is used, port protocol and host_header should not be used.
-- application_pool: set the application pool of the site
-- options: support for additional options -logDir, -limits, -ftpServer, etc...
+- `product_id` - name attribute. Specifies the ID of a product to install.
+- `site_name` - name attribute.
+- `site_id` - if not given IIS generates a unique ID for the site
+- `path` - IIS will create a root application and a root virtual directory mapped to this specified local path
+- `protocol` - http protocol type the site should respond to. valid values are :http, :https. default is :http
+- `port` - port site will listen on. default is 80
+- `host_header` - host header (also known as domains or host names) the site should map to. default is all host headers
+- `options` - additional options to configure the site
+- `bindings` - Advanced options to configure the information required for requests to communicate with a Web site. See http://www.iis.net/configreference/system.applicationhost/sites/site/bindings/binding for parameter format. When binding is used, port protocol and host_header should not be used.
+- `application_pool` - set the application pool of the site
+- `options` - support for additional options -logDir, -limits, -ftpServer, etc...
 
 ### Examples
 
@@ -122,28 +122,28 @@ Creates an application pool in IIS.
 
 ### Actions
 
-- :add: - add a new application pool
-- :config: - apply configuration to an existing application pool
-- :delete: - delete an existing application pool
-- :start: - start a application pool
-- :stop: - stop a application pool
-- :restart: - restart a application pool
-- :recycle: - recycle an application pool
+- `:add` - add a new application pool
+- `:config` - apply configuration to an existing application pool
+- `:delete` - delete an existing application pool
+- `:start` - start a application pool
+- `:stop` - stop a application pool
+- `:restart` - restart a application pool
+- `:recycle` - recycle an application pool
 
 ### Attribute Parameters
 
-- pool_name: name attribute. Specifies the name of the pool to create.
-- runtime_version: specifies what .NET version of the runtime to use.
-- pipeline_mode: specifies what pipeline mode to create the pool with
-- private_mem: specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
-- worker_idle_timeout: specifies the idle time-out value for a pool, d.hh:mm:ss, d optional
-- recycle_after_time: specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
-- recycle_at_time: schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
-- max_proc: specifies the number of worker processes associated with the pool.
-- thirty_two_bit: set the pool to run in 32 bit mode, true or false
-- no_managed_code: allow Unmanaged Code in setting up IIS app pools
-- pool_username: username for the identity for the application pool
-- pool_password: password for the identity for the application pool
+- `pool_name` - name attribute. Specifies the name of the pool to create.
+- `runtime_version` - specifies what .NET version of the runtime to use.
+- `pipeline_mode` - specifies what pipeline mode to create the pool with
+- `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
+- `worker_idle_timeout` - specifies the idle time-out value for a pool, d.hh:mm:ss, d optional
+- `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
+- `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
+- `max_proc` - specifies the number of worker processes associated with the pool.
+- `thirty_two_bit` - set the pool to run in 32 bit mode, true or false
+- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
+- `pool_username` - username for the identity for the application pool
+- `pool_password` password for the identity for the application pool
 
 ### Example
 
