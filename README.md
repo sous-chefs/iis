@@ -145,6 +145,12 @@ Creates an application pool in IIS.
 - `pool_username` - username for the identity for the application pool
 - `pool_password` password for the identity for the application pool
 
+##### App Pool Credentials (optional)
+- pool_username: specifies the username that the app pool runs under
+- pool_password: specifices the password for the user specified by `pool_username`
+- Note: both the username and password must be set
+
+
 ### Example
 
      #creates a new app pool
