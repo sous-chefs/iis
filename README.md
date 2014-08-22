@@ -44,6 +44,7 @@ Allows easy management of IIS virtual sites (ie vhosts).
 ### Actions
 
 - :add: - add a new virtual site
+- :config: - apply configuration to an existing virtual site
 - :delete: - delete an existing virtual site
 - :start: - start a virtual site
 - :stop: - stop a virtual site
@@ -122,10 +123,12 @@ Creates an application pool in IIS.
 ### Actions
 
 - :add: - add a new application pool
+- :config: - apply configuration to an existing application pool
 - :delete: - delete an existing application pool
 - :start: - start a application pool
 - :stop: - stop a application pool
 - :restart: - restart a application pool
+- :recycle: - recycle an application pool
 
 ### Attribute Parameters
 
@@ -139,6 +142,8 @@ Creates an application pool in IIS.
 - max_proc: specifies the number of worker processes associated with the pool.
 - thirty_two_bit: set the pool to run in 32 bit mode, true or false
 - no_managed_code: allow Unmanaged Code in setting up IIS app pools
+- pool_username: username for the identity for the application pool
+- pool_password: password for the identity for the application pool
 
 ### Example
 
