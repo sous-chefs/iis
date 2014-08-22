@@ -1,7 +1,7 @@
 Description
 ===========
 
-Installs and configures Microsoft Internet Information Services (IIS) 7.0/7.5/8.0
+Installs and configures Microsoft Ingternet Information Services (IIS) 7.0/7.5/8.0
 
 Requirements
 ============
@@ -95,11 +95,11 @@ Runs a config command on your IIS instance.
 
 ### Actions
 
-- :config: - Runs the configuration command
+- `:config` - Runs the configuration command
 
 ### Attribute Parameters
 
-- cfg_cmd: name attribute. What ever command you would pass in after "appcmd.exe set config"
+- `cfg_cmd` - name attribute. What ever command you would pass in after "appcmd.exe set config"
 
 ### Example
 
@@ -162,16 +162,16 @@ Creates an application in IIS.
 
 ### Actions
 
-- :add: - add a new application pool
-- :delete: - delete an existing application pool
+- `:add` - add a new application pool
+- `:delete` - delete an existing application pool
 
 ### Attribute Parameters
 
-- app_name: name attribute. The name of the site to add this app to
-- path: The virtual path for this application
-- applicationPool: The pool this application belongs to
-- physicalPath: The physical path where this app resides.
-- enabled_protocols: The enabled protocols that this app provides (http, https, net.pipe, net.tcp, etc)
+- `app_name` - name attribute. The name of the site to add this app to
+- `path` -The virtual path for this application
+- `applicationPool` - The pool this application belongs to
+- `physicalPath` - The physical path where this app resides.
+- `enabled_protocols` - The enabled protocols that this app provides (http, https, net.pipe, net.tcp, etc)
 
 ### Example
 
@@ -191,15 +191,15 @@ Manages modules globally or on a per site basis.
 
 ### Actions
 
-- :add: - add a new module
-- :delete: - delete a module
+- `:add` - add a new module
+- `:delete` - delete a module
 
 ### Attribute Parameters
 
-- module_name: The name of the module to add or delete
-- type: The type of module
-- precondition: precondition for module
-- application: The application or site to add the module to
+- `module_name` - The name of the module to add or delete
+- `type` - The type of module
+- `precondition` - precondition for module
+- `application` - The application or site to add the module to
 
 ### Example
 
