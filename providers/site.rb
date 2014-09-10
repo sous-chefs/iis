@@ -68,6 +68,13 @@ action :config do
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
+  
+  if @new_resource.site_id
+    cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+    cmd << " /id:#{@new_resource.site_id}"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+  end
 
   # pools looks like it's actually part of the app
   # if @new_resource.pool_name # it's actually set on the app
