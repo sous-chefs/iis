@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Seth Chisamore (<schisamo@getchef.com>)
 # Cookbook Name:: iis
 # Recipe:: default
 #
-# Copyright 2011, Opscode, Inc.
+# Copyright 2011-2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ node['iis']['components'].each do |feature|
   end
 end
 
-service "iis" do
-  service_name "W3SVC"
+service 'iis' do
+  service_name 'W3SVC'
   action [:enable, :start]
 end

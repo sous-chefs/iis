@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Seth Chisamore (<schisamo@getchef.com>)
 # Cookbook Name:: iis
 # Attribute:: default
 #
-# Copyright:: Copyright (c) 2011 Opscode, Inc.
+# Copyright:: Copyright (c) 2011-2014 Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ default['iis']['log_dir']    = "#{iis['pubroot']}\\logs\\LogFiles"
 default['iis']['cache_dir']  = "#{iis['pubroot']}\\temp"
 
 if Opscode::IIS::Helper.older_than_windows2008r2?
-  default['iis']['components'] = %w{Web-Server}
+  default['iis']['components'] = %w(Web-Server)
 else
-  default['iis']['components'] = %w{IIS-WebServerRole}
+  default['iis']['components'] = %w(IIS-WebServerRole)
 end

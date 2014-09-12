@@ -26,7 +26,6 @@ end
 module Opscode
   module Opscode::IIS
     class Helper
-
       def self.older_than_windows2008r2?
         if RUBY_PLATFORM =~ /mswin|mingw32|windows/
           win_version = Chef::ReservedNames::Win32::Version.new

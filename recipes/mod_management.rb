@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Seth Chisamore (<schisamo@getchef.com>)
 # Cookbook Name:: iis
 # Recipe:: mod_management
 #
-# Copyright 2011, Opscode, Inc.
+# Copyright 2011-2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 # limitations under the License.
 #
 
-include_recipe "iis"
+include_recipe 'iis'
 
 if Opscode::IIS::Helper.older_than_windows2008r2?
-  features = %w{Web-Mgmt-Console Web-Mgmt-Service}
+  features = %w(Web-Mgmt-Console Web-Mgmt-Service)
 else
-  features = %w{IIS-ManagementConsole IIS-ManagementService}
+  features = %w(IIS-ManagementConsole IIS-ManagementService)
 end
 
 features.each do |feature|

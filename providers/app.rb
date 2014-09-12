@@ -33,7 +33,7 @@ action :add do
     cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols
     Chef::Log.debug(cmd)
     shell_out!(cmd)
-    Chef::Log.info("App created")
+    Chef::Log.info('App created')
   else
     Chef::Log.debug("#{@new_resource} app already exists - nothing to do")
   end
@@ -75,9 +75,9 @@ def load_current_resource
   cmd = shell_out("#{appcmd} list app")
   # APPPOOL "MyAppName" (applicationPool:MyAppPool)
   Chef::Log.debug("#{@new_resource} list app command output: #{cmd.stdout}")
-  #result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"/) if cmd.stderr.empty?
+  # result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"/) if cmd.stderr.empty?
   result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/) if cmd.stderr.empty?
-         Chef::Log.debug("Running regex")
+  Chef::Log.debug('Running regex')
   Chef::Log.debug("#{@new_resource} current_resource match output:#{result}")
   if result
     @current_resource.exists = true
@@ -97,7 +97,7 @@ def site_identifier
   "#{@new_resource.app_name}#{@new_resource.path}"
 end
 
-#Ensure VDIR identifier has a trailing slash
+# Ensure VDIR identifier has a trailing slash
 def vdir_identifier
-  site_identifier.end_with?("/") ? site_identifier : site_identifier + "/"
+  site_identifier.end_with?('/') ? site_identifier : site_identifier + '/'
 end
