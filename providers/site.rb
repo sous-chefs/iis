@@ -64,7 +64,7 @@ action :config do
 
   if @new_resource.path
     cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
-    cmd << "/physicalPath:\"#{@new_resource.path}\""
+    cmd << "/physicalPath:\"#{win_friendly_path(@new_resource.path)}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
