@@ -1,3 +1,7 @@
+v2.1.5 (2014-09-15)
+-------------------
+- [#68] Add win_friendly_path to all appcmd.exe /physicalPath arguments
+
 v2.1.4 (2014-09-13)
 -------------------
 - [#72] Adds chefspec matchers
