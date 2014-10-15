@@ -95,7 +95,7 @@ def load_current_resource
   Chef::Log.debug("#{ @new_resource } list vdir command output: #{ cmd.stdout }")
 
   if cmd.stderr.empty?
-    result = cmd.stdout.match(/^VDIR\s\"#{ Regexp.escape(application_identifier) }\"\s\(physicalPath:#{ Regexp.escape(@new_resource.physical_path) }\)/)
+    result = cmd.stdout.match(/^VDIR\s\"#{ Regexp.escape(application_identifier) }\"/)
   end
 
   Chef::Log.debug("#{ @new_resource } current_resource match output: #{ result }")
