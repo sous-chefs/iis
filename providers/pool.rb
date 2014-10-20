@@ -218,14 +218,14 @@ def configure
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
-  if !@new_resource.pool_username.nil? || !@new_resource.pool_username.empty? and !@new_resource.pool_password.nil? || !@new_resource.pool_username.empty? and userName and password
+  if !@new_resource.pool_username.nil? || !@new_resource.pool_username == '' and !@new_resource.pool_password.nil? || !@new_resource.pool_username == '' and userName and password
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
-  elsif @new_resource.pool_username.nil? || @new_resource.pool_username.empty? and @new_resource.pool_password.nil? || @new_resource.pool_username.empty? and !identityType
+  elsif @new_resource.pool_username.nil? || @new_resource.pool_username == '' and @new_resource.pool_password.nil? || @new_resource.pool_username == '' and !identityType
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""
     Chef::Log.debug(cmd)
