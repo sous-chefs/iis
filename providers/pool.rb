@@ -134,23 +134,23 @@ def configure
     Chef::Log.info("logEventOnRecycle = #{logEventOnRecycle}  #{logEvent} = Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory")
 
     privat = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory").to_s
-    privateMemory = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory").to_s == @new_resource.private_mem.to_s || @new_resource.private_mem.to_s = '' ? false : true
+    privateMemory = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory").to_s == @new_resource.private_mem.to_s || @new_resource.private_mem.to_s == '' ? false : true
     Chef::Log.info("privateMemory = #{privateMemory}  #{privat} = #{@new_resource.private_mem.to_s}")
 
     max = XPath.first(doc.root, "APPPOOL/add/processModel/@maxProcesses").to_s
-    maxProcesses = XPath.first(doc.root, "APPPOOL/add/processModel/@maxProcesses").to_s == @new_resource.max_proc.to_s || @new_resource.max_proc.to_s = '' ? false : true
+    maxProcesses = XPath.first(doc.root, "APPPOOL/add/processModel/@maxProcesses").to_s == @new_resource.max_proc.to_s || @new_resource.max_proc.to_s == '' ? false : true
     Chef::Log.info("maxProcesses = #{maxProcesses}  #{max} = #{@new_resource.max_proc.to_s}")
 
     enable = XPath.first(doc.root, "APPPOOL/add/@enable32BitAppOnWin64").to_s
-    enable32BitAppOnWin64 = XPath.first(doc.root, "APPPOOL/add/@enable32BitAppOnWin64").to_s == @new_resource.thirty_two_bit.to_s || @new_resource.thirty_two_bit.to_s = '' ? false : true
+    enable32BitAppOnWin64 = XPath.first(doc.root, "APPPOOL/add/@enable32BitAppOnWin64").to_s == @new_resource.thirty_two_bit.to_s || @new_resource.thirty_two_bit.to_s == '' ? false : true
     Chef::Log.info("enable32BitAppOnWin64 = #{enable32BitAppOnWin64}  #{enable} = #{@new_resource.thirty_two_bit.to_s}")
 
     recycle = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@time").to_s
-    recycleAfterTime = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@time").to_s == @new_resource.recycle_after_time.to_s || @new_resource.recycle_after_time.to_s = '' ? false : true
+    recycleAfterTime = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@time").to_s == @new_resource.recycle_after_time.to_s || @new_resource.recycle_after_time.to_s == '' ? false : true
     Chef::Log.info("recycleAfterTime = #{recycleAfterTime}  #{recycle} = #{@new_resource.recycle_after_time.to_s}")
 
     recycleAt = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s
-    recycleAtTime = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s == @new_resource.recycle_at_time.to_s || @new_resource.recycle_at_time.to_s = '' ? false : true
+    recycleAtTime = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s == @new_resource.recycle_at_time.to_s || @new_resource.recycle_at_time.to_s == '' ? false : true
     Chef::Log.info("recycleAtTime = #{recycleAtTime}  #{recycleAt} = #{@new_resource.recycle_at_time.to_s}")
 
     managed = XPath.first(doc.root, "APPPOOL/@RuntimeVersion").to_s
@@ -158,7 +158,7 @@ def configure
     Chef::Log.info("managedRuntimeVersion = #{managedRuntimeVersion}  #{managed} = v#{@new_resource.runtime_version.to_s}")
 
     idle = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s
-    idleTimeout = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s == @new_resource.recycle_at_time.to_s || @new_resource.recycle_at_time.to_s = '' ? false : true
+    idleTimeout = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s == @new_resource.recycle_at_time.to_s || @new_resource.recycle_at_time.to_s == '' ? false : true
     Chef::Log.info("idleTimeout = #{idleTimeout}  #{idle} = #{@new_resource.recycle_at_time.to_s}")
 
     identity = XPath.first(doc.root, "APPPOOL/add/processModel/@identityType").to_s
