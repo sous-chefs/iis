@@ -129,7 +129,7 @@ def configure
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    logEventOnRecycle = XPath.first(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle").to_s.gsub!(" ","") == "PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy" ? false : true
+    logEventOnRecycle = XPath.first(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle").to_s.gsub(" ","") == "PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy" ? false : true
     privateMemory = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory").to_s == @new_resource.private_mem.to_s ? false : true
     maxProcesses = XPath.first(doc.root, "APPPOOL/add/processModel/@maxProcesses").to_s == @new_resource.max_proc.to_s ? false : true
     enable32BitAppOnWin64 = XPath.first(doc.root, "APPPOOL/add/@enable32BitAppOnWin64").to_s == @new_resource.thirty_two_bit.to_s ? false : true
@@ -138,8 +138,8 @@ def configure
     managedRuntimeVersion = XPath.first(doc.root, "APPPOOL/@RuntimeVersion").to_s == "v#{@new_resource.runtime_version}" ? false : true
     idleTimeout = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s == @new_resource.recycle_at_time.to_s ? false : true
     identityType = XPath.first(doc.root, "APPPOOL/add/processModel/@identityType").to_s == "SpecificUser" ? false : true
-    userName = XPath.first(doc.root, "APPPOOL/add/processModel/@userName").to_s == @new_resource.pool_username.to_s ? false : true
-    password = XPath.first(doc.root, "APPPOOL/add/processModel/@password").to_s == @new_resource.pool_password.to_s ? false : true
+    userName = XPath.first(doc.root, "APPPOOL/add/processModel/@userName").to_s == @new_resource.pool_username.to_s || @new_resource.pool_username.to_s == '' ? false : true
+    password = XPath.first(doc.root, "APPPOOL/add/processModel/@password").to_s == @new_resource.pool_password.to_s || @new_resource.pool_password.to_s == '' ? false : true
   end
 
   if logEventOnRecycle
@@ -186,11 +186,16 @@ def configure
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
-  unless @new_resource.pool_username.nil? and @new_resource.pool_password.nil? && userName && password
+  if @new_resource.pool_username.nil? && @new_resource.pool_password.nil? && userName && password
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+  else if identityType && !userName && !password
+    cmd = "#{appcmd} set config /section:applicationPools"
+    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
