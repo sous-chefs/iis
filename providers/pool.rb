@@ -193,7 +193,7 @@ def configure
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
-  else if identityType && !userName && !password
+  elsif identityType && !userName && !password
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""
     Chef::Log.debug(cmd)
