@@ -125,7 +125,7 @@ end
 def configure
   cmd_current_values = "#{appcmd} list apppool \"#{@new_resource.pool_name}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
-  shell_out(cmd_current_values)
+  cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
