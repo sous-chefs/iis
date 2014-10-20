@@ -213,19 +213,19 @@ def configure
     Chef::Log.debug(cmd) if @new_resource.runtime_version
     shell_out!(cmd)
   end
-  if !@new_resource.worker_idle_timeout.nil? && 
+  if !@new_resource.worker_idle_timeout.nil? && idleTimeout
     cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.worker_idle_timeout}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
-  if !@new_resource.pool_username.nil? || !@new_resource.pool_username.empty?) and !@new_resource.pool_password.nil? || !@new_resource.pool_username.empty and userName and password
+  if !@new_resource.pool_username.nil? || !@new_resource.pool_username.empty? and !@new_resource.pool_password.nil? || !@new_resource.pool_username.empty? and userName and password
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
-  elsif identityType && !userName && !password
+  elsif @new_resource.pool_username.nil? || @new_resource.pool_username.empty? and @new_resource.pool_password.nil? || @new_resource.pool_username.empty? and !identityType
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""
     Chef::Log.debug(cmd)
