@@ -130,18 +130,48 @@ def configure
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
     logEvent = XPath.first(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle").to_s.gsub(" ","")
-    logEventOnRecycle = XPath.first(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle").to_s.gsub(" ","") == "PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy" ? false : true
-    Chef::Log.info("logEventOnRecycle = #{logEventOnRecycle}  #{logEvent}")
+    logEventOnRecycle = XPath.first(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle").to_s.gsub(" ","") == "Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory" ? false : true
+    Chef::Log.info("logEventOnRecycle = #{logEventOnRecycle}  #{logEvent} = Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory")
+
+    privat = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory").to_s
     privateMemory = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory").to_s == @new_resource.private_mem.to_s ? false : true
+    Chef::Log.info("privateMemory = #{privateMemory}  #{privat} = #{@new_resource.private_mem.to_s}")
+
+    max = XPath.first(doc.root, "APPPOOL/add/processModel/@maxProcesses").to_s
     maxProcesses = XPath.first(doc.root, "APPPOOL/add/processModel/@maxProcesses").to_s == @new_resource.max_proc.to_s ? false : true
+    Chef::Log.info("maxProcesses = #{maxProcesses}  #{max} = #{@new_resource.max_proc.to_s}")
+
+    enable = XPath.first(doc.root, "APPPOOL/add/@enable32BitAppOnWin64").to_s
     enable32BitAppOnWin64 = XPath.first(doc.root, "APPPOOL/add/@enable32BitAppOnWin64").to_s == @new_resource.thirty_two_bit.to_s ? false : true
+    Chef::Log.info("enable32BitAppOnWin64 = #{enable32BitAppOnWin64}  #{enable} = #{@new_resource.thirty_two_bit.to_s}")
+
+    recycle = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@time").to_s
     recycleAfterTime = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@time").to_s == @new_resource.recycle_after_time.to_s ? false : true
+    Chef::Log.info("recycleAfterTime = #{recycleAfterTime}  #{recycle} = #{@new_resource.recycle_after_time.to_s}")
+
+    recycleAt = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s
     recycleAtTime = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s == @new_resource.recycle_at_time.to_s ? false : true
+    Chef::Log.info("recycleAtTime = #{recycleAtTime}  #{recycleAt} = #{@new_resource.recycle_at_time.to_s}")
+
+    managed = XPath.first(doc.root, "APPPOOL/@RuntimeVersion").to_s
     managedRuntimeVersion = XPath.first(doc.root, "APPPOOL/@RuntimeVersion").to_s == "v#{@new_resource.runtime_version}" ? false : true
+    Chef::Log.info("managedRuntimeVersion = #{managedRuntimeVersion}  #{managed} = v#{@new_resource.runtime_version.to_s}")
+
+    idle = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s
     idleTimeout = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value").to_s == @new_resource.recycle_at_time.to_s ? false : true
+    Chef::Log.info("idleTimeout = #{idleTimeout}  #{idle} = #{@new_resource.recycle_at_time.to_s}")
+
+    identity = XPath.first(doc.root, "APPPOOL/add/processModel/@identityType").to_s
     identityType = XPath.first(doc.root, "APPPOOL/add/processModel/@identityType").to_s == "SpecificUser" ? false : true
+    Chef::Log.info("identityType = #{identityType}  #{identity} = SpecificUser")
+
+    user = XPath.first(doc.root, "APPPOOL/add/processModel/@userName").to_s
     userName = XPath.first(doc.root, "APPPOOL/add/processModel/@userName").to_s == @new_resource.pool_username.to_s || @new_resource.pool_username.to_s == '' ? false : true
+    Chef::Log.info("userName = #{userName}  #{user} = #{@new_resource.pool_username.to_s}")
+
+    pass = XPath.first(doc.root, "APPPOOL/add/processModel/@password").to_s
     password = XPath.first(doc.root, "APPPOOL/add/processModel/@password").to_s == @new_resource.pool_password.to_s || @new_resource.pool_password.to_s == '' ? false : true
+    Chef::Log.info("password = #{password}  #{pass} = #{@new_resource.pool_password.to_s}")
   end
 
   if logEventOnRecycle
