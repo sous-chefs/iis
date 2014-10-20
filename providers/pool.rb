@@ -129,7 +129,9 @@ def configure
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
+    logEvent = XPath.first(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle").to_s.gsub(" ","")
     logEventOnRecycle = XPath.first(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle").to_s.gsub(" ","") == "PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy" ? false : true
+    Chef::Log.info("logEventOnRecycle = #{logEventOnRecycle}  #{logEvent}")
     privateMemory = XPath.first(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory").to_s == @new_resource.private_mem.to_s ? false : true
     maxProcesses = XPath.first(doc.root, "APPPOOL/add/processModel/@maxProcesses").to_s == @new_resource.max_proc.to_s ? false : true
     enable32BitAppOnWin64 = XPath.first(doc.root, "APPPOOL/add/@enable32BitAppOnWin64").to_s == @new_resource.thirty_two_bit.to_s ? false : true
