@@ -218,7 +218,7 @@ def configure
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
-  if @new_resource.pool_username.nil? && @new_resource.pool_password.nil? && userName && password
+  if !@new_resource.pool_username.nil? || !@new_resource.pool_username.empty?) and !@new_resource.pool_password.nil? || !@new_resource.pool_username.empty and userName and password
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
