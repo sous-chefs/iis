@@ -40,15 +40,26 @@ action :add do
 end
 
 action :config do
+  cmd_current_values = "#{appcmd} list app \"#{site_identifier}\" /config:* /xml"
+  Chef::Log.debug(cmd_current_values)
+  cmd_current_values = shell_out(cmd_current_values)
+  if cmd_current_values.stderr.empty?
+    xml = cmd_current_values.stdout
+    doc = Document.new(xml)
+    path = XPath.first(doc.root, "APP/application/@path").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
+    applicationPool = XPath.first(doc.root, "APP/application/@applicationPool").to_s == @new_resource.application_pool.to_s || @new_resource.application_pool.to_s == '' ? false : true
+    enabledProtocols = XPath.first(doc.root, "APP/application/@enabledProtocols").to_s == @new_resource.enabled_protocols.to_s || @new_resource.enabled_protocols.to_s == '' ? false : true
+    physicalPath = XPath.first(doc.root, "APP/application/virtualDirectory/@physicalPath").to_s == @new_resource.physical_path.to_s || @new_resource.physical_path.to_s == '' ? false : true
+  end
 
-  cmd = "#{appcmd} set app \"#{site_identifier}\""
-  cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path
-  cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
-  cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols
+  cmd = "#{appcmd} set app \"#{site_identifier}\"" if @new_resource.path && path or @new_resource.application_pool && applicationPool or @new_resource.enabled_protocols && enabledProtocols
+  cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path && path
+  cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool && applicationPool
+  cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols && enabledProtocols
   Chef::Log.debug(cmd)
   shell_out!(cmd)
 
-  if @new_resource.physical_path
+  if @new_resource.physical_path && physicalPath
     cmd = "#{appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
     cmd << " /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
@@ -77,7 +88,7 @@ def load_current_resource
   Chef::Log.debug("#{@new_resource} list app command output: #{cmd.stdout}")
   #result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"/) if cmd.stderr.empty?
   result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/) if cmd.stderr.empty?
-         Chef::Log.debug("Running regex")
+  Chef::Log.debug("Running regex")
   Chef::Log.debug("#{@new_resource} current_resource match output:#{result}")
   if result
     @current_resource.exists = true
