@@ -19,6 +19,7 @@
 #
 
 require 'chef/mixin/shell_out'
+require 'rexml/document'
 
 include Chef::Mixin::ShellOut
 include Windows::Helper
