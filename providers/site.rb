@@ -19,9 +19,11 @@
 #
 
 require 'chef/mixin/shell_out'
+require 'rexml/document'
 
 include Chef::Mixin::ShellOut
 include Windows::Helper
+include REXML
 
 action :add do
   unless @current_resource.exists
