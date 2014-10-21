@@ -54,15 +54,24 @@ action :add do
 end
 
 action :config do
+  cmd_current_values = "#{appcmd} list site \"#{site_identifier}\" /config:* /xml"
+  Chef::Log.debug(cmd_current_values)
+  cmd_current_values = shell_out(cmd_current_values)
+  if cmd_current_values.stderr.empty?
+    xml = cmd_current_values.stdout
+    doc = Document.new(xml)
+    physicalPath = XPath.first(doc.root, "SITE/site/application/virtualDirectory/@physicalPath").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
+    port = XPath.first(doc.root, "SITE/@bindings").to_s.include? "#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:" ? false : true
+  end
 
-  if @new_resource.port
+  if @new_resource.port && port
     cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
     cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
-  if @new_resource.path
+  if @new_resource.path && physicalPath
     cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
     cmd << "/physicalPath:\"#{@new_resource.path}\""
     Chef::Log.debug(cmd)

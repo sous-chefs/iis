@@ -22,6 +22,7 @@ require 'chef/mixin/shell_out'
 
 include Chef::Mixin::ShellOut
 include Windows::Helper
+include REXML
 
 action :add do
   unless @current_resource.exists
@@ -44,31 +45,44 @@ action :add do
 end
 
 action :config do
-  if @new_resource.physical_path
+  cmd_current_values = "#{appcmd} list vdir \"#{application_identifier}\" /config:* /xml"
+  Chef::Log.debug(cmd_current_values)
+  cmd_current_values = shell_out(cmd_current_values)
+  if cmd_current_values.stderr.empty?
+    xml = cmd_current_values.stdout
+    doc = Document.new(xml)
+    physical_path = XPath.first(doc.root, "VDIR/@physicalPath").to_s == @new_resource.physical_path.to_s || @new_resource.physical_path.to_s == '' ? false : true
+    userName = XPath.first(doc.root, "VDIR/virtualDirectory/@userName").to_s == @new_resource.username.to_s || @new_resource.username.to_s == '' ? false : true
+    password = XPath.first(doc.root, "VDIR/virtualDirectory/@password").to_s == @new_resource.password.to_s || @new_resource.password.to_s == '' ? false : true
+    logon_method = XPath.first(doc.root, "VDIR/virtualDirectory/@logonMethod").to_s == @new_resource.logon_method.to_s || @new_resource.logon_method.to_s == '' ? false : true
+    allow_sub_dir_config = XPath.first(doc.root, "VDIR/virtualDirectory/@allowSubDirConfig").to_s == @new_resource.allow_sub_dir_config.to_s || @new_resource.allow_sub_dir_config.to_s == '' ? false : true
+  end
+
+  if @new_resource.physical_path && physical_path
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
-  if @new_resource.username
+  if @new_resource.username && userName
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
-  if @new_resource.password
+  if @new_resource.password && password
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
-  if @new_resource.logon_method
+  if @new_resource.logon_method && logonMethod
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
-  if @new_resource.allow_sub_dir_config
+  if @new_resource.allow_sub_dir_config && allowSubDirConfig
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
