@@ -46,6 +46,7 @@ action :add do
 end
 
 action :config do
+  isUpdated = false
   cmd_current_values = "#{appcmd} list vdir \"#{application_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
@@ -60,33 +61,45 @@ action :config do
   end
 
   if @new_resource.physical_path && physical_path
+    isUpdated = true
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.username && userName
+    isUpdated = true
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.password && password
+    isUpdated = true
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.logon_method && logonMethod
+    isUpdated = true
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.allow_sub_dir_config && allowSubDirConfig
+    isUpdated = true
     cmd = "#{appcmd} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+  end
+
+  if isUpdated
+    @new_resource.updated_by_last_action(true)
+    Chef::Log.info("#{@new_resource} configured virtual directory to application: '#{@new_resource.application_name}'")
+  else
+    Chef::Log.debug("#{@new_resource} virtual directory - nothing to do")
   end
 end
 

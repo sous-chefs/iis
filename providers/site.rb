@@ -56,6 +56,7 @@ action :add do
 end
 
 action :config do
+  isUpdated = false
   cmd_current_values = "#{appcmd} list site \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
@@ -67,6 +68,7 @@ action :config do
   end
 
   if @new_resource.port && port
+    isUpdated = true
     cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
     cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
     Chef::Log.debug(cmd)
@@ -74,6 +76,7 @@ action :config do
   end
 
   if @new_resource.path && physicalPath
+    isUpdated = true
     cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
     cmd << "/physicalPath:\"#{@new_resource.path}\""
     Chef::Log.debug(cmd)
@@ -96,6 +99,12 @@ action :config do
     #shell_out!(cmd)
   end
 
+  if isUpdated
+    @new_resource.updated_by_last_action(true)
+    Chef::Log.info("#{@new_resource} configured site '#{@new_resource.site_name}'")
+  else
+    Chef::Log.debug("#{@new_resource} site - nothing to do")
+  end
 end
 
 action :delete do

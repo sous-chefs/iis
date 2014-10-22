@@ -42,6 +42,7 @@ action :add do
 end
 
 action :config do
+  isUpdated = false
   cmd_current_values = "#{appcmd} list app \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
@@ -61,13 +62,24 @@ action :config do
   Chef::Log.debug(cmd)
   shell_out!(cmd)
 
+  if @new_resource.path && path or @new_resource.application_pool && applicationPool or @new_resource.enabled_protocols && enabledProtocols
+    isUpdated = true
+  end
+
   if @new_resource.physical_path && physicalPath
+    isUpdated = true
     cmd = "#{appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
     cmd << " /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
+  if isUpdated
+    @new_resource.updated_by_last_action(true)
+    Chef::Log.info("#{@new_resource} configured application")
+  else
+    Chef::Log.debug("#{@new_resource} application - nothing to do")
+  end
 end
 
 action :delete do
