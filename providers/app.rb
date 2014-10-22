@@ -33,6 +33,7 @@ action :add do
     cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
     Chef::Log.info("App created")
   else
     Chef::Log.debug("#{@new_resource} app already exists - nothing to do")
