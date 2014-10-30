@@ -1,7 +1,7 @@
 Description
 ===========
 
-Installs and configures Microsoft Ingternet Information Services (IIS) 7.0/7.5/8.0
+Installs and configures Microsoft Internet Information Services (IIS) 7.0/7.5/8.0
 
 Requirements
 ============
