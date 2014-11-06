@@ -169,8 +169,8 @@ Creates an application in IIS.
 
 - `app_name` - name attribute. The name of the site to add this app to
 - `path` -The virtual path for this application
-- `applicationPool` - The pool this application belongs to
-- `physicalPath` - The physical path where this app resides.
+- `application_pool` - The pool this application belongs to
+- `physical_path` - The physical path where this app resides.
 - `enabled_protocols` - The enabled protocols that this app provides (http, https, net.pipe, net.tcp, etc)
 
 ### Example
