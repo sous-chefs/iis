@@ -82,6 +82,12 @@ action :config do
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
+  unless @new_resource.pool_identity.nil?
+    cmd = "#{appcmd} set config /section:applicationPools"
+    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+  end
   unless @new_resource.pool_username.nil? and @new_resource.pool_password.nil?
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
