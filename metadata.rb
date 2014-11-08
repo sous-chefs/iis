@@ -6,4 +6,5 @@ description      "Installs/Configures Microsoft Internet Information Services"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "2.1.5"
 supports         "windows"
-depends          "windows", ">= 1.2.6"
+depends          "powershell"
+depends          "windows"
