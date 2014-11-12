@@ -64,7 +64,7 @@ action :config do
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
     physicalPath = XPath.first(doc.root, "SITE/site/application/virtualDirectory/@physicalPath").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
-    port = XPath.first(doc.root, "SITE/@bindings").to_s.include? "#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:" ? false : true
+    port = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:") ? false : true
   end
 
   if @new_resource.port && port
