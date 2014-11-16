@@ -78,6 +78,13 @@ action :config do
     shell_out!(cmd)
     @new_resource.updated_by_last_action(true)
   end
+  
+  if @new_resource.bindings
+    cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+    cmd << " /bindings:#{@new_resource.bindings}"
+    Chef::Log.info(cmd)
+    shell_out!(cmd)
+  end
 
   # pools looks like it's actually part of the app
   # if @new_resource.pool_name # it's actually set on the app
