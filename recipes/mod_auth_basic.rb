@@ -29,3 +29,6 @@ end
 windows_feature feature do
   action :install
 end
+
+iis_unlock "system.webServer/security/authentication/basicAuthentication" do
+end

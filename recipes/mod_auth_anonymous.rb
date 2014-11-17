@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Recipe:: mod_auth_windows
+# Recipe:: mod_auth_basic
 #
-# Copyright 2011, Opscode, Inc.
+# Copyright:: Copyright (c) 2011 Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,16 +20,5 @@
 
 include_recipe "iis"
 
-
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  feature = 'Web-Windows-Auth'
-else
-  feature = 'IIS-WindowsAuthentication'
-end
-
-windows_feature feature do
-  action :install
-end
-
-iis_unlock "system.webServer/security/authentication/windowsAuthentication" do
+iis_unlock "system.webServer/security/authentication/anonymousAuthentication" do
 end
