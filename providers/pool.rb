@@ -99,6 +99,16 @@ action :config do
     shell_out!(cmd)
     @new_resource.updated_by_last_action(true)
   end
+  unless @new_resource.start_mode.nil?
+    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /startMode:#{@new_resource.start_mode}"
+    Chef::Log.debug(cmd) if @new_resource.start_mode
+    shell_out!(cmd)
+  end
+  unless @new_resource.auto_start.nil?
+    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /autoStart:#{@new_resource.auto_start}"
+    Chef::Log.debug(cmd) if @new_resource.auto_start
+    shell_out!(cmd)
+  end
 end
 
 action :delete do

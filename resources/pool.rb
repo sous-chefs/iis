@@ -33,6 +33,8 @@ attribute :max_proc, :kind_of => Integer
 attribute :thirty_two_bit, :kind_of => Symbol
 attribute :pool_username, :kind_of => String
 attribute :pool_password, :kind_of => String
+attribute :start_mode, :kind_of => Symbol, :equal_to => [:AlwaysRunning, :OnDemand]
+attribute :auto_start, :kind_of => [TrueClass, FalseClass], :default => true
 
 attr_accessor :exists, :running
 
