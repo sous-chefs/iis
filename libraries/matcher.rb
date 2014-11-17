@@ -32,9 +32,13 @@ if defined?(ChefSpec)
     )
   end
 
-  ChefSpec::Runner.define_runner_method :iis_app
-  ChefSpec::Runner.define_runner_method :iis_config
-  ChefSpec::Runner.define_runner_method :iis_module
-  ChefSpec::Runner.define_runner_method :iis_pool
-  ChefSpec::Runner.define_runner_method :iis_site
+  define_method = (Gem.loaded_specs["chefspec"].version < Gem::Version.new('4.1.0')) ?
+    ChefSpec::Runner.method(:define_runner_method) :
+    ChefSpec.method(:define_matcher)
+
+  define_method.call :iis_app
+  define_method.call :iis_config
+  define_method.call :iis_module
+  define_method.call :iis_pool
+  define_method.call :iis_site
 end
