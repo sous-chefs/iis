@@ -1,8 +1,7 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com)
-# Contributor:: David Dvorak (david.dvorak@webtrends.com)
+# Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Resource:: config
+# Resource:: unlock
 #
 # Copyright:: 2011, Webtrends Inc.
 #
