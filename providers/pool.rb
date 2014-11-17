@@ -28,15 +28,15 @@ include REXML
 
 action :add do
   unless @current_resource.exists
-  cmd = "#{appcmd} add apppool /name:\"#{@new_resource.pool_name}\""
-  cmd << " /managedRuntimeVersion:" if @new_resource.runtime_version || @new_resource.no_managed_code
-  cmd << "v#{@new_resource.runtime_version}" if @new_resource.runtime_version && !@new_resource.no_managed_code
-  cmd << " /managedPipelineMode:#{@new_resource.pipeline_mode}" if @new_resource.pipeline_mode
-  Chef::Log.debug(cmd)
-  shell_out!(cmd)
-  configure
-  @new_resource.updated_by_last_action(true)
-  Chef::Log.info("App pool created")
+    cmd = "#{appcmd} add apppool /name:\"#{@new_resource.pool_name}\""
+    cmd << " /managedRuntimeVersion:" if @new_resource.runtime_version || @new_resource.no_managed_code
+    cmd << "v#{@new_resource.runtime_version}" if @new_resource.runtime_version && !@new_resource.no_managed_code
+    cmd << " /managedPipelineMode:#{@new_resource.pipeline_mode}" if @new_resource.pipeline_mode
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
+    configure
+    @new_resource.updated_by_last_action(true)
+    Chef::Log.info("App pool created")
   else
     Chef::Log.debug("#{@new_resource} pool already exists - nothing to do")
   end
