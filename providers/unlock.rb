@@ -37,7 +37,7 @@ action :config do
 end
 
 def load_current_resource
-	@current_resource = Chef::Resource::IisPool.new(@new_resource.section)
+	@current_resource = Chef::Resource::IisUnlock.new(@new_resource.section)
 	@current_resource.section(@new_resource.section)
 	cmd_current_values = "#{appcmd} list config \"\" -section:#{@new_resource.section} /config:* /xml"
 	Chef::Log.debug(cmd_current_values)
