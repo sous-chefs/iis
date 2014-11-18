@@ -148,51 +148,60 @@ def configure
     cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.private_mem.nil? && privateMemory 
     isUpdated = true
     cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.max_proc.nil? && maxProcesses
     isUpdated = true
     cmd = "#{appcmd} set apppool \"#{@new_resource.pool_name}\" -processModel.maxProcesses:#{@new_resource.max_proc}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.thirty_two_bit.nil? && enable32BitAppOnWin64
     isUpdated = true
     cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.recycle_after_time.nil? && recycleAfterTime
     isUpdated = true
     cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /recycling.periodicRestart.time:#{@new_resource.recycle_after_time}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.recycle_at_time.nil? && recycleAtTime
     isUpdated = true
     cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /-recycling.periodicRestart.schedule"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
     cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.runtime_version.nil? && managedRuntimeVersion
     isUpdated = true
     cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /managedRuntimeVersion:v#{@new_resource.runtime_version}"
     Chef::Log.debug(cmd) if @new_resource.runtime_version
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.worker_idle_timeout.nil? && idleTimeout
     isUpdated = true
     cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.worker_idle_timeout}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
   if !@new_resource.pool_username.nil? || @new_resource.pool_username != '' and !@new_resource.pool_password.nil? || !@new_resource.pool_username == '' and userName and password
     isUpdated = true
@@ -202,12 +211,14 @@ def configure
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   elsif @new_resource.pool_username.nil? || @new_resource.pool_username == '' and @new_resource.pool_password.nil? || @new_resource.pool_username == '' and !identityType
     isUpdated = true
     cmd = "#{appcmd} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    @new_resource.updated_by_last_action(true)
   end
 
   if isUpdated

@@ -31,12 +31,13 @@ action :add do
     cmd = "#{appcmd} add app /site.name:\"#{@new_resource.app_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
-    cmd << " /physicalPath:\"#{@new_resource.physical_path}\"" if @new_resource.physical_path
+    cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\"" if @new_resource.physical_path
     cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("App created")
+    @new_resource.updated_by_last_action(true)
   else
     Chef::Log.debug("#{@new_resource} app already exists - nothing to do")
   end
@@ -62,6 +63,7 @@ action :config do
   cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols && enabledProtocols
   Chef::Log.debug(cmd)
   shell_out!(cmd)
+  @new_resource.updated_by_last_action(true)
 
   if @new_resource.path && path or @new_resource.application_pool && applicationPool or @new_resource.enabled_protocols && enabledProtocols
     isUpdated = true
@@ -70,7 +72,7 @@ action :config do
   if @new_resource.physical_path && physicalPath
     isUpdated = true
     cmd = "#{appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
-    cmd << " /physicalPath:\"#{@new_resource.physical_path}\""
+    cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
