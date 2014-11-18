@@ -27,7 +27,7 @@ include REXML
 
 action :config do
 	unless @current_resource.exists
-		cmd = "#{appcmd} unlock config section:\"#{@new_resource.section}\""
+		cmd = "#{appcmd} unlock config -section:\"#{@new_resource.section}\""
 		Chef::Log.debug(cmd)
 		shell_out!(cmd, :returns => @new_resource.returns)
 		Chef::Log.info("IIS Config command run")
