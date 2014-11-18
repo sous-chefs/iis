@@ -44,7 +44,7 @@ action :add do
 end
 
 action :config do
-  isUpdated = false
+  is_updated = false
   cmd_current_values = "#{appcmd} list app \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
@@ -52,32 +52,32 @@ action :config do
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
     path = XPath.first(doc.root, "APP/application/@path").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
-    applicationPool = XPath.first(doc.root, "APP/application/@applicationPool").to_s == @new_resource.application_pool.to_s || @new_resource.application_pool.to_s == '' ? false : true
-    enabledProtocols = XPath.first(doc.root, "APP/application/@enabledProtocols").to_s == @new_resource.enabled_protocols.to_s || @new_resource.enabled_protocols.to_s == '' ? false : true
-    physicalPath = XPath.first(doc.root, "APP/application/virtualDirectory/@physicalPath").to_s == @new_resource.physical_path.to_s || @new_resource.physical_path.to_s == '' ? false : true
+    application_pool = XPath.first(doc.root, "APP/application/@applicationPool").to_s == @new_resource.application_pool.to_s || @new_resource.application_pool.to_s == '' ? false : true
+    enabled_protocols = XPath.first(doc.root, "APP/application/@enabledProtocols").to_s == @new_resource.enabled_protocols.to_s || @new_resource.enabled_protocols.to_s == '' ? false : true
+    physical_path = XPath.first(doc.root, "APP/application/virtualDirectory/@physicalPath").to_s == @new_resource.physical_path.to_s || @new_resource.physical_path.to_s == '' ? false : true
   end
 
-  cmd = "#{appcmd} set app \"#{site_identifier}\"" if @new_resource.path && path or @new_resource.application_pool && applicationPool or @new_resource.enabled_protocols && enabledProtocols
+  cmd = "#{appcmd} set app \"#{site_identifier}\"" if @new_resource.path && path or @new_resource.application_pool && application_pool or @new_resource.enabled_protocols && enabled_protocols
   cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path && path
-  cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool && applicationPool
-  cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols && enabledProtocols
+  cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool && application_pool
+  cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols && enabled_protocols
   Chef::Log.debug(cmd)
   shell_out!(cmd)
   @new_resource.updated_by_last_action(true)
 
-  if @new_resource.path && path or @new_resource.application_pool && applicationPool or @new_resource.enabled_protocols && enabledProtocols
-    isUpdated = true
+  if @new_resource.path && path or @new_resource.application_pool && application_pool or @new_resource.enabled_protocols && enabled_protocols
+    is_updated = true
   end
 
-  if @new_resource.physical_path && physicalPath
-    isUpdated = true
+  if @new_resource.physical_path && physical_path
+    is_updated = true
     cmd = "#{appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
     cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
-  if isUpdated
+  if is_updated
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} configured application")
   else

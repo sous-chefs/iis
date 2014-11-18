@@ -56,19 +56,19 @@ action :add do
 end
 
 action :config do
-  isUpdated = false
+  is_updated = false
   cmd_current_values = "#{appcmd} list site \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    physicalPath = XPath.first(doc.root, "SITE/site/application/virtualDirectory/@physicalPath").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
+    physical_path = XPath.first(doc.root, "SITE/site/application/virtualDirectory/@physicalPath").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
     port = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:") ? false : true
   end
 
   if @new_resource.port && port
-    isUpdated = true
+    is_updated = true
     cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
     cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
     Chef::Log.debug(cmd)
@@ -76,8 +76,8 @@ action :config do
     @new_resource.updated_by_last_action(true)
   end
 
-  if @new_resource.path && physicalPath
-    isUpdated = true
+  if @new_resource.path && physical_path
+    is_updated = true
     cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
     cmd << "/physicalPath:\"#{win_friendly_path(@new_resource.path)}\""
     Chef::Log.debug(cmd)
@@ -109,7 +109,7 @@ action :config do
     #shell_out!(cmd)
   end
 
-  if isUpdated
+  if is_updated
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} configured site '#{@new_resource.site_name}'")
   else
