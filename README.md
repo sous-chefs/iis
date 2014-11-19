@@ -140,7 +140,7 @@ Creates an application pool in IIS.
 - `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
 - `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
 - `max_proc` - specifies the number of worker processes associated with the pool.
-- `thirty_two_bit` - set the pool to run in 32 bit mode, :true or :false
+- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are :true or :false
 - `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
 - `pool_username` - username for the identity for the application pool
 - `pool_password` password for the identity for the application pool
