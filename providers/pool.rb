@@ -29,7 +29,7 @@ action :add do
     cmd = "#{appcmd} add apppool /name:\"#{@new_resource.pool_name}\""
     cmd << " /managedRuntimeVersion:" if @new_resource.runtime_version || @new_resource.no_managed_code
     cmd << "v#{@new_resource.runtime_version}" if @new_resource.runtime_version && !@new_resource.no_managed_code
-    cmd << " /managedPipelineMode:#{@new_resource.pipeline_mode}" if @new_resource.pipeline_mode
+    cmd << " /managedPipelineMode:#{@new_resource.pipeline_mode.capitalize}" if @new_resource.pipeline_mode
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     @new_resource.updated_by_last_action(true)
@@ -58,7 +58,7 @@ action :config do
     @new_resource.updated_by_last_action(true)
   end
   unless @new_resource.thirty_two_bit.nil?
-    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
+    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit.downcase}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     @new_resource.updated_by_last_action(true)
