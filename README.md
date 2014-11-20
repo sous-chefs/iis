@@ -197,13 +197,13 @@ Allows easy management of IIS virtual directories (ie vdirs).
 
 ### Attribute Parameters
 
-- application_name: name attribute. Specifies the name of the application (this ends with a /) attribute
-- path: The virtual directory path attribute.
-- physical_path: The physical path of the virtual directory attribute
-- username: (optional) The username required to logon to the physical_path. If set to "" will clear username and password.
-- password: (optional) The password required to logon to the physical_path
-- logon_method: (optional, default: :ClearText) The method used to logon (:Interactive, :Batch, :Network, :ClearText). For more information on these types, see "LogonUser Function", Read more at [MSDN](http://msdn2.microsoft.com/en-us/library/aa378184.aspx)
-- allow_sub_dir_config: (optional, default: true) Boolean that specifies whether or not the Web server will look for configuration files located in the subdirectories of this virtual directory. Setting this to false can improve performance on servers with very large numbers of web.config files, but doing so prevents IIS configuration from being read in subdirectories.
+- `application_name`: name attribute. Specifies the name of the application attribute.  This is the name of the website or application you are adding it to.
+- `path`: The virtual directory path on the site.
+- `physical_path`: The physical path of the virtual directory on the disk.
+- `username`: (optional) The username required to logon to the physical_path. If set to "" will clear username and password.
+- `password`: (optional) The password required to logon to the physical_path
+- `logon_method`: (optional, default: :ClearText) The method used to logon (:Interactive, :Batch, :Network, :ClearText). For more information on these types, see "LogonUser Function", Read more at [MSDN](http://msdn2.microsoft.com/en-us/library/aa378184.aspx)
+- `allow_sub_dir_config`: (optional, default: true) Boolean that specifies whether or not the Web server will look for configuration files located in the subdirectories of this virtual directory. Setting this to false can improve performance on servers with very large numbers of web.config files, but doing so prevents IIS configuration from being read in subdirectories.
 
 ### Examples
 

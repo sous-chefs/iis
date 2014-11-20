@@ -25,7 +25,7 @@ include Chef::Mixin::ShellOut
 include Windows::Helper
 
 action :config do
-  cmd = "#{appcmd} set config #{@new_resource.cfg_cmd}"
+  cmd = "#{Opscode::IIS::Helper.appcmd} set config #{@new_resource.cfg_cmd}"
   Chef::Log.debug(cmd)
   shell_out!(cmd, :returns => @new_resource.returns)
   Chef::Log.info("IIS Config command run")
@@ -33,8 +33,8 @@ action :config do
 end
 
 private
-def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
+def Opscode::IIS::Helper.appcmd
+  @Opscode::IIS::Helper.appcmd ||= begin
+    "#{node['iis']['home']}\\Opscode::IIS::Helper.appcmd.exe"
   end
 end

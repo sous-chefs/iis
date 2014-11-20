@@ -27,7 +27,7 @@ include REXML
 
 action :add do
   unless @current_resource.exists
-    cmd = "#{appcmd} add site /name:\"#{@new_resource.site_name}\""
+    cmd = "#{Opscode::IIS::Helper.appcmd} add site /name:\"#{@new_resource.site_name}\""
     cmd << " /id:#{@new_resource.site_id}" if @new_resource.site_id
     cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.path)}\"" if @new_resource.path
   if @new_resource.bindings
@@ -46,7 +46,7 @@ action :add do
     shell_out!(cmd, {:returns => [0,42]})
 
   if @new_resource.application_pool
-    shell_out!("#{appcmd} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", {:returns => [0,42]})
+    shell_out!("#{Opscode::IIS::Helper.appcmd} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", {:returns => [0,42]})
   end
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} added new site '#{@new_resource.site_name}'")
@@ -56,20 +56,20 @@ action :add do
 end
 
 action :config do
-  is_updated = false
-  cmd_current_values = "#{appcmd} list site \"#{site_identifier}\" /config:* /xml"
+  was_updated = false
+  cmd_current_values = "#{Opscode::IIS::Helper.appcmd} list site \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
     physical_path = XPath.first(doc.root, "SITE/site/application/virtualDirectory/@physicalPath").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
-    port = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:") ? false : true
+    port_provided = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:") ? false : true
   end
 
-  if @new_resource.port && port
-    is_updated = true
-    cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+  if @new_resource.port && port_provided
+    was_updated = true
+    cmd = "#{Opscode::IIS::Helper.appcmd} set site \"#{@new_resource.site_name}\" "
     cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
@@ -77,8 +77,8 @@ action :config do
   end
 
   if @new_resource.path && physical_path
-    is_updated = true
-    cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
+    was_updated = true
+    cmd = "#{Opscode::IIS::Helper.appcmd} set vdir \"#{@new_resource.site_name}/\" "
     cmd << "/physicalPath:\"#{win_friendly_path(@new_resource.path)}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
@@ -86,30 +86,18 @@ action :config do
   end
   
   if @new_resource.site_id
-    cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+    cmd = "#{Opscode::IIS::Helper.appcmd} set site \"#{@new_resource.site_name}\" "
     cmd << " /id:#{@new_resource.site_id}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     @new_resource.updated_by_last_action(true)
   end
 
-  # pools looks like it's actually part of the app
-  # if @new_resource.pool_name # it's actually set on the app
-  #   cmd = "#{appcmd} set app \"#{@new_resource.site_name}\"/ "
-  #   cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
-  #   Chef::Log.debug(cmd)
-  #   shell_out!(cmd)
-  # end
-
   if @new_resource.host_header
-    # Need to figure out how to set host_header
-    #cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
-    #cmd << "/applicationPool:\"#{@new_resource.pool_name}\""
-    #Chef::Log.debug(cmd)
-    #shell_out!(cmd)
+    raise "Currently host_header isn't supported"
   end
 
-  if is_updated
+  if was_updated
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} configured site '#{@new_resource.site_name}'")
   else
@@ -119,7 +107,7 @@ end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd} delete site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{Opscode::IIS::Helper.appcmd} delete site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -129,7 +117,7 @@ end
 
 action :start do
   unless @current_resource.running
-    shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{Opscode::IIS::Helper.appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} started")
   else
@@ -139,7 +127,7 @@ end
 
 action :stop do
   if @current_resource.running
-    shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{Opscode::IIS::Helper.appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} stopped")
   else
@@ -148,9 +136,9 @@ action :stop do
 end
 
 action :restart do
-  shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{Opscode::IIS::Helper.appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
   sleep 2
-  shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{Opscode::IIS::Helper.appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
   @new_resource.updated_by_last_action(true)
   Chef::Log.info("#{@new_resource} restarted")
 end
@@ -158,7 +146,7 @@ end
 def load_current_resource
   @current_resource = Chef::Resource::IisSite.new(@new_resource.name)
   @current_resource.site_name(@new_resource.site_name)
-  cmd = shell_out("#{appcmd} list site")
+  cmd = shell_out("#{Opscode::IIS::Helper.appcmd} list site")
   # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
   Chef::Log.debug("#{@new_resource} list site command output: #{cmd.stdout}")
   if cmd.stderr.empty?
@@ -178,9 +166,9 @@ def load_current_resource
 end
 
 private
-def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
+def Opscode::IIS::Helper.appcmd
+  @Opscode::IIS::Helper.appcmd ||= begin
+    "#{node['iis']['home']}\\Opscode::IIS::Helper.appcmd.exe"
   end
 end
 

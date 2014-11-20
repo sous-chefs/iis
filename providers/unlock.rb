@@ -3,6 +3,8 @@
 # Cookbook Name:: iis
 # Resource:: unlock
 #
+# Copyright:: Justin Schuhmann
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -25,7 +27,7 @@ include REXML
 
 action :config do
   unless @current_resource.exists
-    cmd = "#{appcmd} unlock config -section:\"#{@new_resource.section}\""
+    cmd = "#{Opscode::IIS::Helper.appcmd} unlock config -section:\"#{@new_resource.section}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd, :returns => @new_resource.returns)
     Chef::Log.info("IIS Config command run")
@@ -37,7 +39,7 @@ end
 def load_current_resource
   @current_resource = Chef::Resource::IisUnlock.new(@new_resource.section)
   @current_resource.section(@new_resource.section)
-  cmd_current_values = "#{appcmd} list config \"\" -section:#{@new_resource.section} /config:* /xml"
+  cmd_current_values = "#{Opscode::IIS::Helper.appcmd} list config \"\" -section:#{@new_resource.section} /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
@@ -49,8 +51,8 @@ def load_current_resource
 end
 
 private
-def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
+def Opscode::IIS::Helper.appcmd
+  @Opscode::IIS::Helper.appcmd ||= begin
+    "#{node['iis']['home']}\\Opscode::IIS::Helper.appcmd.exe"
   end
 end

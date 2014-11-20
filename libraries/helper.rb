@@ -39,6 +39,12 @@ module Opscode
             win_version.windows_2000?
         end
       end
+
+      def self.appcmd
+        @appcmd ||= begin
+          "#{node['iis']['home']}\\appcmd.exe"
+        end
+      end
     end
   end
 end

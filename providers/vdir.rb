@@ -3,7 +3,7 @@
 # Cookbook Name:: iis
 # Provider:: site
 #
-# Copyright:: 2011, Opscode, Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ include REXML
 
 action :add do
   unless @current_resource.exists
-    cmd = "#{appcmd} add vdir /app.name:\"#{@new_resource.application_name}\""
+    cmd = "#{Opscode::IIS::Helper.appcmd} add vdir /app.name:\"#{@new_resource.application_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\""
     cmd << " /userName:\"#{@new_resource.username}\"" if @new_resource.username
@@ -46,10 +46,10 @@ action :add do
 end
 
 action :config do
-  isUpdated = false
-  cmd_current_values = "#{appcmd} list vdir \"#{application_identifier}\" /config:* /xml"
+  was_updated = false
+  cmd_current_values = "#{Opscode::IIS::Helper.appcmd} list vdir \"#{application_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
-  cmd_current_values = shell_out(cmd_current_values)
+  cmd_current_values = shell_out!(cmd_current_values)
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
@@ -61,41 +61,41 @@ action :config do
   end
 
   if @new_resource.physical_path && physical_path
-    isUpdated = true
-    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
+    was_updated = true
+    cmd = "#{Opscode::IIS::Helper.appcmd} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.username && userName
-    isUpdated = true
-    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
+    was_updated = true
+    cmd = "#{Opscode::IIS::Helper.appcmd} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.password && password
-    isUpdated = true
-    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
+    was_updated = true
+    cmd = "#{Opscode::IIS::Helper.appcmd} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.logon_method && logonMethod
-    isUpdated = true
-    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
+    was_updated = true
+    cmd = "#{Opscode::IIS::Helper.appcmd} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
   if @new_resource.allow_sub_dir_config && allowSubDirConfig
-    isUpdated = true
-    cmd = "#{appcmd} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
+    was_updated = true
+    cmd = "#{Opscode::IIS::Helper.appcmd} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
 
-  if isUpdated
+  if was_updated
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} configured virtual directory to application: '#{@new_resource.application_name}'")
   else
@@ -105,7 +105,7 @@ end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd} delete vdir \"#{application_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{Opscode::IIS::Helper.appcmd} delete vdir \"#{application_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -119,7 +119,7 @@ def load_current_resource
   @current_resource.path(@new_resource.path)
   @current_resource.physical_path(@new_resource.physical_path)
 
-  cmd = shell_out("#{ appcmd } list vdir #{ application_identifier }")
+  cmd = shell_out("#{ Opscode::IIS::Helper.appcmd } list vdir #{ application_identifier }")
   Chef::Log.debug("#{ @new_resource } list vdir command output: #{ cmd.stdout }")
 
   if cmd.stderr.empty?
@@ -135,12 +135,6 @@ def load_current_resource
 end
 
 private
-def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
+  def application_identifier
+    @new_resource.application_name.chomp('/') + @new_resource.path
   end
-end
-
-def application_identifier
-  @new_resource.application_name.chomp('/') + @new_resource.path
-end

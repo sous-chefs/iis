@@ -1,3 +1,11 @@
+v3.0.0 (2014-11-20)
+-------------------
+- Virtual Directory Support (allows virtual directories to be added to both websites and to webapplications under sites)
+- section unlock and lock support (this is used to allow for the web.config of a site to define the authentication methods)
+- fixed issue with :add on pool provider not running all config (this was a known issue and is now resolved)
+- fixed issue with :config on all providers causing application pool recycles (every chef-client run)
+- moved to better method for XML checking of previous settings to detect changes (changed all check to use xml searching with appcmd instead of the previous method [none])
+
 v2.1.6 (2014-11-12)
 -------------------
 - [#78] Adds new_resource.updated_by_last_action calls
