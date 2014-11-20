@@ -21,7 +21,7 @@
 actions :add, :delete, :config
 default_action :add
 
-attribute :application_name, :kind_of => String, :name_attribute => true
+attribute :application_name, :kind_of => String, :name_attribute => true, :regex => ['/^.*\/$/']
 attribute :path, :kind_of => String
 attribute :physical_path, :kind_of => String
 attribute :username, :kind_of => String, :default => nil
