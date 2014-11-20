@@ -235,6 +235,59 @@ Allows easy management of IIS virtual directories (ie vdirs).
       path 'Content/Test'
     end
 
+iis_lock
+---------
+
+Allows for the locking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\"  /config:* /xml`)
+
+This is valuable to allow the `web.config` of an individual application/website control it's own settings.
+
+### Actions
+
+- `:config`: - locks the `section` passed
+
+### Attribute Parameters
+
+- `section`: The name of the section to lock.
+- `returns`: The result of the `shell_out` command.
+
+### Examples
+
+# Sets the IIS global windows authentication to be locked globally
+    iis_lock 'system.webServer/security/authentication/windowsAuthentication' do
+    end
+
+# Sets the IIS global Basic authentication to be locked globally
+    iis_lock 'system.webServer/security/authentication/basicAuthentication' do
+    end
+
+iis_lock
+---------
+
+Allows for the unlocking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\"  /config:* /xml`)
+
+This is valuable to allow the `web.config` of an individual application/website control it's own settings.
+
+### Actions
+
+- `:config`: - unlocks the `section` passed
+
+### Attribute Parameters
+
+- `section`: The name of the section to unlock.
+- `returns`: The result of the `shell_out` command.
+
+### Examples
+
+# Sets the IIS global windows authentication to be unlocked globally
+    iis_unlock 'system.webServer/security/authentication/windowsAuthentication' do
+    end
+
+# Sets the IIS global Basic authentication to be unlocked globally
+    iis_unlock 'system.webServer/security/authentication/basicAuthentication' do
+    end
+
+
 iis_module
 --------
 

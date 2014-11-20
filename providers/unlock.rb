@@ -49,10 +49,3 @@ def load_current_resource
       @current_resource.exists = overrideMode
   end
 end
-
-private
-def Opscode::IIS::Helper.appcmd
-  @Opscode::IIS::Helper.appcmd ||= begin
-    "#{node['iis']['home']}\\Opscode::IIS::Helper.appcmd.exe"
-  end
-end

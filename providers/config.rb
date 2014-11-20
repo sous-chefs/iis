@@ -31,10 +31,3 @@ action :config do
   Chef::Log.info("IIS Config command run")
   @new_resource.updated_by_last_action(true)
 end
-
-private
-def Opscode::IIS::Helper.appcmd
-  @Opscode::IIS::Helper.appcmd ||= begin
-    "#{node['iis']['home']}\\Opscode::IIS::Helper.appcmd.exe"
-  end
-end

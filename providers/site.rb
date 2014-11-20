@@ -166,12 +166,6 @@ def load_current_resource
 end
 
 private
-def Opscode::IIS::Helper.appcmd
-  @Opscode::IIS::Helper.appcmd ||= begin
-    "#{node['iis']['home']}\\Opscode::IIS::Helper.appcmd.exe"
-  end
-end
-
 def site_identifier
   @new_resource.host_header || @new_resource.site_name
 end
