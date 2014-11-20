@@ -54,10 +54,10 @@ action :config do
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
     physical_path = XPath.first(doc.root, "VDIR/@physicalPath").to_s == @new_resource.physical_path.to_s || @new_resource.physical_path.to_s == '' ? false : true
-    userName = XPath.first(doc.root, "VDIR/virtualDirectory/@userName").to_s == @new_resource.username.to_s || @new_resource.username.to_s == '' ? false : true
+    user_name = XPath.first(doc.root, "VDIR/virtualDirectory/@userName").to_s == @new_resource.username.to_s || @new_resource.username.to_s == '' ? false : true
     password = XPath.first(doc.root, "VDIR/virtualDirectory/@password").to_s == @new_resource.password.to_s || @new_resource.password.to_s == '' ? false : true
-    logonMethod = XPath.first(doc.root, "VDIR/virtualDirectory/@logonMethod").to_s == @new_resource.logon_method.to_s || @new_resource.logon_method.to_s == '' ? false : true
-    allowSubDirConfig = XPath.first(doc.root, "VDIR/virtualDirectory/@allowSubDirConfig").to_s == @new_resource.allow_sub_dir_config.to_s || @new_resource.allow_sub_dir_config.to_s == '' ? false : true
+    logon_method = XPath.first(doc.root, "VDIR/virtualDirectory/@logonMethod").to_s == @new_resource.logon_method.to_s || @new_resource.logon_method.to_s == '' ? false : true
+    allow_sub_dir_config = XPath.first(doc.root, "VDIR/virtualDirectory/@allowSubDirConfig").to_s == @new_resource.allow_sub_dir_config.to_s || @new_resource.allow_sub_dir_config.to_s == '' ? false : true
   end
 
   if @new_resource.physical_path && physical_path
@@ -88,7 +88,7 @@ action :config do
     shell_out!(cmd)
   end
 
-  if @new_resource.allow_sub_dir_config && allowSubDirConfig
+  if @new_resource.allow_sub_dir_config && allow_sub_dir_config
     was_updated = true
     cmd = "#{Opscode::IIS::Helper.appcmd} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
     Chef::Log.debug(cmd)
