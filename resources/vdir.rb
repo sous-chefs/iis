@@ -21,9 +21,9 @@
 actions :add, :delete, :config
 default_action :add
 
-attribute :application_name, :kind_of => String, :name_attribute => true, :regex => ['/^.*\/$/']
-attribute :path, :kind_of => String
-attribute :physical_path, :kind_of => String
+attribute :application_name, :kind_of => String, :name_attribute => true
+attribute :path, :kind_of => String, :callbacks => {"Should be a valid path" => lambda {|path| Chef::Util::PathHelper.validate_path(path_to_validate) } }
+attribute :physical_path, :kind_of => String, :callbacks => {"Should be a valid path" => lambda {|path| Chef::Util::PathHelper.validate_path(path_to_validate) } }
 attribute :username, :kind_of => String, :default => nil
 attribute :password, :kind_of => String, :default => nil
 attribute :logon_method, :kind_of => Symbol, :default => :ClearText, :equal_to => [:Interactive, :Batch, :Network, :ClearText]
