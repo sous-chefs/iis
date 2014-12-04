@@ -144,6 +144,7 @@ Creates an application pool in IIS.
 - `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
 - `pool_username` - username for the identity for the application pool
 - `pool_password` password for the identity for the application pool
+- `properties`: configures pool properties with any properties you could pass to "appcmd.exe set apppool", as a string or hash
 
 ### Example
 
@@ -152,6 +153,18 @@ Creates an application pool in IIS.
          runtime_version "2.0"
          pipeline_mode :Classic
          action :add
+     end
+
+     #configures pool properties from a hash
+     iis_pool 'other_pool_1' do
+         action :config
+         properties { 'failure.rapidFailProtection' => true }
+     end
+
+     #configures pool properties from a string
+     iis_pool 'other_pool_2' do
+         action :config
+         properties '/autoStart:false /failure.rapidFailProtection:true'
      end
 
 
