@@ -261,7 +261,7 @@ This is valuable to allow the `web.config` of an individual application/website 
     iis_lock 'system.webServer/security/authentication/basicAuthentication' do
     end
 
-iis_lock
+iis_unlock
 ---------
 
 Allows for the unlocking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\"  /config:* /xml`)
