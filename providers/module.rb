@@ -21,6 +21,7 @@
 require 'chef/mixin/shell_out'
 
 include Chef::Mixin::ShellOut
+include Opscode::IIS::Helper
 include Windows::Helper
 
 # Support whyrun
@@ -28,12 +29,12 @@ def whyrun_supported?
   true
 end
 
-# Opscode::IIS::Helper.appcmd syntax for adding modules
-# Opscode::IIS::Helper.appcmd add module /name:string /type:string /preCondition:string
+# appcmd syntax for adding modules
+# appcmd add module /name:string /type:string /preCondition:string
 action :add do
   unless @current_resource.exists
     converge_by("add IIS module #{@new_resource.module_name}") do
-      cmd = "#{Opscode::IIS::Helper.appcmd} add module /module.name:\"#{@new_resource.module_name}\""
+      cmd = "#{appcmd} add module /module.name:\"#{@new_resource.module_name}\""
 
       if @new_resource.application
         cmd << " /app.name:\"#{@new_resource.application}\""
@@ -60,7 +61,7 @@ action :delete do
   if @current_resource.exists
     converge_by("delete IIS module #{@new_resource.module_name}") do
 
-      cmd = "#{Opscode::IIS::Helper.appcmd} delete module /module.name:\"#{@new_resource.module_name}\""
+      cmd = "#{appcmd} delete module /module.name:\"#{@new_resource.module_name}\""
       if @new_resource.application
         cmd << " /app.name:\"#{@new_resource.application}\""
       end
@@ -79,9 +80,9 @@ def load_current_resource
   @current_resource.module_name(@new_resource.module_name)
 
   if @new_resource.application
-    cmd = shell_out("#{Opscode::IIS::Helper.appcmd} list module /module.name:\"#{@new_resource.module_name}\" /app.name:\"#{@new_resource.application}\"")
+    cmd = shell_out("#{appcmd} list module /module.name:\"#{@new_resource.module_name}\" /app.name:\"#{@new_resource.application}\"")
   else
-    cmd = shell_out("#{Opscode::IIS::Helper.appcmd} list module /module.name:\"#{@new_resource.module_name}\"")
+    cmd = shell_out("#{appcmd} list module /module.name:\"#{@new_resource.module_name}\"")
   end
 
   # 'MODULE "Module Name" ( type:module.type, preCondition:condition )'

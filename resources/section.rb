@@ -1,7 +1,7 @@
 #
 # Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Resource:: unlock
+# Resource:: lock
 #
 # Copyright:: Justin Schuhmann
 #
@@ -18,10 +18,10 @@
 # limitations under the License.
 #
 
-actions :config
-default_action :config
+actions :lock, :unlock
+default_action :lock
 
-attribute :section, :kind_of => String, :name_attribute => true
+attribute :section, :kind_of => String
 attribute :returns, :kind_of => [Integer, Array], :default => 0
 
 attr_accessor :exists

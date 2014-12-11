@@ -23,12 +23,13 @@ require 'chef/mixin/shell_out'
 require 'rexml/document'
 
 include Chef::Mixin::ShellOut
+include Opscode::IIS::Helper
 include Windows::Helper
 include REXML
 
 action :add do
   unless @current_resource.exists
-    cmd = "#{Opscode::IIS::Helper.appcmd} add app /site.name:\"#{@new_resource.app_name}\""
+    cmd = "#{appcmd} add app /site.name:\"#{@new_resource.app_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
     cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\"" if @new_resource.physical_path
@@ -37,7 +38,6 @@ action :add do
     shell_out!(cmd)
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("App created")
-    @new_resource.updated_by_last_action(true)
   else
     Chef::Log.debug("#{@new_resource} app already exists - nothing to do")
   end
@@ -45,49 +45,60 @@ end
 
 action :config do
   was_updated = false
-  cmd_current_values = "#{Opscode::IIS::Helper.appcmd} list app \"#{site_identifier}\" /config:* /xml"
+  cmd_current_values = "#{appcmd} list app \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    path = XPath.first(doc.root, "APP/application/@path").to_s == @new_resource.path.to_s || @new_resource.path.to_s == '' ? false : true
-    application_pool = XPath.first(doc.root, "APP/application/@applicationPool").to_s == @new_resource.application_pool.to_s || @new_resource.application_pool.to_s == '' ? false : true
-    enabled_protocols = XPath.first(doc.root, "APP/application/@enabledProtocols").to_s == @new_resource.enabled_protocols.to_s || @new_resource.enabled_protocols.to_s == '' ? false : true
-    physical_path = XPath.first(doc.root, "APP/application/virtualDirectory/@physicalPath").to_s == @new_resource.physical_path.to_s || @new_resource.physical_path.to_s == '' ? false : true
-  end
+    path = is_new_or_empty_value?(doc.root, "APP/application/@path", @new_resource.path.to_s)
+    application_pool = is_new_or_empty_value?(doc.root, "APP/application/@applicationPool", @new_resource.application_pool.to_s)
+    enabled_protocols = is_new_or_empty_value?(doc.root, "APP/application/@enabledProtocols", @new_resource.enabled_protocols.to_s)
+    physical_path = is_new_or_empty_value?(doc.root, "APP/application/virtualDirectory/@physicalPath", @new_resource.physical_path.to_s)
 
-  cmd = "#{Opscode::IIS::Helper.appcmd} set app \"#{site_identifier}\"" if @new_resource.path && path or @new_resource.application_pool && application_pool or @new_resource.enabled_protocols && enabled_protocols
-  cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path && path
-  cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool && application_pool
-  cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols && enabled_protocols
-  Chef::Log.debug(cmd)
-  shell_out!(cmd)
-  @new_resource.updated_by_last_action(true)
-
-  if @new_resource.path && path or @new_resource.application_pool && application_pool or @new_resource.enabled_protocols && enabled_protocols
-    was_updated = true
-  end
-
-  if @new_resource.physical_path && physical_path
-    was_updated = true
-    cmd = "#{Opscode::IIS::Helper.appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
-    cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\""
+    #only get the beginning of the command if there is something that changeds
+    cmd = "#{appcmd} set app \"#{site_identifier}\"" if ((@new_resource.path && path?) or
+                                                        (@new_resource.application_pool && application_pool?) or
+                                                        (@new_resource.enabled_protocols && enabled_protocols?))
+    #adds path to the cmd
+    cmd << " /path:\"#{@new_resource.path}\"" if @new_resource.path && path?
+    #adds applicationPool to the cmd
+    cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool && application_pool?
+    #adds enabledProtocols to the cmd
+    cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols && enabled_protocols?
     Chef::Log.debug(cmd)
     shell_out!(cmd)
-  end
 
-  if was_updated
-    @new_resource.updated_by_last_action(true)
-    Chef::Log.info("#{@new_resource} configured application")
+    if ((@new_resource.path && path?) or
+      (@new_resource.application_pool && application_pool?) or
+      (@new_resource.enabled_protocols && enabled_protocols?))
+      was_updated = true
+    end
+
+    if @new_resource.physical_path && physical_path?
+      was_updated = true
+      cmd = "#{appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
+      cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.physical_path)}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+    end
+
+    if was_updated?
+      @new_resource.updated_by_last_action(true)
+      Chef::Log.info("#{@new_resource} configured application")
+    else
+      Chef::Log.debug("#{@new_resource} application - nothing to do")
+    end
   else
-    Chef::Log.debug("#{@new_resource} application - nothing to do")
+    log "Failed to run iis_app action :config, #{cmd_current_values.stderr}" do
+      level :warn
+    end
   end
 end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{Opscode::IIS::Helper.appcmd} delete app \"#{site_identifier}\"")
+    shell_out!("#{appcmd} delete app \"#{site_identifier}\"")
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -100,17 +111,22 @@ def load_current_resource
   @current_resource.app_name(@new_resource.app_name)
   @current_resource.path(@new_resource.path)
   @current_resource.application_pool(@new_resource.application_pool)
-  cmd = shell_out("#{Opscode::IIS::Helper.appcmd} list app")
-  # APPPOOL "MyAppName" (applicationPool:MyAppPool)
+  cmd = shell_out("#{appcmd} list app")
   Chef::Log.debug("#{@new_resource} list app command output: #{cmd.stdout}")
-  #result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"/) if cmd.stderr.empty?
-  result = cmd.stdout.match(/^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/) if cmd.stderr.empty?
+  regex = /^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/
   Chef::Log.debug("Running regex")
-  Chef::Log.debug("#{@new_resource} current_resource match output:#{result}")
-  if result
-    @current_resource.exists = true
+  if cmd.stderr.empty?
+    result = cmd.stdout.match(regex)
+    Chef::Log.debug("#{@new_resource} current_resource match output:#{result}")
+    if result
+      @current_resource.exists = true
+    else
+      @current_resource.exists = false
+    end
   else
-    @current_resource.exists = false
+    log "Failed to run iis_app action :load_current_resource, #{cmd_current_values.stderr}" do
+      level :warn
+    end
   end
 end
 

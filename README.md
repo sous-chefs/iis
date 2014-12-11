@@ -66,28 +66,34 @@ Allows easy management of IIS virtual sites (ie vhosts).
 
 ### Examples
 
-    # stop and delete the default site
-    iis_site 'Default Web Site' do
-      action [:stop, :delete]
-    end
+```ruby
+# stop and delete the default site
+iis_site 'Default Web Site' do
+  action [:stop, :delete]
+end
+```
 
-    # create and start a new site that maps to
-    # the physical location C:\inetpub\wwwroot\testfu
-    iis_site 'Testfu Site' do
-      protocol :http
-      port 80
-      path "#{node['iis']['docroot']}/testfu"
-      action [:add,:start]
-    end
+```ruby
+# create and start a new site that maps to
+# the physical location C:\inetpub\wwwroot\testfu
+iis_site 'Testfu Site' do
+  protocol :http
+  port 80
+  path "#{node['iis']['docroot']}/testfu"
+  action [:add,:start]
+end
+```
 
-    # do the same but map to testfu.opscode.com domain
-    iis_site 'Testfu Site' do
-      protocol :http
-      port 80
-      path "#{node['iis']['docroot']}/testfu"
-      host_header "testfu.opscode.com"
-      action [:add,:start]
-    end
+```ruby
+# do the same but map to testfu.opscode.com domain
+iis_site 'Testfu Site' do
+  protocol :http
+  port 80
+  path "#{node['iis']['docroot']}/testfu"
+  host_header "testfu.opscode.com"
+  action [:add,:start]
+end
+```
 
 iis_config
 -----------
@@ -103,18 +109,22 @@ Runs a config command on your IIS instance.
 
 ### Example
 
-    #Sets up logging
-    iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:"D:\\logs"" do
+```ruby
+#Sets up logging
+iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:"D:\\logs"" do
+    action :config
+end
+```
+
+```ruby
+#Loads an array of commands from the node
+cfg_cmds = node['iis']['cfg_cmd']
+cfg_cmds.each do |cmd|
+    iis_config "#{cmd}" do
         action :config
     end
-
-    #Loads an array of commands from the node
-    cfg_cmds = node['iis']['cfg_cmd']
-    cfg_cmds.each do |cmd|
-        iis_config "#{cmd}" do
-            action :config
-        end
-    end
+end
+```
 
 iis_pool
 ---------
@@ -147,13 +157,14 @@ Creates an application pool in IIS.
 
 ### Example
 
-     #creates a new app pool
-     iis_pool 'myAppPool_v1_1' do
-         runtime_version "2.0"
-         pipeline_mode :Classic
-         action :add
-     end
-
+```ruby
+#creates a new app pool
+iis_pool 'myAppPool_v1_1' do
+  runtime_version "2.0"
+  pipeline_mode :Classic
+  action :add
+end
+```
 
 iis_app
 --------
@@ -175,14 +186,16 @@ Creates an application in IIS.
 
 ### Example
 
-    #creates a new app
-    iis_app "myApp" do
-      path "/v1_1"
-      application_pool "myAppPool_v1_1"
-      physical_path "#{node['iis']['docroot']}/testfu/v1_1"
-      enabled_protocols "http,net.pipe"
-      action :add
-    end
+```ruby
+#creates a new app
+iis_app "myApp" do
+  path "/v1_1"
+  application_pool "myAppPool_v1_1"
+  physical_path "#{node['iis']['docroot']}/testfu/v1_1"
+  enabled_protocols "http,net.pipe"
+  action :add
+end
+```
 
 iis_vdir
 ---------
@@ -207,44 +220,53 @@ Allows easy management of IIS virtual directories (ie vdirs).
 
 ### Examples
 
-    # add a virtual directory to default application
-    iis_vdir 'Default Web Site/' do
-      action :add
-      path 'Content/Test'
-      physical_path 'C:\wwwroot\shared\test'
-    end
+```ruby
+# add a virtual directory to default application
+iis_vdir 'Default Web Site/' do
+  action :add
+  path 'Content/Test'
+  physical_path 'C:\wwwroot\shared\test'
+end
+```
 
-    # adds a virtual directory to default application which points to a smb share. (Remember to escape the "\"'s)
-    iis_vdir 'Default Web Site/' do
-      action :add
-      path 'Content/Test'
-      physical_path '\\\\sharename\\sharefolder\\1'
-    end
+```ruby
+# adds a virtual directory to default application which points to a smb share. (Remember to escape the "\"'s)
+iis_vdir 'Default Web Site/' do
+  action :add
+  path 'Content/Test'
+  physical_path '\\\\sharename\\sharefolder\\1'
+end
+```
 
-    # configure a virtual directory to have a username and password
-    iis_vdir 'Default Web Site/' do
-      action :config
-      path 'Content/Test'
-      username 'domain\myspecialuser'
-      password 'myspecialpassword'
-    end
+```ruby
+# configure a virtual directory to have a username and password
+iis_vdir 'Default Web Site/' do
+  action :config
+  path 'Content/Test'
+  username 'domain\myspecialuser'
+  password 'myspecialpassword'
+end
+```
 
-    # delete a virtual directory from the default application
-    iis_vdir 'Default Web Site/' do
-      action :delete
-      path 'Content/Test'
-    end
+```ruby
+# delete a virtual directory from the default application
+iis_vdir 'Default Web Site/' do
+  action :delete
+  path 'Content/Test'
+end
+```
 
-iis_lock
+iis_section
 ---------
 
-Allows for the locking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\"  /config:* /xml`)
+Allows for the locking/unlocking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\"  /config:* /xml`)
 
 This is valuable to allow the `web.config` of an individual application/website control it's own settings.
 
 ### Actions
 
-- `:config`: - locks the `section` passed
+- `:lock`: - locks the `section` passed
+- `:unlock`: - unlocks the `section` passed
 
 ### Attribute Parameters
 
@@ -253,40 +275,37 @@ This is valuable to allow the `web.config` of an individual application/website 
 
 ### Examples
 
+```ruby
 # Sets the IIS global windows authentication to be locked globally
-    iis_lock 'system.webServer/security/authentication/windowsAuthentication' do
-    end
+iis_section 'locks global configuration of windows auth' do
+  section 'system.webServer/security/authentication/windowsAuthentication'
+  action :lock
+end
+```
 
+```ruby
 # Sets the IIS global Basic authentication to be locked globally
-    iis_lock 'system.webServer/security/authentication/basicAuthentication' do
-    end
+iis_section 'locks global configuration of Basic auth' do
+  section 'system.webServer/security/authentication/basicAuthentication'
+  action :lock
+end
+```
 
-iis_unlock
----------
-
-Allows for the unlocking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\"  /config:* /xml`)
-
-This is valuable to allow the `web.config` of an individual application/website control it's own settings.
-
-### Actions
-
-- `:config`: - unlocks the `section` passed
-
-### Attribute Parameters
-
-- `section`: The name of the section to unlock.
-- `returns`: The result of the `shell_out` command.
-
-### Examples
-
+```ruby
 # Sets the IIS global windows authentication to be unlocked globally
-    iis_unlock 'system.webServer/security/authentication/windowsAuthentication' do
-    end
+iis_section 'unlocked web.config globally for windows auth' do
+  action :unlock
+  section 'system.webServer/security/authentication/windowsAuthentication'
+end
+```
 
+```ruby
 # Sets the IIS global Basic authentication to be unlocked globally
-    iis_unlock 'system.webServer/security/authentication/basicAuthentication' do
-    end
-
+iis_section 'unlocked web.config globally for Basic auth' do
+  action :unlock
+  section 'system.webServer/security/authentication/basicAuthentication'
+end
+```
 
 iis_module
 --------
@@ -307,15 +326,19 @@ Manages modules globally or on a per site basis.
 
 ### Example
 
-    # Adds a module called "My 3rd Party Module" to mySite/
-    iis_module "My 3rd Party Module" do
-      application "mySite/"
-      precondition "bitness64"
-      action :add
-    end
+```ruby
+# Adds a module called "My 3rd Party Module" to mySite/
+iis_module "My 3rd Party Module" do
+  application "mySite/"
+  precondition "bitness64"
+  action :add
+end
+```
 
-    # Adds a module called "MyModule" to all IIS sites on the server
-    iis_module "MyModule"
+```ruby
+# Adds a module called "MyModule" to all IIS sites on the server
+iis_module "MyModule"
+```
 
 
 Usage

@@ -22,30 +22,50 @@ require 'chef/mixin/shell_out'
 require 'rexml/document'
 
 include Chef::Mixin::ShellOut
-include Windows::Helper
+include Opscode::IIS::Helper
 include REXML
 
-action :config do
+action :lock do
+  @current_resource.exists = is_new_value?(doc.root, "CONFIG/@overrideMode", "Deny")
+
   unless @current_resource.exists
-    cmd = "#{Opscode::IIS::Helper.appcmd} lock config -section:\"#{@new_resource.section}\""
+    cmd = "#{appcmd} lock config -section:\"#{@new_resource.section}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd, :returns => @new_resource.returns)
+    @new_resource.updated_by_last_action(true)
     Chef::Log.info("IIS Config command run")
   else
     Chef::Log.debug("#{@new_resource.section} already locked - nothing to do")
   end
 end
 
+action :unlock do
+  @current_resource.exists = is_new_value?(doc.root, "CONFIG/@overrideMode", "Allow")
+
+  unless @current_resource.exists
+    cmd = "#{appcmd} unlock config -section:\"#{@new_resource.section}\""
+    Chef::Log.debug(cmd)
+    shell_out!(cmd, :returns => @new_resource.returns)
+    @new_resource.updated_by_last_action(true)
+    Chef::Log.info("IIS Config command run")
+  else
+    Chef::Log.debug("#{@new_resource.section} already unlocked - nothing to do")
+  end
+end
+
 def load_current_resource
-  @current_resource = Chef::Resource::IisLock.new(@new_resource.section)
+  @current_resource = Chef::Resource::IisSection.new(@new_resource.section)
   @current_resource.section(@new_resource.section)
-  cmd_current_values = "#{Opscode::IIS::Helper.appcmd} list config \"\" -section:#{@new_resource.section} /config:* /xml"
+end
+
+def doc
+  cmd_current_values = "#{appcmd} list config \"\" -section:#{@new_resource.section} /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
       xml = cmd_current_values.stdout
-      doc = Document.new(xml)
-      overrideMode = XPath.first(doc.root, "CONFIG/@overrideMode").to_s == "Deny" ? true : false
-      @current_resource.exists = overrideMode
+      return Document.new(xml)
   end
+
+  cmd_current_values.error!  
 end

@@ -20,5 +20,7 @@
 
 include_recipe "iis"
 
-iis_unlock "system.webServer/security/authentication/anonymousAuthentication" do
+iis_section 'unlocks anonymous authentication control in web.config' do
+  section "system.webServer/security/authentication/anonymousAuthentication"
+  action :unlock
 end

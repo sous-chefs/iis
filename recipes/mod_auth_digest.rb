@@ -30,5 +30,7 @@ windows_feature feature do
   action :install
 end
 
-iis_unlock "system.webServer/security/authentication/digestAuthentication" do
+iis_section 'unlocks digest authentication control in web.config' do
+  section "system.webServer/security/authentication/digestAuthentication"
+  action :unlock
 end
