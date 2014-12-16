@@ -83,10 +83,13 @@ action :config do
     shell_out!(cmd)
   end
   unless @new_resource.pool_identity.nil?
-    cmd = "#{appcmd} set config /section:applicationPools"
-    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
+    if @new_resource.pool_identity.to_s != @current_resource.pool_identity.to_s
+      cmd = "#{appcmd} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
   end
   unless @new_resource.pool_username.nil? and @new_resource.pool_password.nil?
     cmd = "#{appcmd} set config /section:applicationPools"
@@ -156,6 +159,7 @@ def load_current_resource
   if result
     @current_resource.exists = true
     @current_resource.running = (result[4] =~ /Started/) ? true : false
+    @current_resource.pool_identity(shell_out("#{appcmd} list apppool #{@current_resource.pool_name} /text:processModel.identityType").stdout.gsub(/\r\n?/, '').to_sym)
   else
     @current_resource.exists = false
     @current_resource.running = false
