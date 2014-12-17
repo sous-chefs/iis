@@ -111,7 +111,7 @@ Runs a config command on your IIS instance.
 
 ```ruby
 #Sets up logging
-iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:"D:\\logs"" do
+iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:\"D:\\logs\"" do
     action :config
 end
 ```
