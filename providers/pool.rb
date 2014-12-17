@@ -159,7 +159,7 @@ def load_current_resource
   if result
     @current_resource.exists = true
     @current_resource.running = (result[4] =~ /Started/) ? true : false
-    @current_resource.pool_identity(shell_out("#{appcmd} list apppool #{@current_resource.pool_name} /text:processModel.identityType").stdout.gsub(/\r\n?/, '').to_sym)
+    @current_resource.pool_identity(shell_out!("#{appcmd} list apppool #{@current_resource.pool_name} /text:processModel.identityType", {:returns => [0]}).stdout.gsub(/\r\n?/, '').to_sym)
   else
     @current_resource.exists = false
     @current_resource.running = false
