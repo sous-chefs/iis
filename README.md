@@ -200,7 +200,7 @@ end
 iis_vdir
 ---------
 
-Allows easy management of IIS virtual directories (ie vdirs).
+Allows easy management of IIS virtual directories (i.e. vdirs).
 
 ### Actions
 
