@@ -110,14 +110,14 @@ Runs a config command on your IIS instance.
 ### Example
 
 ```ruby
-#Sets up logging
+# Sets up logging
 iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:\"D:\\logs\"" do
     action :config
 end
 ```
 
 ```ruby
-#Loads an array of commands from the node
+# Loads an array of commands from the node
 cfg_cmds = node['iis']['cfg_cmd']
 cfg_cmds.each do |cmd|
     iis_config "#{cmd}" do
@@ -158,7 +158,7 @@ Creates an application pool in IIS.
 ### Example
 
 ```ruby
-#creates a new app pool
+# creates a new app pool
 iis_pool 'myAppPool_v1_1' do
   runtime_version "2.0"
   pipeline_mode :Classic
@@ -187,7 +187,7 @@ Creates an application in IIS.
 ### Example
 
 ```ruby
-#creates a new app
+# creates a new app
 iis_app "myApp" do
   path "/v1_1"
   application_pool "myAppPool_v1_1"
