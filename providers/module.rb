@@ -21,6 +21,7 @@
 require 'chef/mixin/shell_out'
 
 include Chef::Mixin::ShellOut
+include Opscode::IIS::Helper
 include Windows::Helper
 
 # Support whyrun
@@ -92,12 +93,5 @@ def load_current_resource
     @current_resource.exists = false
   else
     @current_resource.exists = true
-  end
-end
-
-private
-def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
   end
 end

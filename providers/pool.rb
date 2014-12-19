@@ -20,9 +20,12 @@
 #
 
 require 'chef/mixin/shell_out'
+require 'rexml/document'
 
 include Chef::Mixin::ShellOut
+include Opscode::IIS::Helper
 include Windows::Helper
+include REXML
 
 action :add do
   unless @current_resource.exists
@@ -32,6 +35,7 @@ action :add do
     cmd << " /managedPipelineMode:#{@new_resource.pipeline_mode}" if @new_resource.pipeline_mode
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    configure
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("App pool created")
   else
@@ -40,65 +44,7 @@ action :add do
 end
 
 action :config do
-  cmd = "#{appcmd} set config /section:applicationPools "
-  cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
-  Chef::Log.debug(cmd)
-  shell_out!(cmd)
-  @new_resource.updated_by_last_action(true)
-  unless @new_resource.private_mem.nil?
-    cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}\""
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
-  unless @new_resource.max_proc.nil?
-    cmd = "#{appcmd} set apppool \"#{@new_resource.pool_name}\" -processModel.maxProcesses:#{@new_resource.max_proc}"
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
-  unless @new_resource.thirty_two_bit.nil?
-    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
-  unless @new_resource.recycle_after_time.nil?
-    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /recycling.periodicRestart.time:#{@new_resource.recycle_after_time}"
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
-  unless @new_resource.recycle_at_time.nil?
-    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /-recycling.periodicRestart.schedule"
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
-  unless @new_resource.runtime_version.nil?
-    cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\" /managedRuntimeVersion:v#{@new_resource.runtime_version}"
-    Chef::Log.debug(cmd) if @new_resource.runtime_version
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
-  unless @new_resource.worker_idle_timeout.nil?
-    cmd = "#{appcmd} set config /section:applicationPools \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.worker_idle_timeout}\""
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
-  unless @new_resource.pool_username.nil? and @new_resource.pool_password.nil?
-    cmd = "#{appcmd} set config /section:applicationPools"
-    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
-    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
-    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
-    @new_resource.updated_by_last_action(true)
-  end
+  configure
 end
 
 action :delete do
@@ -154,24 +100,149 @@ def load_current_resource
   if cmd.stderr.empty?
     result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
     result = result.match(/^APPPOOL\s\"(#{new_resource.pool_name})\"\s\(MgdVersion:(.*),MgdMode:(.*),state:(.*)\)$/)
-  end
-  Chef::Log.debug("#{@new_resource} current_resource match output: #{result}")
-  if result
-    @current_resource.exists = true
-    @current_resource.running = (result[4] =~ /Started/) ? true : false
+    Chef::Log.debug("#{@new_resource} current_resource match output: #{result}")
+    if result
+      @current_resource.exists = true
+      @current_resource.running = (result[4] =~ /Started/) ? true : false
+    else
+      @current_resource.exists = false
+      @current_resource.running = false
+    end
   else
-    @current_resource.exists = false
-    @current_resource.running = false
+    log "Failed to run iis_pool action :load_current_resource, #{cmd_current_values.stderr}" do
+      level :warn
+    end
   end
 end
 
 private
-def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
-  end
-end
-
 def site_identifier
   @new_resource.pool_name
+end
+
+def configure
+  was_updated = false
+  cmd_current_values = "#{appcmd} list apppool \"#{@new_resource.pool_name}\" /config:* /xml"
+  Chef::Log.debug(cmd_current_values)
+  cmd_current_values = shell_out(cmd_current_values)
+  if cmd_current_values.stderr.empty?
+    xml = cmd_current_values.stdout
+    doc = Document.new(xml)
+    log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory")
+    private_memory = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory", @new_resource.private_mem.to_s)
+    max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
+    enable_32_bit_app_on_win_64 = is_new_or_empty_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s)
+    recycle_after_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@time", @new_resource.recycle_after_time.to_s)
+    recycle_at_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
+    managed_runtime_version = is_new_value?(doc.root, "APPPOOL/@RuntimeVersion", "v#{@new_resource.runtime_version}")
+    idle_timeout = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
+    identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", "SpecificUser")
+    user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
+    password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
+
+    if log_event_on_recycle?
+      was_updated = true
+      cmd = "#{appcmd} set config /section:applicationPools "
+      cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:"
+      cmd << "PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if @new_resource.private_mem && private_memory?
+      was_updated = true
+      cmd = "#{appcmd} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].recycling.periodicRestart.privateMemory:"
+      cmd << "#{@new_resource.private_mem}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if @new_resource.max_proc && max_processes?
+      was_updated = true
+      cmd = "#{appcmd} set apppool \"#{@new_resource.pool_name}\""
+      cmd << " -processModel.maxProcesses:#{@new_resource.max_proc}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if @new_resource.thirty_two_bit && enable_32_bit_app_on_win_64?
+      was_updated = true
+      cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+      cmd << " /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if @new_resource.recycle_after_time && recycle_after_time?
+      was_updated = true
+      cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+      cmd << " /recycling.periodicRestart.time:#{@new_resource.recycle_after_time}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if @new_resource.recycle_at_time && recycle_at_time?
+      was_updated = true
+      cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+      cmd << " /-recycling.periodicRestart.schedule"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+      cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+      cmd << " /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if @new_resource.runtime_version && managed_runtime_version?
+      was_updated = true
+      cmd = "#{appcmd} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+      cmd << " /managedRuntimeVersion:v#{@new_resource.runtime_version}"
+      Chef::Log.debug(cmd) if @new_resource.runtime_version
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if @new_resource.worker_idle_timeout && idle_timeout?
+      was_updated = true
+      cmd = "#{appcmd} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.worker_idle_timeout}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if ((@new_resource.pool_username || @new_resource.pool_username != '') and
+      (@new_resource.pool_password || !@new_resource.pool_username == '') and
+      user_name? and
+      password?)
+      was_updated = true
+      cmd = "#{appcmd} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    elsif ((@new_resource.pool_username.nil? || @new_resource.pool_username == '') and
+      (@new_resource.pool_password.nil? || @new_resource.pool_username == '') and
+      !identity_type)
+      was_updated = true
+      cmd = "#{appcmd} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+
+    if was_updated?
+      @new_resource.updated_by_last_action(true)
+      Chef::Log.info("#{@new_resource} configured application pool")
+    else
+      Chef::Log.debug("#{@new_resource} application pool - nothing to do")
+    end
+  else
+    log "Failed to run iis_pool action :config, #{cmd_current_values.stderr}" do
+      level :warn
+    end
+  end
 end

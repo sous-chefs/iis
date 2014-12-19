@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Recipe:: mod_auth_windows
+# Resource:: lock
 #
-# Copyright 2011, Opscode, Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,20 +18,14 @@
 # limitations under the License.
 #
 
-include_recipe "iis"
+actions :lock, :unlock
+default_action :lock
 
+attribute :section, :kind_of => String
+attribute :returns, :kind_of => [Integer, Array], :default => 0
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  feature = 'Web-Windows-Auth'
-else
-  feature = 'IIS-WindowsAuthentication'
-end
+attr_accessor :exists
 
-windows_feature feature do
-  action :install
-end
-
-iis_section 'unlocks windows authentication control in web.config' do
-  section "system.webServer/security/authentication/windowsAuthentication"
-  action :unlock
+def initialize(*args)
+  super
 end

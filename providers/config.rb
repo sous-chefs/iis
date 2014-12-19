@@ -22,6 +22,7 @@
 require 'chef/mixin/shell_out'
 
 include Chef::Mixin::ShellOut
+include Opscode::IIS::Helper
 include Windows::Helper
 
 action :config do
@@ -30,11 +31,4 @@ action :config do
   shell_out!(cmd, :returns => @new_resource.returns)
   Chef::Log.info("IIS Config command run")
   @new_resource.updated_by_last_action(true)
-end
-
-private
-def appcmd
-  @appcmd ||= begin
-    "#{node['iis']['home']}\\appcmd.exe"
-  end
 end
