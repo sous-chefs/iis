@@ -1,3 +1,7 @@
+v3.0.0 Unreleased
+-------------------
+- [#91](https://github.com/opscode-cookbooks/iis/pull/91) - bulk addition of new features
+
 v2.1.6 (2014-11-12)
 -------------------
 - [#78] Adds new_resource.updated_by_last_action calls
