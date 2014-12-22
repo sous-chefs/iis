@@ -27,8 +27,8 @@ require 'rexml/document'
 include REXML
 
 module Opscode
-  module Opscode::IIS
-    class Helper
+  module IIS
+    module Helper
 
       def self.older_than_windows2008r2?
         if RUBY_PLATFORM =~ /mswin|mingw32|windows/
