@@ -6,6 +6,10 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0/7.5/8.
 Requirements
 ============
 
+chef-client
+--------
+version greater than or equal to `11.4.X` to have `Chef::Util::PathHelper`
+
 Platform
 --------
 
