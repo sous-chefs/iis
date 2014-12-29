@@ -22,15 +22,14 @@ require 'chef/mixin/shell_out'
 require 'rexml/document'
 
 include Chef::Mixin::ShellOut
-include Opscode::IIS::Helper
-include Windows::Helper
 include REXML
+include Opscode::IIS::Helper
 
 action :add do
   unless @current_resource.exists
-    cmd = "#{appcmd} add site /name:\"#{@new_resource.site_name}\""
+    cmd = "#{appcmd(node)} add site /name:\"#{@new_resource.site_name}\""
     cmd << " /id:#{@new_resource.site_id}" if @new_resource.site_id
-    cmd << " /physicalPath:\"#{win_friendly_path(@new_resource.path)}\"" if @new_resource.path
+    cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\"" if @new_resource.path
   if @new_resource.bindings
     cmd << " /bindings:#{@new_resource.bindings}"
   else
@@ -47,7 +46,7 @@ action :add do
     shell_out!(cmd, {:returns => [0,42]})
 
   if @new_resource.application_pool
-    shell_out!("#{appcmd} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd(node)} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", {:returns => [0,42]})
   end
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} added new site '#{@new_resource.site_name}'")
@@ -58,7 +57,7 @@ end
 
 action :config do
   was_updated = false
-  cmd_current_values = "#{appcmd} list site \"#{site_identifier}\" /config:* /xml"
+  cmd_current_values = "#{appcmd(node)} list site \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
@@ -69,7 +68,7 @@ action :config do
 
     if @new_resource.port && port_provided?
       was_updated = true
-      cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\" "
       cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
@@ -78,14 +77,14 @@ action :config do
 
     if @new_resource.path && physical_path?
       was_updated = true
-      cmd = "#{appcmd} set vdir \"#{@new_resource.site_name}/\" "
-      cmd << "/physicalPath:\"#{win_friendly_path(@new_resource.path)}\""
+      cmd = "#{appcmd(node)} set vdir \"#{@new_resource.site_name}/\" "
+      cmd << "/physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
     
     if @new_resource.site_id
-      cmd = "#{appcmd} set site \"#{@new_resource.site_name}\" "
+      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\" "
       cmd << " /id:#{@new_resource.site_id}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
@@ -111,7 +110,8 @@ end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd} delete site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"")
+    shell_out!("#{appcmd(node)} delete site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -121,7 +121,7 @@ end
 
 action :start do
   unless @current_resource.running
-    shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd(node)} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} started")
   else
@@ -131,7 +131,8 @@ end
 
 action :stop do
   if @current_resource.running
-    shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"")
+    shell_out!("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} stopped")
   else
@@ -140,9 +141,9 @@ action :stop do
 end
 
 action :restart do
-  shell_out!("#{appcmd} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
   sleep 2
-  shell_out!("#{appcmd} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd(node)} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
   @new_resource.updated_by_last_action(true)
   Chef::Log.info("#{@new_resource} restarted")
 end
@@ -150,7 +151,8 @@ end
 def load_current_resource
   @current_resource = Chef::Resource::IisSite.new(@new_resource.name)
   @current_resource.site_name(@new_resource.site_name)
-  cmd = shell_out("#{appcmd} list site")
+  cmd = shell_out("#{appcmd(node)} list site")
+  Chef::Log.debug(appcmd(node))
   # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
   Chef::Log.debug("#{@new_resource} list site command output: #{cmd.stdout}")
   if cmd.stderr.empty?
@@ -174,6 +176,6 @@ def load_current_resource
 end
 
 private
-def site_identifier
-  @new_resource.host_header || @new_resource.site_name
-end
+  def site_identifier
+    @new_resource.host_header || @new_resource.site_name
+  end
