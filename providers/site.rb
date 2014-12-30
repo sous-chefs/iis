@@ -57,7 +57,7 @@ end
 
 action :config do
   was_updated = false
-  cmd_current_values = "#{appcmd(node)} list site \"#{site_identifier}\" /config:* /xml"
+  cmd_current_values = "#{appcmd(node)} list site \"#{@new_resource.site_name}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
@@ -110,8 +110,8 @@ end
 
 action :delete do
   if @current_resource.exists
-    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"")
-    shell_out!("#{appcmd(node)} delete site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{@new_resource.site_name}\"")
+    shell_out!("#{appcmd(node)} delete site /site.name:\"#{@new_resource.site_name}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -121,7 +121,7 @@ end
 
 action :start do
   unless @current_resource.running
-    shell_out!("#{appcmd(node)} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd(node)} start site /site.name:\"#{@new_resource.site_name}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} started")
   else
@@ -131,8 +131,8 @@ end
 
 action :stop do
   if @current_resource.running
-    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"")
-    shell_out!("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{@new_resource.site_name}\"")
+    shell_out!("#{appcmd(node)} stop site /site.name:\"#{@new_resource.site_name}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} stopped")
   else
@@ -141,9 +141,9 @@ action :stop do
 end
 
 action :restart do
-  shell_out!("#{appcmd(node)} stop site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd(node)} stop site /site.name:\"#{@new_resource.site_name}\"", {:returns => [0,42]})
   sleep 2
-  shell_out!("#{appcmd(node)} start site /site.name:\"#{site_identifier}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd(node)} start site /site.name:\"#{@new_resource.site_name}\"", {:returns => [0,42]})
   @new_resource.updated_by_last_action(true)
   Chef::Log.info("#{@new_resource} restarted")
 end
@@ -174,8 +174,3 @@ def load_current_resource
     end
   end
 end
-
-private
-  def site_identifier
-    @new_resource.host_header || @new_resource.site_name
-  end
