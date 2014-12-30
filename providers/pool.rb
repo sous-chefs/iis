@@ -127,19 +127,19 @@ def configure
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory")
-    private_memory = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory", @new_resource.private_mem.to_s)
-    max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
-    enable_32_bit_app_on_win_64 = is_new_or_empty_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s)
-    recycle_after_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@time", @new_resource.recycle_after_time.to_s)
-    recycle_at_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
-    managed_runtime_version = is_new_value?(doc.root, "APPPOOL/@RuntimeVersion", "v#{@new_resource.runtime_version}")
-    idle_timeout = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
-    identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", "SpecificUser")
-    user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
-    password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
+    is_new_log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory")
+    is_new_private_memory = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory", @new_resource.private_mem.to_s)
+    is_new_max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
+    is_new_enable_32_bit_app_on_win_64 = is_new_or_empty_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s)
+    is_new_recycle_after_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@time", @new_resource.recycle_after_time.to_s)
+    is_new_recycle_at_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
+    is_new_managed_runtime_version = is_new_value?(doc.root, "APPPOOL/@RuntimeVersion", "v#{@new_resource.runtime_version}")
+    is_new_idle_timeout = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
+    is_new_identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", "SpecificUser")
+    is_new_user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
+    is_new_password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
 
-    if log_event_on_recycle?
+    if is_new_log_event_on_recycle
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools "
       cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:"
@@ -148,7 +148,7 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if @new_resource.private_mem && private_memory?
+    if @new_resource.private_mem && is_new_private_memory
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].recycling.periodicRestart.privateMemory:"
@@ -157,7 +157,7 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if @new_resource.max_proc && max_processes?
+    if @new_resource.max_proc && is_new_max_processes
       was_updated = true
       cmd = "#{appcmd(node)} set apppool \"#{@new_resource.pool_name}\""
       cmd << " -processModel.maxProcesses:#{@new_resource.max_proc}"
@@ -165,7 +165,7 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if @new_resource.thirty_two_bit && enable_32_bit_app_on_win_64?
+    if @new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64
       was_updated = true
       cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
       cmd << " /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
@@ -173,7 +173,7 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if @new_resource.recycle_after_time && recycle_after_time?
+    if @new_resource.recycle_after_time && is_new_recycle_after_time
       was_updated = true
       cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
       cmd << " /recycling.periodicRestart.time:#{@new_resource.recycle_after_time}"
@@ -181,7 +181,7 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if @new_resource.recycle_at_time && recycle_at_time?
+    if @new_resource.recycle_at_time && is_new_recycle_at_time
       was_updated = true
       cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
       cmd << " /-recycling.periodicRestart.schedule"
@@ -194,7 +194,7 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if @new_resource.runtime_version && managed_runtime_version?
+    if @new_resource.runtime_version && is_new_managed_runtime_version
       was_updated = true
       cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
       cmd << " /managedRuntimeVersion:v#{@new_resource.runtime_version}"
@@ -202,7 +202,7 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if @new_resource.worker_idle_timeout && idle_timeout?
+    if @new_resource.worker_idle_timeout && is_new_idle_timeout
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.worker_idle_timeout}\""
@@ -212,8 +212,8 @@ def configure
     end
     if ((@new_resource.pool_username || @new_resource.pool_username != '') and
       (@new_resource.pool_password || !@new_resource.pool_username == '') and
-      user_name? and
-      password?)
+      is_new_user_name and
+      is_new_password)
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
@@ -233,7 +233,7 @@ def configure
       @new_resource.updated_by_last_action(true)
     end
 
-    if was_updated?
+    if was_updated
       @new_resource.updated_by_last_action(true)
       Chef::Log.info("#{@new_resource} configured application pool")
     else

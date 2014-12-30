@@ -47,7 +47,7 @@ module Opscode
       end
 
       def is_new_or_empty_value?(document, xpath, value_to_check)
-        return is_new_value(document, xpath, value_to_check) || value_to_check == '' ? false : true
+        return is_new_value?(document, xpath, value_to_check) || value_to_check == '' ? false : true
       end
 
       def appcmd(node)
