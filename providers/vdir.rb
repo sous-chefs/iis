@@ -53,48 +53,48 @@ action :config do
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    physical_path = is_new_or_empty_value?(doc.root, "VDIR/@physicalPath", @new_resource.physical_path.to_s)
-    user_name = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@userName", @new_resource.username.to_s)
-    password = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@password", @new_resource.password.to_s)
-    logon_method = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@logonMethod", @new_resource.logon_method.to_s)
-    allow_sub_dir_config = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@allowSubDirConfig", @new_resource.allow_sub_dir_config.to_s)
+    is_new_physical_path = is_new_or_empty_value?(doc.root, "VDIR/@physicalPath", @new_resource.physical_path.to_s)
+    is_new_user_name = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@userName", @new_resource.username.to_s)
+    is_new_password = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@password", @new_resource.password.to_s)
+    is_new_logon_method = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@logonMethod", @new_resource.logon_method.to_s)
+    is_new_allow_sub_dir_config = is_new_or_empty_value?(doc.root, "VDIR/virtualDirectory/@allowSubDirConfig", @new_resource.allow_sub_dir_config.to_s)
 
-    if @new_resource.physical_path && physical_path?
+    if @new_resource.physical_path && is_new_physical_path
       was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
-    if @new_resource.username && userName?
+    if @new_resource.username && is_new_user_name
       was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
-    if @new_resource.password && password?
+    if @new_resource.password && is_new_password
       was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
-    if @new_resource.logon_method && logonMethod?
+    if @new_resource.logon_method && is_new_logon_method
       was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
-    if @new_resource.allow_sub_dir_config && allow_sub_dir_config?
+    if @new_resource.allow_sub_dir_config && is_new_allow_sub_dir_config
       was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
-    if was_updated?
+    if was_updated
       @new_resource.updated_by_last_action(true)
       Chef::Log.info("#{@new_resource} configured virtual directory to application: '#{application_name}'")
     else

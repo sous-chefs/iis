@@ -63,10 +63,11 @@ action :config do
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    physical_path = is_new_or_empty_value?(doc.root, "SITE/site/application/virtualDirectory/@physicalPath", @new_resource.path.to_s)
-    port_provided = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:")
+    is_new_physical_path = is_new_or_empty_value?(doc.root, "SITE/site/application/virtualDirectory/@physicalPath", @new_resource.path.to_s)
+    is_new_port_provided = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:")
+    is_new_site_id = is_new_value?(doc.root, "SITE/site/@id", @new_resource.site_id.to_s)
 
-    if @new_resource.port && port_provided?
+    if @new_resource.port && is_new_port_provided
       was_updated = true
       cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\" "
       cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
@@ -75,7 +76,7 @@ action :config do
       @new_resource.updated_by_last_action(true)
     end
 
-    if @new_resource.path && physical_path?
+    if @new_resource.path && is_new_physical_path
       was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{@new_resource.site_name}/\" "
       cmd << "/physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\""
@@ -83,7 +84,7 @@ action :config do
       shell_out!(cmd)
     end
     
-    if @new_resource.site_id
+    if @new_resource.site_id && is_new_site_id
       cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\" "
       cmd << " /id:#{@new_resource.site_id}"
       Chef::Log.debug(cmd)
@@ -95,7 +96,7 @@ action :config do
       raise "Currently host_header isn't supported"
     end
 
-    if was_updated?
+    if was_updated
       @new_resource.updated_by_last_action(true)
       Chef::Log.info("#{@new_resource} configured site '#{@new_resource.site_name}'")
     else
