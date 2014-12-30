@@ -22,15 +22,14 @@ require 'chef/mixin/shell_out'
 require 'rexml/document'
 
 include Chef::Mixin::ShellOut
-include Opscode::IIS::Helper
-include Chef::Util::PathHelper
 include REXML
+include Opscode::IIS::Helper
 
 action :add do
   unless @current_resource.exists
-    cmd = "#{appcmd} add vdir /app.name:\"#{application_name}\""
+    cmd = "#{appcmd(node)} add vdir /app.name:\"#{application_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
-    cmd << " /physicalPath:\"#{cleanpath(@new_resource.physical_path)}\""
+    cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.physical_path)}\""
     cmd << " /userName:\"#{@new_resource.username}\"" if @new_resource.username
     cmd << " /password:\"#{@new_resource.password}\"" if @new_resource.password
     cmd << " /logonMethod:#{@new_resource.logon_method.to_s}" if @new_resource.logon_method
@@ -48,7 +47,7 @@ end
 
 action :config do
   was_updated = false
-  cmd_current_values = "#{appcmd} list vdir \"#{application_identifier}\" /config:* /xml"
+  cmd_current_values = "#{appcmd(node)} list vdir \"#{application_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out!(cmd_current_values)
   if cmd_current_values.stderr.empty?
@@ -62,35 +61,35 @@ action :config do
 
     if @new_resource.physical_path && physical_path?
       was_updated = true
-      cmd = "#{appcmd} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
+      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /physicalPath:\"#{@new_resource.physical_path}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if @new_resource.username && userName?
       was_updated = true
-      cmd = "#{appcmd} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
+      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /userName:\"#{@new_resource.username}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if @new_resource.password && password?
       was_updated = true
-      cmd = "#{appcmd} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
+      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /password:\"#{@new_resource.password}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if @new_resource.logon_method && logonMethod?
       was_updated = true
-      cmd = "#{appcmd} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
+      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /logonMethod:#{@new_resource.logon_method.to_s}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if @new_resource.allow_sub_dir_config && allow_sub_dir_config?
       was_updated = true
-      cmd = "#{appcmd} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
+      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{@new_resource.allow_sub_dir_config}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
@@ -110,7 +109,7 @@ end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd} delete vdir \"#{application_identifier}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd(node)} delete vdir \"#{application_identifier}\"", {:returns => [0,42]})
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} deleted")
   else
@@ -123,8 +122,7 @@ def load_current_resource
   @current_resource.application_name(application_name)
   @current_resource.path(@new_resource.path)
   @current_resource.physical_path(@new_resource.physical_path)
-
-  cmd = shell_out("#{ appcmd } list vdir #{ application_identifier }")
+  cmd = shell_out("#{ appcmd(node) } list vdir #{ application_identifier }")
   Chef::Log.debug("#{ @new_resource } list vdir command output: #{ cmd.stdout }")
 
   if cmd.stderr.empty?
