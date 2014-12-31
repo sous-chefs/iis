@@ -30,13 +30,13 @@ action :add do
     cmd = "#{appcmd(node)} add site /name:\"#{@new_resource.site_name}\""
     cmd << " /id:#{@new_resource.site_id}" if @new_resource.site_id
     cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\"" if @new_resource.path
-  if @new_resource.bindings
-    cmd << " /bindings:#{@new_resource.bindings}"
-  else
-    cmd << " /bindings:#{@new_resource.protocol}/*"
-    cmd << ":#{@new_resource.port}:" if @new_resource.port
-    cmd << @new_resource.host_header if @new_resource.host_header
-  end
+    if @new_resource.bindings
+      cmd << " /bindings:#{@new_resource.bindings}"
+    else
+      cmd << " /bindings:#{@new_resource.protocol}/*"
+      cmd << ":#{@new_resource.port}:" if @new_resource.port
+      cmd << @new_resource.host_header if @new_resource.host_header
+    end
 
     # support for additional options -logDir, -limits, -ftpServer, etc...
     if @new_resource.options
@@ -45,9 +45,9 @@ action :add do
 
     shell_out!(cmd, {:returns => [0,42]})
 
-  if @new_resource.application_pool
-    shell_out!("#{appcmd(node)} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", {:returns => [0,42]})
-  end
+    if @new_resource.application_pool
+      shell_out!("#{appcmd(node)} set app \"#{@new_resource.site_name}/\" /applicationPool:\"#{@new_resource.application_pool}\"", {:returns => [0,42]})
+    end
     @new_resource.updated_by_last_action(true)
     Chef::Log.info("#{@new_resource} added new site '#{@new_resource.site_name}'")
   else
@@ -63,14 +63,21 @@ action :config do
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
+    is_new_bindings = is_new_value?(doc.root, "SITE/@bindings", @new_resource.bindings.to_s)
     is_new_physical_path = is_new_or_empty_value?(doc.root, "SITE/site/application/virtualDirectory/@physicalPath", @new_resource.path.to_s)
-    is_new_port_provided = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:")
+    is_new_port_host_provided = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:#{@new_resource.host_header}")
     is_new_site_id = is_new_value?(doc.root, "SITE/site/@id", @new_resource.site_id.to_s)
 
-    if @new_resource.port && is_new_port_provided
+    if (@new_resource.bindings && is_new_bindings)
+      was_updated = true
+      cmd = "#{appcmd} set site /site.name:\"#{@new_resource.site_name}\""
+      cmd << "/bindings:\"@new_resource.bindings\""
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    elsif ((@new_resource.port || @new_resource.host_header || @new_resource.protocol) and is_new_port_host_provided)
       was_updated = true
       cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\" "
-      cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:"
+      cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:#{@new_resource.host_header}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
@@ -90,10 +97,6 @@ action :config do
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
-    end
-
-    if @new_resource.host_header
-      raise "Currently host_header isn't supported"
     end
 
     if was_updated
