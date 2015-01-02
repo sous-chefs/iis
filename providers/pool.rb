@@ -224,7 +224,7 @@ def configure
       @new_resource.updated_by_last_action(true)
     elsif ((@new_resource.pool_username.nil? || @new_resource.pool_username == '') and
       (@new_resource.pool_password.nil? || @new_resource.pool_username == '') and
-      !identity_type)
+      !is_new_identity_type)
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""

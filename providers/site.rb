@@ -29,7 +29,7 @@ action :add do
   unless @current_resource.exists
     cmd = "#{appcmd(node)} add site /name:\"#{@new_resource.site_name}\""
     cmd << " /id:#{@new_resource.site_id}" if @new_resource.site_id
-    cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\"" if @new_resource.path
+    cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.path)}\"" if @new_resource.path
     if @new_resource.bindings
       cmd << " /bindings:#{@new_resource.bindings}"
     else
@@ -86,7 +86,7 @@ action :config do
     if @new_resource.path && is_new_physical_path
       was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{@new_resource.site_name}/\" "
-      cmd << "/physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\""
+      cmd << "/physicalPath:\"#{windows_cleanpath(@new_resource.path)}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end

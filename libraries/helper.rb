@@ -28,6 +28,7 @@ module Opscode
 
       require 'rexml/document'
       include REXML
+      include Windows::Helper
 
       def self.older_than_windows2008r2?
         if RUBY_PLATFORM =~ /mswin|mingw32|windows/
@@ -39,6 +40,14 @@ module Opscode
           win_version.windows_server_2003? ||
           win_version.windows_xp? ||
           win_version.windows_2000?
+        end
+      end
+
+      def windows_cleanpath(path)
+        if(defined?(Chef::Util::PathHelper) != nil)
+          return Chef::Util::PathHelper.cleanpath(path)
+        else
+          return win_friendly_path(path)
         end
       end
 
