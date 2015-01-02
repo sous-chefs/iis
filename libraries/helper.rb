@@ -44,7 +44,7 @@ module Opscode
       end
 
       def windows_cleanpath(path)
-        if(defined?(Chef::Util::PathHelper) != nil)
+        if(defined?(Chef::Util::PathHelper.cleanpath) != nil)
           return Chef::Util::PathHelper.cleanpath(path)
         else
           return win_friendly_path(path)
