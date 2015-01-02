@@ -1,3 +1,15 @@
+v3.0.5 (2015-1-2)
+-------------------
+- [#98] Fixed issues with bindings
+
+v3.0.4 (2014-12-25)
+-------------------
+- [#95] had to remove unneeded variables
+- incorrect variables
+- add dependencies
+- bumped version
+- added backwards compatibility for chef-client < 12.x.x Chef::Util::PathHelper
+
 v3.0.0 (2014-11-20)
 -------------------
 - Virtual Directory Support (allows virtual directories to be added to both websites and to webapplications under sites)
