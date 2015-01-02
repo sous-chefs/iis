@@ -1,3 +1,6 @@
+v3.0.6 (2015-1-2)
+- Fixed issue with iis_pool with username/password
+
 v3.0.5 (2015-1-2)
 -------------------
 - [#98] Fixed issues with bindings
