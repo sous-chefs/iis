@@ -29,9 +29,9 @@ action :add do
   unless @current_resource.exists
     cmd = "#{appcmd(node)} add site /name:\"#{@new_resource.site_name}\""
     cmd << " /id:#{@new_resource.site_id}" if @new_resource.site_id
-    cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\"" if @new_resource.path
+    cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.path)}\"" if @new_resource.path
     if @new_resource.bindings
-      cmd << " /bindings:#{@new_resource.bindings}"
+      cmd << " /bindings:\"#{@new_resource.bindings}\""
     else
       cmd << " /bindings:#{@new_resource.protocol}/*"
       cmd << ":#{@new_resource.port}:" if @new_resource.port
@@ -42,7 +42,6 @@ action :add do
     if @new_resource.options
       cmd << " #{@new_resource.options}"
     end
-
     shell_out!(cmd, {:returns => [0,42]})
 
     if @new_resource.application_pool
@@ -70,14 +69,14 @@ action :config do
 
     if (@new_resource.bindings && is_new_bindings)
       was_updated = true
-      cmd = "#{appcmd} set site /site.name:\"#{@new_resource.site_name}\""
-      cmd << "/bindings:\"@new_resource.bindings\""
+      cmd = "#{appcmd(node)} set site /site.name:\"#{@new_resource.site_name}\""
+      cmd << " /bindings:\"#{@new_resource.bindings}\""
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     elsif ((@new_resource.port || @new_resource.host_header || @new_resource.protocol) and is_new_port_host_provided)
       was_updated = true
-      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\" "
-      cmd << "/bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:#{@new_resource.host_header}"
+      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\""
+      cmd << " /bindings:#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:#{@new_resource.host_header}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
@@ -85,14 +84,14 @@ action :config do
 
     if @new_resource.path && is_new_physical_path
       was_updated = true
-      cmd = "#{appcmd(node)} set vdir \"#{@new_resource.site_name}/\" "
-      cmd << "/physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.path)}\""
+      cmd = "#{appcmd(node)} set vdir \"#{@new_resource.site_name}/\""
+      cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.path)}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
     
     if @new_resource.site_id && is_new_site_id
-      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\" "
+      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\""
       cmd << " /id:#{@new_resource.site_id}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)

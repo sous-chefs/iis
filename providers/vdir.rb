@@ -29,7 +29,7 @@ action :add do
   unless @current_resource.exists
     cmd = "#{appcmd(node)} add vdir /app.name:\"#{application_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
-    cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.physical_path)}\""
+    cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.physical_path)}\""
     cmd << " /userName:\"#{@new_resource.username}\"" if @new_resource.username
     cmd << " /password:\"#{@new_resource.password}\"" if @new_resource.password
     cmd << " /logonMethod:#{@new_resource.logon_method.to_s}" if @new_resource.logon_method

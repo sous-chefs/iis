@@ -31,7 +31,7 @@ action :add do
     cmd = "#{appcmd(node)} add app /site.name:\"#{@new_resource.app_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
-    cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.physical_path)}\"" if @new_resource.physical_path
+    cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.physical_path)}\"" if @new_resource.physical_path
     cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols
     Chef::Log.debug(cmd)
     shell_out!(cmd)
@@ -77,7 +77,7 @@ action :config do
     if @new_resource.physical_path && is_new_physical_path
       was_updated = true
       cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
-      cmd << " /physicalPath:\"#{Chef::Util::PathHelper.cleanpath(@new_resource.physical_path)}\""
+      cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.physical_path)}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
