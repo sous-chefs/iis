@@ -27,7 +27,7 @@ include Opscode::IIS::Helper
 
 action :add do
   unless @current_resource.exists
-    cmd = "#{appcmd(node)} add vdir /app.name:\"#{application_name}\""
+    cmd = "#{appcmd(node)} add vdir /app.name:\"#{@new_resource.application_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.physical_path)}\""
     cmd << " /userName:\"#{@new_resource.username}\"" if @new_resource.username
@@ -39,7 +39,7 @@ action :add do
     shell_out!(cmd, {:returns => [0,42]})
 
     @new_resource.updated_by_last_action(true)
-    Chef::Log.info("#{@new_resource} added new virtual directory to application: '#{application_name}'")
+    Chef::Log.info("#{@new_resource} added new virtual directory to application: '#{@new_resource.application_name}'")
   else
     Chef::Log.debug("#{@new_resource} virtual directory already exists - nothing to do")
   end
@@ -147,7 +147,7 @@ private
   end
 
   def application_name
-    if !@new_resource.application_name.end_with? "/"
+    if !@new_resource.application_name.end_with? '/'
       @new_resource.application_name = "#{@new_resource.application_name}/"
     end
   end

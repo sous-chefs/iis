@@ -1,4 +1,9 @@
+v3.0.7 (2015-1-5)
+-------------------
+- Fixed issue with iis_vdir
+
 v3.0.6 (2015-1-2)
+-------------------
 - Fixed issue with iis_pool with username/password
 
 v3.0.5 (2015-1-2)
@@ -13,13 +18,14 @@ v3.0.4 (2014-12-25)
 - bumped version
 - added backwards compatibility for chef-client < 12.x.x Chef::Util::PathHelper
 
-v3.0.0 (2014-11-20)
+v3.0.0 Unreleased
 -------------------
-- Virtual Directory Support (allows virtual directories to be added to both websites and to webapplications under sites)
-- section unlock and lock support (this is used to allow for the web.config of a site to define the authentication methods)
-- fixed issue with :add on pool provider not running all config (this was a known issue and is now resolved)
-- fixed issue with :config on all providers causing application pool recycles (every chef-client run)
-- moved to better method for XML checking of previous settings to detect changes (changed all check to use xml searching with appcmd instead of the previous method [none])
+- [#91](https://github.com/opscode-cookbooks/iis/pull/91) - bulk addition of new features
+  - Virtual Directory Support (allows virtual directories to be added to both websites and to webapplications under sites)
+  - section unlock and lock support (this is used to allow for the web.config of a site to define the authentication methods)
+  - fixed issue with :add on pool provider not running all config (this was a known issue and is now resolved)
+  - fixed issue with :config on all providers causing application pool recycles (every chef-client run)
+  - moved to better method for XML checking of previous settings to detect changes (changed all check to use xml searching with appcmd instead of the previous method [none])
 
 v2.1.6 (2014-11-12)
 -------------------
