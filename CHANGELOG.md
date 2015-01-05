@@ -1,4 +1,9 @@
+v3.0.7 (2015-1-5)
+-------------------
+- Fixed issue with iis_vdir
+
 v3.0.6 (2015-1-2)
+-------------------
 - Fixed issue with iis_pool with username/password
 
 v3.0.5 (2015-1-2)
