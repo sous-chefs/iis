@@ -210,8 +210,8 @@ def configure
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
     end
-    if ((@new_resource.pool_username || @new_resource.pool_username != '') and
-      (@new_resource.pool_password || @new_resource.pool_password != '') and
+    if ((@new_resource.pool_username && @new_resource.pool_username != '') and
+      (@new_resource.pool_password && @new_resource.pool_password != '') and
       !is_new_user_name and
       !is_new_password)
       was_updated = true

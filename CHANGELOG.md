@@ -1,3 +1,8 @@
+v3.0.8 (2015-1-5)
+-------------------
+- Fixed issue with iis_vdir continually adding
+- Fixed issue with iis_pool not putting ApplicationPoolIdentity
+
 v3.0.7 (2015-1-5)
 -------------------
 - Fixed issue with iis_vdir
