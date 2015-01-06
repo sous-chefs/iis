@@ -1,3 +1,7 @@
+v3.0.9 (2015-1-5)
+-------------------
+- Fixed issue with iis_vdir under iis_app usage.
+
 v3.0.8 (2015-1-5)
 -------------------
 - Fixed issue with iis_vdir continually adding

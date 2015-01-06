@@ -95,7 +95,7 @@ action :config do
 
     if was_updated
       @new_resource.updated_by_last_action(true)
-      Chef::Log.info("#{@new_resource} configured virtual directory to application: '#{application_name}'")
+      Chef::Log.info("#{@new_resource} configured virtual directory to application: '#{@new_resource.application_name}'")
     else
       Chef::Log.debug("#{@new_resource} virtual directory - nothing to do")
     end
@@ -118,7 +118,7 @@ end
 
 def load_current_resource
   @current_resource = Chef::Resource::IisVdir.new(@new_resource.name)
-  @current_resource.application_name(application_name)
+  @current_resource.application_name(application_name_check)
   @current_resource.path(@new_resource.path)
   @current_resource.physical_path(@new_resource.physical_path)
   cmd = shell_out("#{ appcmd(node) } list vdir \"#{application_identifier}\"")
@@ -145,8 +145,10 @@ private
     @new_resource.application_name.chomp('/') + @new_resource.path
   end
 
-  def application_name
-    if !@new_resource.application_name.end_with? '/'
-      @new_resource.application_name = "#{@new_resource.application_name}/"
+  def application_name_check
+    if !@new_resource.application_name.include?('/') && !@new_resource.application_name.end_with?('/')
+      @new_resource.application_name("#{@new_resource.application_name}/")
+    elsif @new_resource.application_name.chomp('/').include?('/') && @new_resource.application_name.end_with?('/')
+      @new_resource.application_name(@new_resource.application_name.chomp('/'))
     end
   end
