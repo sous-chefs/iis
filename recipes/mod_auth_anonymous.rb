@@ -1,4 +1,4 @@
-#
+﻿#
 # Author:: Justin Schuhmann
 # Cookbook Name:: iis
 # Recipe:: mod_auth_basic

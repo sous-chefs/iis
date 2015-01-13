@@ -1,4 +1,4 @@
-#
+﻿#
 # Author:: Kendrick Martin (kendrick.martin@webtrends.com>)
 # Cookbook Name:: iis
 # Resource:: app

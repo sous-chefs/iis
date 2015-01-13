@@ -1,4 +1,4 @@
-#
+﻿#
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Cookbook Name:: iis
 # Recipe:: mod_aspnet

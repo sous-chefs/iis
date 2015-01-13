@@ -1,4 +1,4 @@
-#
+﻿#
 # Author:: Kendrick Martin (kendrick.martin@webtrends.com)
 # Contributor:: David Dvorak (david.dvorak@webtrends.com)
 # Cookbook Name:: iis

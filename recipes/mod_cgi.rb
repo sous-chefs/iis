@@ -1,4 +1,4 @@
-#
+﻿#
 # Author:: Richard Downer (<richard.downer@cloudsoftcorp.com>)
 # Cookbook Name:: iis
 # Recipe:: mod_cgi
