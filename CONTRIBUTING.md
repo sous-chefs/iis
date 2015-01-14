@@ -1,4 +1,4 @@
-# Contributing to Opscode Cookbooks
+﻿# Contributing to Opscode Cookbooks
 
 We are glad you want to contribute to Opscode Cookbooks! The first
 step is the desire to improve the project.

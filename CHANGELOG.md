@@ -1,3 +1,37 @@
+﻿v3.0.10 (2015-1-13)
+-------------------
+- Removed dependency on "chef-client", ">= 3.7.0"
+- Changed all files to UTF-8 file format
+
+v3.0.9 (2015-1-5)
+-------------------
+- Fixed issue with iis_vdir under iis_app usage.
+
+v3.0.8 (2015-1-5)
+-------------------
+- Fixed issue with iis_vdir continually adding
+- Fixed issue with iis_pool not putting ApplicationPoolIdentity
+
+v3.0.7 (2015-1-5)
+-------------------
+- Fixed issue with iis_vdir
+
+v3.0.6 (2015-1-2)
+-------------------
+- Fixed issue with iis_pool with username/password
+
+v3.0.5 (2015-1-2)
+-------------------
+- [#98] Fixed issues with bindings
+
+v3.0.4 (2014-12-25)
+-------------------
+- [#95] had to remove unneeded variables
+- incorrect variables
+- add dependencies
+- bumped version
+- added backwards compatibility for chef-client < 12.x.x Chef::Util::PathHelper
+
 v3.0.0 Unreleased
 -------------------
 - [#91](https://github.com/opscode-cookbooks/iis/pull/91) - bulk addition of new features

@@ -1,4 +1,4 @@
-#
+﻿#
 # Author:: Justin Schuhmann
 # Cookbook Name:: iis
 # Resource:: lock
@@ -22,14 +22,14 @@ require 'chef/mixin/shell_out'
 require 'rexml/document'
 
 include Chef::Mixin::ShellOut
-include Opscode::IIS::Helper
 include REXML
+include Opscode::IIS::Helper
 
 action :lock do
   @current_resource.exists = is_new_value?(doc.root, "CONFIG/@overrideMode", "Deny")
 
   unless @current_resource.exists
-    cmd = "#{appcmd} lock config -section:\"#{@new_resource.section}\""
+    cmd = "#{appcmd(node)} lock config -section:\"#{@new_resource.section}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd, :returns => @new_resource.returns)
     @new_resource.updated_by_last_action(true)
@@ -43,7 +43,7 @@ action :unlock do
   @current_resource.exists = is_new_value?(doc.root, "CONFIG/@overrideMode", "Allow")
 
   unless @current_resource.exists
-    cmd = "#{appcmd} unlock config -section:\"#{@new_resource.section}\""
+    cmd = "#{appcmd(node)} unlock config -section:\"#{@new_resource.section}\""
     Chef::Log.debug(cmd)
     shell_out!(cmd, :returns => @new_resource.returns)
     @new_resource.updated_by_last_action(true)
@@ -59,7 +59,7 @@ def load_current_resource
 end
 
 def doc
-  cmd_current_values = "#{appcmd} list config \"\" -section:#{@new_resource.section} /config:* /xml"
+  cmd_current_values = "#{appcmd(node)} list config \"\" -section:#{@new_resource.section} /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?

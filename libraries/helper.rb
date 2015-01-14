@@ -1,4 +1,4 @@
-#
+﻿#
 # Cookbook Name:: iis
 # Library:: helper
 #
@@ -19,16 +19,16 @@
 # limitations under the License.
 #
 
-if RUBY_PLATFORM =~ /mswin|mingw32|windows/
-  require 'chef/win32/version'
-end
-
-require 'rexml/document'
-include REXML
-
 module Opscode
-  module Opscode::IIS
-    class Helper
+  module IIS
+    module Helper
+      if RUBY_PLATFORM =~ /mswin|mingw32|windows/
+        require 'chef/win32/version'
+      end
+
+      require 'rexml/document'
+      include REXML
+      include Windows::Helper
 
       def self.older_than_windows2008r2?
         if RUBY_PLATFORM =~ /mswin|mingw32|windows/
@@ -43,15 +43,23 @@ module Opscode
         end
       end
 
-      def self.is_new_value?(document, xpath, value_to_check)
+      def windows_cleanpath(path)
+        if(defined?(Chef::Util::PathHelper.cleanpath) != nil)
+          return Chef::Util::PathHelper.cleanpath(path)
+        else
+          return win_friendly_path(path)
+        end
+      end
+
+      def is_new_value?(document, xpath, value_to_check)
         return XPath.first(document, xpath).to_s == value_to_check ? false : true
       end
 
-      def self.is_new_or_empty_value?(document, xpath, value_to_check)
-        return is_new_value(document, xpath, value_to_check) || value_to_check == '' ? false : true
+      def is_new_or_empty_value?(document, xpath, value_to_check)
+        return is_new_value?(document, xpath, value_to_check) || value_to_check == '' ? false : true
       end
 
-      def self.appcmd
+      def appcmd(node)
         @appcmd ||= begin
           "#{node['iis']['home']}\\appcmd.exe"
         end
