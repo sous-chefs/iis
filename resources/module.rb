@@ -1,4 +1,4 @@
-﻿#
+#
 # Author:: Jon DeCamp (<jon.decamp@nordstrom.com>)
 # Cookbook Name:: iis
 # Resource:: module

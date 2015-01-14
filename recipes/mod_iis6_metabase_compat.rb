@@ -1,4 +1,4 @@
-﻿#
+#
 # Author:: Kristian Vlaardingerbroek (<kvlaardingerbroek@schubergphilis.com>)
 # Cookbook Name:: iis
 # Recipe:: mod_iis6_metabase_compat

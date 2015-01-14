@@ -1,4 +1,4 @@
-﻿#
+#
 # Author:: Kevin Rivers (<kevin@kevinrivers.com>)
 # Cookbook Name:: iis
 # Recipe:: mod_ftp

@@ -1,4 +1,4 @@
-﻿#
+#
 # Cookbook Name:: iis
 # Library:: helper
 #
