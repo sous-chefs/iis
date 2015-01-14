@@ -1,4 +1,8 @@
-﻿v3.0.10 (2015-1-13)
+v3.0.11 (2015-1-14)
+-------------------
+- Removed BOM char from multiple files that was causing recipe compile errors
+
+v3.0.10 (2015-1-13)
 -------------------
 - Removed dependency on "chef-client", ">= 3.7.0"
 - Changed all files to UTF-8 file format

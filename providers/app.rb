@@ -1,4 +1,4 @@
-﻿#
+#
 # Author:: Kendrick Martin (kendrick.martin@webtrends.com)
 # Contributor:: Adam Wayne (awayne@waynedigital.com)
 # Cookbook Name:: iis

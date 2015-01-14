@@ -1,4 +1,4 @@
-﻿if defined?(ChefSpec)
+if defined?(ChefSpec)
 
   def config_iis_config(command)
     ChefSpec::Matchers::ResourceMatcher.new(:iis_config, :config, command)
