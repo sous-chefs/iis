@@ -1,3 +1,7 @@
+v3.0.12 (2015-1-16)
+-------------------
+- Fixed issue [#107] function is_new_or_empty was returning reverse results.
+
 v3.0.11 (2015-1-14)
 -------------------
 - Removed BOM char from multiple files that was causing recipe compile errors
