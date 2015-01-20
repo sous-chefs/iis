@@ -82,22 +82,32 @@ action :config do
     Chef::Log.debug(cmd)
     shell_out!(cmd)
   end
-  unless @new_resource.pool_identity.nil?
-    if @new_resource.pool_identity.to_s != @current_resource.pool_identity.to_s
-      cmd = "#{appcmd} set config /section:applicationPools"
-      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
+  unless @new_resource.pool_identity.nil? 
+    case @new_resource.pool_identity
+    when :SpecificUser
+      Chef::Application.fatal!("Pool Identity was set to SpecificUser but there wasn't a userName or password set") if @new_resource.pool_username.nil? and @new_resource.pool_password.nil?
+    else
+      if @new_resource.pool_identity.to_s != @current_resource.pool_identity.to_s
+        cmd = "#{appcmd} set config /section:applicationPools"
+        cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+        @new_resource.updated_by_last_action(true)
+      end
     end
   end
   unless @new_resource.pool_username.nil? and @new_resource.pool_password.nil?
-    cmd = "#{appcmd} set config /section:applicationPools"
-    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
-    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
-    cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
+    case @new_resource.pool_identity
+    when :SpecificUser
+      cmd = "#{appcmd} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+    else
+      Chef::Application.fatal!("Pool Identity was not set to SpecificUser when setting a userName and password")
+    end
   end
 end
 
