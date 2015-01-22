@@ -193,7 +193,7 @@ Creates an application in IIS.
 
 ### Attribute Parameters
 
-- `app_name` - name attribute. The name of the site to add this app to
+- `site_name` - name attribute. The name of the site to add this app to
 - `path` -The virtual path for this application
 - `application_pool` - The pool this application belongs to
 - `physical_path` - The physical path where this app resides.

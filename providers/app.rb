@@ -28,7 +28,7 @@ include Opscode::IIS::Helper
 
 action :add do
   unless @current_resource.exists
-    cmd = "#{appcmd(node)} add app /site.name:\"#{@new_resource.app_name}\""
+    cmd = "#{appcmd(node)} add app /site.name:\"#{@new_resource.site_name}\""
     cmd << " /path:\"#{@new_resource.path}\""
     cmd << " /applicationPool:\"#{@new_resource.application_pool}\"" if @new_resource.application_pool
     cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.physical_path)}\"" if @new_resource.physical_path
@@ -107,12 +107,12 @@ end
 
 def load_current_resource
   @current_resource = Chef::Resource::IisApp.new(@new_resource.name)
-  @current_resource.app_name(@new_resource.app_name)
+  @current_resource.site_name(@new_resource.site_name)
   @current_resource.path(@new_resource.path)
   @current_resource.application_pool(@new_resource.application_pool)
   cmd = shell_out("#{appcmd(node)} list app")
   Chef::Log.debug("#{@new_resource} list app command output: #{cmd.stdout}")
-  regex = /^APP\s\"#{@new_resource.app_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/
+  regex = /^APP\s\"#{@new_resource.site_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/
   Chef::Log.debug("Running regex")
   if cmd.stderr.empty?
     result = cmd.stdout.match(regex)
@@ -131,7 +131,7 @@ end
 
 private
   def site_identifier
-    "#{@new_resource.app_name}#{@new_resource.path}"
+    "#{@new_resource.site_name}#{@new_resource.path}"
   end
 
   #Ensure VDIR identifier has a trailing slash
