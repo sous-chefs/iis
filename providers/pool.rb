@@ -135,7 +135,7 @@ def configure
     is_new_recycle_at_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
     is_new_managed_runtime_version = is_new_value?(doc.root, "APPPOOL/@RuntimeVersion", "v#{@new_resource.runtime_version}")
     is_new_idle_timeout = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
-    is_new_identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", "SpecificUser")
+    is_new_identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", @new_resource.pool_identity.to_s)
     is_new_user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
     is_new_password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
 
@@ -224,10 +224,10 @@ def configure
       @new_resource.updated_by_last_action(true)
     elsif ((@new_resource.pool_username.nil? || @new_resource.pool_username == '') and
       (@new_resource.pool_password.nil? || @new_resource.pool_username == '') and
-      !is_new_identity_type)
+      (is_new_identity_type and @new_resource.pool_identity != "SpecificUser"))
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
-      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:ApplicationPoolIdentity\""
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
