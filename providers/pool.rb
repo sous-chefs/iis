@@ -127,7 +127,7 @@ def configure
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    is_new_log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time,Requests,Schedule,Memory,IsapiUnhealthy,OnDemand,ConfigChange,PrivateMemory")
+    is_new_log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory")
     is_new_private_memory = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory", @new_resource.private_mem.to_s)
     is_new_max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
     is_new_enable_32_bit_app_on_win_64 = is_new_or_empty_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s)
