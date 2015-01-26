@@ -66,27 +66,31 @@ action :config do
     #adds enabledProtocols to the cmd
     cmd << " /enabledProtocols:\"#{@new_resource.enabled_protocols}\"" if @new_resource.enabled_protocols && is_new_enabled_protocols
     Chef::Log.debug(cmd)
-    shell_out!(cmd)
-
-    if ((@new_resource.path && is_new_path) or
-      (@new_resource.application_pool && is_new_application_pool) or
-      (@new_resource.enabled_protocols && is_new_enabled_protocols))
-      was_updated = true
-    end
-
-    if @new_resource.physical_path && is_new_physical_path
-      was_updated = true
-      cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
-      cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.physical_path)}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-    end
-
-    if was_updated
-      @new_resource.updated_by_last_action(true)
-      Chef::Log.info("#{@new_resource} configured application")
-    else
+    
+    if(cmd == nil)
       Chef::Log.debug("#{@new_resource} application - nothing to do")
+    else
+      shell_out!(cmd)
+      
+      if ((@new_resource.path && is_new_path) or
+        (@new_resource.application_pool && is_new_application_pool) or
+        (@new_resource.enabled_protocols && is_new_enabled_protocols))
+        was_updated = true
+      end
+
+      if @new_resource.physical_path && is_new_physical_path
+        was_updated = true
+        cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
+        cmd << " /physicalPath:\"#{windows_cleanpath(@new_resource.physical_path)}\""
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
+      if was_updated
+        @new_resource.updated_by_last_action(true)
+        Chef::Log.info("#{@new_resource} configured application")
+      else
+        Chef::Log.debug("#{@new_resource} application - nothing to do")
+      end
     end
   else
     log "Failed to run iis_app action :config, #{cmd_current_values.stderr}" do
@@ -112,7 +116,7 @@ def load_current_resource
   @current_resource.application_pool(@new_resource.application_pool)
   cmd = shell_out("#{appcmd(node)} list app")
   Chef::Log.debug("#{@new_resource} list app command output: #{cmd.stdout}")
-  regex = /^APP\s\"#{@new_resource.site_name}#{@new_resource.path}\"\s\(applicationPool\:#{@new_resource.application_pool}\)/
+  regex = /^APP\s\"#{@new_resource.site_name}#{@new_resource.path}\"/
   Chef::Log.debug("Running regex")
   if cmd.stderr.empty?
     result = cmd.stdout.match(regex)
