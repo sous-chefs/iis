@@ -1,7 +1,7 @@
 #
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Cookbook Name:: iis
-# Recipe:: default
+# Recipe:: mod_aspnet45
 #
 # Copyright 2011, Opscode, Inc.
 #
@@ -18,22 +18,17 @@
 # limitations under the License.
 #
 
-default = %w{}
+include_recipe "iis"
+include_recipe "iis::mod_isapi"
 
-# Always add this, so that we don't require this to be added if we want to add other components
 if Opscode::IIS::Helper.older_than_windows2008r2?
-  default << 'Web-Server'
+  features = %w{NET-Framework}
 else
-  default << 'IIS-WebServerRole'
+  features = %w{NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45}
 end
 
-((default << node['iis']['components']).flatten!).each do |feature|
+features.each do |feature|
   windows_feature feature do
     action :install
   end
-end
-
-service "iis" do
-  service_name "W3SVC"
-  action [:enable, :start]
 end
