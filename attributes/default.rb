@@ -24,9 +24,4 @@ default['iis']['pubroot']    = "#{ENV['SYSTEMDRIVE']}\\inetpub"
 default['iis']['docroot']    = "#{iis['pubroot']}\\wwwroot"
 default['iis']['log_dir']    = "#{iis['pubroot']}\\logs\\LogFiles"
 default['iis']['cache_dir']  = "#{iis['pubroot']}\\temp"
-
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  default['iis']['components'] = %w{Web-Server}
-else
-  default['iis']['components'] = %w{IIS-WebServerRole}
-end
+default['iis']['components'] = %w{}
