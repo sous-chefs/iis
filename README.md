@@ -380,6 +380,7 @@ mod_*
 This cookbook also contains recipes for installing individual IIS modules (extensions).  These recipes can be included in a node's run_list to build the minimal desired custom IIS installation.
 
 * `mod_aspnet` - installs ASP.NET runtime components
+* `mod_aspnet45` - installs ASP.NET 4.5 runtime components
 * `mod_auth_basic` - installs Basic Authentication support
 * `mod_auth_windows` - installs Windows Authentication (authenticate clients by using NTLM or Kerberos) support
 * `mod_compress_dynamic` - installs dynamic content compression support. *PLEASE NOTE* - enabling dynamic compression always gives you more efficient use of bandwidth, but if your server's processor utilization is already very high, the CPU load imposed by dynamic compression might make your site perform more slowly.
