@@ -63,6 +63,9 @@ Allows easy management of IIS virtual sites (ie vhosts).
 - `bindings` - Advanced options to configure the information required for requests to communicate with a Web site. See http://www.iis.net/configreference/system.applicationhost/sites/site/bindings/binding for parameter format. When binding is used, port protocol and host_header should not be used.
 - `application_pool` - set the application pool of the site
 - `options` - support for additional options -logDir, -limits, -ftpServer, etc...
+- `log_directory` - specifies the logging directory, where the log file and logging-related support files are stored.
+- `log_period` - specifies how often iis creates a new log file
+- `log_truncsize` - specifies the maximum size of the log file (in bytes) after which to create a new log file.
 
 ### Examples
 
