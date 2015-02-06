@@ -24,4 +24,4 @@ default['iis']['pubroot']    = "#{ENV['SYSTEMDRIVE']}\\inetpub"
 default['iis']['docroot']    = "#{iis['pubroot']}\\wwwroot"
 default['iis']['log_dir']    = "#{iis['pubroot']}\\logs\\LogFiles"
 default['iis']['cache_dir']  = "#{iis['pubroot']}\\temp"
-default['iis']['components'] = %w{}
+default['iis']['components'] = []
