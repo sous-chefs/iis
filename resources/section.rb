@@ -1,9 +1,9 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com>)
+# Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Resource:: app
+# Resource:: lock
 #
-# Copyright:: 2011, Webtrends Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,16 +18,14 @@
 # limitations under the License.
 #
 
-actions :add, :delete, :config
+actions :lock, :unlock
+default_action :lock
 
-attribute :site_name, :kind_of => String, :name_attribute => true
-attribute :path, :kind_of => String, :default => '/'
-attribute :application_pool, :kind_of => String
-attribute :physical_path, :kind_of => String
-attribute :enabled_protocols, :kind_of => String
-attr_accessor :exists, :running
+attribute :section, :kind_of => String
+attribute :returns, :kind_of => [Integer, Array], :default => 0
+
+attr_accessor :exists
 
 def initialize(*args)
   super
-  @action = :add
 end

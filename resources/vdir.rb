@@ -1,9 +1,9 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com>)
+# Author:: Justin Schuhmann (<jmschu02@gmail.com>)
 # Cookbook Name:: iis
-# Resource:: app
+# Resource:: site
 #
-# Copyright:: 2011, Webtrends Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,15 +19,18 @@
 #
 
 actions :add, :delete, :config
+default_action :add
 
-attribute :site_name, :kind_of => String, :name_attribute => true
-attribute :path, :kind_of => String, :default => '/'
-attribute :application_pool, :kind_of => String
+attribute :application_name, :kind_of => String, :name_attribute => true
+attribute :path, :kind_of => String
 attribute :physical_path, :kind_of => String
-attribute :enabled_protocols, :kind_of => String
-attr_accessor :exists, :running
+attribute :username, :kind_of => String, :default => nil
+attribute :password, :kind_of => String, :default => nil
+attribute :logon_method, :kind_of => Symbol, :default => :ClearText, :equal_to => [:Interactive, :Batch, :Network, :ClearText]
+attribute :allow_sub_dir_config, :kind_of => [TrueClass, FalseClass], :default => true
+
+attr_accessor :exists
 
 def initialize(*args)
   super
-  @action = :add
 end

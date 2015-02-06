@@ -1,9 +1,9 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com>)
+# Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Resource:: app
+# Recipe:: mod_auth_basic
 #
-# Copyright:: 2011, Webtrends Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,16 +18,19 @@
 # limitations under the License.
 #
 
-actions :add, :delete, :config
+include_recipe "iis"
 
-attribute :site_name, :kind_of => String, :name_attribute => true
-attribute :path, :kind_of => String, :default => '/'
-attribute :application_pool, :kind_of => String
-attribute :physical_path, :kind_of => String
-attribute :enabled_protocols, :kind_of => String
-attr_accessor :exists, :running
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  feature = 'Web-Digest-Auth'
+else
+  feature = 'IIS-DigestAuthentication'
+end
 
-def initialize(*args)
-  super
-  @action = :add
+windows_feature feature do
+  action :install
+end
+
+iis_section 'unlocks digest authentication control in web.config' do
+  section "system.webServer/security/authentication/digestAuthentication"
+  action :unlock
 end

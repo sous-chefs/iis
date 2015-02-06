@@ -30,3 +30,8 @@ end
 windows_feature feature do
   action :install
 end
+
+iis_section 'unlocks windows authentication control in web.config' do
+  section "system.webServer/security/authentication/windowsAuthentication"
+  action :unlock
+end

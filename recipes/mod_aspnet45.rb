@@ -1,9 +1,9 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com>)
+# Author:: Blair Hamilton (<blairham@me.com>)
 # Cookbook Name:: iis
-# Resource:: app
+# Recipe:: mod_aspnet45
 #
-# Copyright:: 2011, Webtrends Inc.
+# Copyright 2011, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,16 +18,17 @@
 # limitations under the License.
 #
 
-actions :add, :delete, :config
+include_recipe "iis"
+include_recipe "iis::mod_isapi"
 
-attribute :site_name, :kind_of => String, :name_attribute => true
-attribute :path, :kind_of => String, :default => '/'
-attribute :application_pool, :kind_of => String
-attribute :physical_path, :kind_of => String
-attribute :enabled_protocols, :kind_of => String
-attr_accessor :exists, :running
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  features = %w{NET-Framework}
+else
+  features = %w{NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45}
+end
 
-def initialize(*args)
-  super
-  @action = :add
+features.each do |feature|
+  windows_feature feature do
+    action :install
+  end
 end

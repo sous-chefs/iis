@@ -31,6 +31,7 @@ attribute :recycle_after_time, :kind_of => String
 attribute :recycle_at_time, :kind_of => String
 attribute :max_proc, :kind_of => Integer
 attribute :thirty_two_bit, :kind_of => Symbol
+attribute :pool_identity, :kind_of => Symbol, :equal_to => [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity ], :default => :ApplicationPoolIdentity
 attribute :pool_username, :kind_of => String
 attribute :pool_password, :kind_of => String
 

@@ -63,31 +63,55 @@ Allows easy management of IIS virtual sites (ie vhosts).
 - `bindings` - Advanced options to configure the information required for requests to communicate with a Web site. See http://www.iis.net/configreference/system.applicationhost/sites/site/bindings/binding for parameter format. When binding is used, port protocol and host_header should not be used.
 - `application_pool` - set the application pool of the site
 - `options` - support for additional options -logDir, -limits, -ftpServer, etc...
+- `log_directory` - specifies the logging directory, where the log file and logging-related support files are stored.
+- `log_period` - specifies how often iis creates a new log file
+- `log_truncsize` - specifies the maximum size of the log file (in bytes) after which to create a new log file.
 
 ### Examples
 
-    # stop and delete the default site
-    iis_site 'Default Web Site' do
-      action [:stop, :delete]
-    end
+```ruby
+# stop and delete the default site
+iis_site 'Default Web Site' do
+  action [:stop, :delete]
+end
+```
 
-    # create and start a new site that maps to
-    # the physical location C:\inetpub\wwwroot\testfu
-    iis_site 'Testfu Site' do
-      protocol :http
-      port 80
-      path "#{node['iis']['docroot']}/testfu"
-      action [:add,:start]
-    end
+```ruby
+# create and start a new site that maps to
+# the physical location C:\inetpub\wwwroot\testfu
+iis_site 'Testfu Site' do
+  protocol :http
+  port 80
+  path "#{node['iis']['docroot']}/testfu"
+  action [:add,:start]
+end
+```
 
-    # do the same but map to testfu.opscode.com domain
-    iis_site 'Testfu Site' do
-      protocol :http
-      port 80
-      path "#{node['iis']['docroot']}/testfu"
-      host_header "testfu.opscode.com"
-      action [:add,:start]
-    end
+```ruby
+# do the same but map to testfu.opscode.com domain
+iis_site 'Testfu Site' do
+  protocol :http
+  port 80
+  path "#{node['iis']['docroot']}/testfu"
+  host_header "testfu.opscode.com"
+  action [:add,:start]
+end
+```
+
+```ruby
+# create and start a new site that maps to
+# the physical C:\inetpub\wwwroot\testfu
+# also adds bindings to http and https
+# binding http to the ip address 10.12.0.136,
+# the port 80, and the host header www.domain.com
+# also binding https to any ip address,
+# the port 443, and the host header www.domain.com
+iis_site 'FooBar Site' do
+  bindings "http/10.12.0.136:80:www.domain.com,https/*:443:www.domain.com
+  path "#{node['iis']['docroot']}/testfu"
+  action [:add,:start]
+end
+```
 
 iis_config
 -----------
@@ -103,18 +127,22 @@ Runs a config command on your IIS instance.
 
 ### Example
 
-    #Sets up logging
-    iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:"D:\\logs"" do
+```ruby
+# Sets up logging
+iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:\"D:\\logs\"" do
+    action :config
+end
+```
+
+```ruby
+# Loads an array of commands from the node
+cfg_cmds = node['iis']['cfg_cmd']
+cfg_cmds.each do |cmd|
+    iis_config "#{cmd}" do
         action :config
     end
-
-    #Loads an array of commands from the node
-    cfg_cmds = node['iis']['cfg_cmd']
-    cfg_cmds.each do |cmd|
-        iis_config "#{cmd}" do
-            action :config
-        end
-    end
+end
+```
 
 iis_pool
 ---------
@@ -142,18 +170,20 @@ Creates an application pool in IIS.
 - `max_proc` - specifies the number of worker processes associated with the pool.
 - `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are :true or :false
 - `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
+- `pool_identity` - the account identity that they app pool will run as
 - `pool_username` - username for the identity for the application pool
 - `pool_password` password for the identity for the application pool
 
 ### Example
 
-     #creates a new app pool
-     iis_pool 'myAppPool_v1_1' do
-         runtime_version "2.0"
-         pipeline_mode :Classic
-         action :add
-     end
-
+```ruby
+# creates a new app pool
+iis_pool 'myAppPool_v1_1' do
+  runtime_version "2.0"
+  pipeline_mode :Classic
+  action :add
+end
+```
 
 iis_app
 --------
@@ -167,7 +197,7 @@ Creates an application in IIS.
 
 ### Attribute Parameters
 
-- `app_name` - name attribute. The name of the site to add this app to
+- `site_name` - name attribute. The name of the site to add this app to
 - `path` -The virtual path for this application
 - `application_pool` - The pool this application belongs to
 - `physical_path` - The physical path where this app resides.
@@ -175,14 +205,135 @@ Creates an application in IIS.
 
 ### Example
 
-    #creates a new app
-    iis_app "myApp" do
-      path "/v1_1"
-      application_pool "myAppPool_v1_1"
-      physical_path "#{node['iis']['docroot']}/testfu/v1_1"
-      enabled_protocols "http,net.pipe"
-      action :add
-    end
+```ruby
+# creates a new app
+iis_app "myApp" do
+  path "/v1_1"
+  application_pool "myAppPool_v1_1"
+  physical_path "#{node['iis']['docroot']}/testfu/v1_1"
+  enabled_protocols "http,net.pipe"
+  action :add
+end
+```
+
+iis_vdir
+---------
+
+Allows easy management of IIS virtual directories (i.e. vdirs).
+
+### Actions
+
+- :add: - add a new virtual directory
+- :delete: - delete an existing virtual directory
+- :config: - configure a virtual directory
+
+### Attribute Parameters
+
+- `application_name`: name attribute. Specifies the name of the application attribute.  This is the name of the website or application you are adding it to.
+- `path`: The virtual directory path on the site.
+- `physical_path`: The physical path of the virtual directory on the disk.
+- `username`: (optional) The username required to logon to the physical_path. If set to "" will clear username and password.
+- `password`: (optional) The password required to logon to the physical_path
+- `logon_method`: (optional, default: :ClearText) The method used to logon (:Interactive, :Batch, :Network, :ClearText). For more information on these types, see "LogonUser Function", Read more at [MSDN](http://msdn2.microsoft.com/en-us/library/aa378184.aspx)
+- `allow_sub_dir_config`: (optional, default: true) Boolean that specifies whether or not the Web server will look for configuration files located in the subdirectories of this virtual directory. Setting this to false can improve performance on servers with very large numbers of web.config files, but doing so prevents IIS configuration from being read in subdirectories.
+
+### Examples
+
+```ruby
+# add a virtual directory to default application
+iis_vdir 'Default Web Site/' do
+  action :add
+  path '/Content/Test'
+  physical_path 'C:\wwwroot\shared\test'
+end
+```
+
+```ruby
+# add a virtual directory to an application under a site
+iis_vdir 'Default Web Site/my application' do
+  action :add
+  path '/Content/Test'
+  physical_path 'C:\wwwroot\shared\test'
+end
+```
+
+```ruby
+# adds a virtual directory to default application which points to a smb share. (Remember to escape the "\"'s)
+iis_vdir 'Default Web Site/' do
+  action :add
+  path '/Content/Test'
+  physical_path '\\\\sharename\\sharefolder\\1'
+end
+```
+
+```ruby
+# configure a virtual directory to have a username and password
+iis_vdir 'Default Web Site/' do
+  action :config
+  path '/Content/Test'
+  username 'domain\myspecialuser'
+  password 'myspecialpassword'
+end
+```
+
+```ruby
+# delete a virtual directory from the default application
+iis_vdir 'Default Web Site/' do
+  action :delete
+  path '/Content/Test'
+end
+```
+
+iis_section
+---------
+
+Allows for the locking/unlocking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\"  /config:* /xml`)
+
+This is valuable to allow the `web.config` of an individual application/website control it's own settings.
+
+### Actions
+
+- `:lock`: - locks the `section` passed
+- `:unlock`: - unlocks the `section` passed
+
+### Attribute Parameters
+
+- `section`: The name of the section to lock.
+- `returns`: The result of the `shell_out` command.
+
+### Examples
+
+```ruby
+# Sets the IIS global windows authentication to be locked globally
+iis_section 'locks global configuration of windows auth' do
+  section 'system.webServer/security/authentication/windowsAuthentication'
+  action :lock
+end
+```
+
+```ruby
+# Sets the IIS global Basic authentication to be locked globally
+iis_section 'locks global configuration of Basic auth' do
+  section 'system.webServer/security/authentication/basicAuthentication'
+  action :lock
+end
+```
+
+```ruby
+# Sets the IIS global windows authentication to be unlocked globally
+iis_section 'unlocked web.config globally for windows auth' do
+  action :unlock
+  section 'system.webServer/security/authentication/windowsAuthentication'
+end
+```
+
+```ruby
+# Sets the IIS global Basic authentication to be unlocked globally
+iis_section 'unlocked web.config globally for Basic auth' do
+  action :unlock
+  section 'system.webServer/security/authentication/basicAuthentication'
+end
+```
 
 iis_module
 --------
@@ -203,15 +354,19 @@ Manages modules globally or on a per site basis.
 
 ### Example
 
-    # Adds a module called "My 3rd Party Module" to mySite/
-    iis_module "My 3rd Party Module" do
-      application "mySite/"
-      precondition "bitness64"
-      action :add
-    end
+```ruby
+# Adds a module called "My 3rd Party Module" to mySite/
+iis_module "My 3rd Party Module" do
+  application "mySite/"
+  precondition "bitness64"
+  action :add
+end
+```
 
-    # Adds a module called "MyModule" to all IIS sites on the server
-    iis_module "MyModule"
+```ruby
+# Adds a module called "MyModule" to all IIS sites on the server
+iis_module "MyModule"
+```
 
 
 Usage
@@ -228,6 +383,7 @@ mod_*
 This cookbook also contains recipes for installing individual IIS modules (extensions).  These recipes can be included in a node's run_list to build the minimal desired custom IIS installation.
 
 * `mod_aspnet` - installs ASP.NET runtime components
+* `mod_aspnet45` - installs ASP.NET 4.5 runtime components
 * `mod_auth_basic` - installs Basic Authentication support
 * `mod_auth_windows` - installs Windows Authentication (authenticate clients by using NTLM or Kerberos) support
 * `mod_compress_dynamic` - installs dynamic content compression support. *PLEASE NOTE* - enabling dynamic compression always gives you more efficient use of bandwidth, but if your server's processor utilization is already very high, the CPU load imposed by dynamic compression might make your site perform more slowly.
