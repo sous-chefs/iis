@@ -18,16 +18,10 @@
 # limitations under the License.
 #
 
-default = %w{}
-
 # Always add this, so that we don't require this to be added if we want to add other components
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  default << 'Web-Server'
-else
-  default << 'IIS-WebServerRole'
-end
+default = Opscode::IIS::Helper.older_than_windows2008r2? ? 'Web-Server' : 'IIS-WebServerRole'
 
-((default << node['iis']['components']).flatten!).each do |feature|
+(node['iis']['components'] + [default]).each do |feature|
   windows_feature feature do
     action :install
   end
