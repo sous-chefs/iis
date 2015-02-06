@@ -103,7 +103,7 @@ action :config do
 
     if @new_resource.log_directory && is_new_log_directory
       cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\""
-      cmd << " /logFile.directory:#{@new_resource.log_directory}"
+      cmd << " /logFile.directory:#{windows_cleanpath(@new_resource.log_directory)}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
