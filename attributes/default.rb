@@ -30,3 +30,5 @@ if Opscode::IIS::Helper.older_than_windows2008r2?
 else
   default['iis']['components'] = %w{IIS-WebServerRole}
 end
+
+default['iis']['feature_dependencies'] = false
