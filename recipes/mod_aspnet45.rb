@@ -1,5 +1,5 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Blair Hamilton (<blairham@me.com>)
 # Cookbook Name:: iis
 # Recipe:: mod_aspnet45
 #
