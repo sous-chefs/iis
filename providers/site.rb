@@ -66,6 +66,9 @@ action :config do
     is_new_physical_path = is_new_or_empty_value?(doc.root, "SITE/site/application/virtualDirectory/@physicalPath", @new_resource.path.to_s)
     is_new_port_host_provided = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:#{@new_resource.host_header}")
     is_new_site_id = is_new_value?(doc.root, "SITE/site/@id", @new_resource.site_id.to_s)
+    is_new_log_directory = is_new_or_empty_value?(doc.root,"SITE/logFiles/@directory",@new_resource.log_directory.to_s)
+    is_new_log_period = is_new_or_empty_value?(doc.root, "SITE/logFile/@period", @new_resource.log_period.to_s)
+    is_new_log_trunc = is_new_or_empty_value?(doc.root, "SITE/logFiles/@truncateSize",@new_resource.log_truncsize.to_s)
 
     if (@new_resource.bindings && is_new_bindings)
       was_updated = true
@@ -93,6 +96,30 @@ action :config do
     if @new_resource.site_id && is_new_site_id
       cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\""
       cmd << " /id:#{@new_resource.site_id}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+
+    if @new_resource.log_directory && is_new_log_directory
+      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\""
+      cmd << " /logFile.directory:#{windows_cleanpath(@new_resource.log_directory)}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+
+    if @new_resource.log_period && is_new_log_period
+      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\""
+      cmd << " /logFile.period:#{@new_resource.log_period}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+
+    if @new_resource.log_truncsize && is_new_log_trunc
+      cmd = "#{appcmd(node)} set site \"#{@new_resource.site_name}\""
+      cmd << " /logFile.truncateSize:#{@new_resource.log_truncsize}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)
