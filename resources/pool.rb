@@ -34,6 +34,10 @@ attribute :thirty_two_bit, :kind_of => Symbol
 attribute :pool_identity, :kind_of => Symbol, :equal_to => [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity ], :default => :ApplicationPoolIdentity
 attribute :pool_username, :kind_of => String
 attribute :pool_password, :kind_of => String
+attribute :start_mode, :kind_of => Symbol, :equal_to => [:AlwaysRunning, :OnDemand], :default => :OnDemand
+attribute :auto_start, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :load_user_profile, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :disallow_rotation_on_config_change, :kind_of => [TrueClass, FalseClass], :default => false
 
 attr_accessor :exists, :running
 

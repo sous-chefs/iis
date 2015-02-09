@@ -164,12 +164,16 @@ Creates an application pool in IIS.
 - `worker_idle_timeout` - specifies the idle time-out value for a pool, d.hh:mm:ss, d optional
 - `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
 - `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
-- `max_proc` - specifies the number of worker processes associated with the pool.
-- `thirty_two_bit` - set the pool to run in 32 bit mode, true or false
-- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
-- `pool_identity` - the account identity that they app pool will run as
-- `pool_username` - username for the identity for the application pool
-- `pool_password` password for the identity for the application pool
+- `max_proc` - specifies the number of worker processes associated with the pool. - optional
+- `thirty_two_bit` - set the pool to run in 32 bit mode, true or false - optional
+- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools - optional
+- `pool_identity` - the account identity that they app pool will run as - optional
+- `pool_username` - username for the identity for the application pool - optional
+- `pool_password` - password for the identity for the application pool - optional
+- `start_mode` - Specifies the startup type for the application pool - default :OnDemand (:OnDemand, :AlwaysRunning) - optional
+- `auto_start` - When true, indicates to the World Wide Web Publishing Service (W3SVC) that the application pool should be automatically started when it is created or when IIS is started. Default is true - optional
+- `load_user_profile` - This property is used only when a service starts in a named user account. - Default is false - optional
+- `disallow_rotation_on_config_change` - The DisallowRotationOnConfigChange property specifies whether or not the World Wide Web Publishing Service (WWW Service) should rotate worker processes in an application pool when the configuration has changed. - Default is false - optional
 
 ### Example
 
