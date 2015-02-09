@@ -138,6 +138,10 @@ def configure
     is_new_identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", @new_resource.pool_identity.to_s)
     is_new_user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
     is_new_password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
+    is_new_start_mode = is_new_value?(doc.root, "APPPOOL/add/@startMode", @new_resource.start_mode.to_s)
+    is_new_auto_start = is_new_value?(doc.root, "APPPOOL/add/@autoStart", @new_resource.auto_start.to_s)
+    is_new_load_user_profile = is_new_value?(doc.root, "APPPOOL/add/processModel/@loadUserProfile", @new_resource.load_user_profile.to_s)
+    is_new_disallow_rotation_on_config_change = is_new_value?(doc.root, "APPPOOL/add/recycling/@disallowRotationOnConfigChange", @new_resource.disallow_rotation_on_config_change.to_s)
 
     if is_new_log_event_on_recycle
       was_updated = true
@@ -228,6 +232,38 @@ def configure
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if is_new_start_mode
+      was_updated = true
+      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+      cmd << " /startMode:#{@new_resource.start_mode.to_s}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if is_new_auto_start
+      was_updated = true
+      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
+      cmd << " /autoStart:#{@new_resource.auto_start.to_s}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if is_new_load_user_profile
+      was_updated = true
+      cmd = "#{appcmd(node)} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.loadUserProfile:#{@new_resource.load_user_profile}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+      @new_resource.updated_by_last_action(true)
+    end
+    if is_new_disallow_rotation_on_config_change
+      was_updated = true
+      cmd = "#{appcmd(node)} set config /section:applicationPools"
+      cmd << " \"/[name='#{@new_resource.pool_name}'].recycling.disallowRotationOnConfigChange:#{@new_resource.disallow_rotation_on_config_change}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       @new_resource.updated_by_last_action(true)

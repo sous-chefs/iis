@@ -173,6 +173,10 @@ Creates an application pool in IIS.
 - `pool_identity` - the account identity that they app pool will run as
 - `pool_username` - username for the identity for the application pool
 - `pool_password` password for the identity for the application pool
+- `start_mode` - Specifies the startup type for the application pool - default :OnDemand (:OnDemand, :AlwaysRunning) - optional
+- `auto_start` - When true, indicates to the World Wide Web Publishing Service (W3SVC) that the application pool should be automatically started when it is created or when IIS is started. Default is true - optional
+- `load_user_profile` - This property is used only when a service starts in a named user account. - Default is false - optional
+- `disallow_rotation_on_config_change` - The DisallowRotationOnConfigChange property specifies whether or not the World Wide Web Publishing Service (WWW Service) should rotate worker processes in an application pool when the configuration has changed. - Default is false - optional
 
 ### Example
 
