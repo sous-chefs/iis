@@ -163,13 +163,13 @@ def configure
     is_new_smp_affinitized = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpAffinitized", @new_resource.cpu_smp_affinitized.to_s)
 
     # Application Pool set commands
-    if ((is_new_auto_start || is_new_start_mode) 
-      or (@new_resource.runtime_version && is_new_managed_runtime_version)
-      or (@new_resource.recycle_at_time && is_new_recycle_at_time)
-      or (@new_resource.recycle_after_time && is_new_recycle_after_time)
-      or (@new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64)
-      or (@new_resource.max_proc && is_new_max_processes)
-      or (@new_resource.queue_length && is_new_queue_length))
+    if ((is_new_auto_start || is_new_start_mode) or
+       (@new_resource.runtime_version && is_new_managed_runtime_version) or
+       (@new_resource.recycle_at_time && is_new_recycle_at_time) or
+       (@new_resource.recycle_after_time && is_new_recycle_after_time) or
+       (@new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64) or
+       (@new_resource.max_proc && is_new_max_processes) or
+       (@new_resource.queue_length && is_new_queue_length))
       $was_updated = true
       cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
       cmd << " /autoStart:#{@new_resource.auto_start.to_s}" if is_new_auto_start
@@ -186,17 +186,17 @@ def configure
     end
 
     # Application Pool Config
-    self.configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
-    self.configure_application_pool(@new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}")
-    self.configure_application_pool(@new_resource.worker_idle_timeout && is_new_idle_timeout, "processModel.idleTimeout:#{@new_resource.worker_idle_timeout}")
-    self.configure_application_pool(is_new_load_user_profile, "processModel.loadUserProfile:#{@new_resource.load_user_profile}")
-    self.configure_application_pool(is_new_disallow_rotation_on_config_change, "recycling.disallowRotationOnConfigChange:#{@new_resource.disallow_rotation_on_config_change}")
-    self.configure_application_pool(is_new_pinging_enabled, "processModel.pingingEnabled:#{@new_resource.pinging_enabled}")
-    self.configure_application_pool(is_new_load_balancer_capabilities, "failure.loadBalancerCapabilities:#{@new_resource.load_balancer_capabilities}")
-    self.configure_application_pool(is_new_rapid_fail_protection, "failure.rapidFailProtection:#{@new_resource.rapid_fail_protection}")
-    self.configure_application_pool(is_new_disallow_overlapping_rotation, "recycling.disallowOverlappingRotation:#{@new_resource.disallow_overlapping_rotation}")
-    self.configure_application_pool(is_new_cpu_limit, "cpu.limit:#{@new_resource.cpu_limit}")
-    self.configure_application_pool(is_new_cpu_smp_affinitized, "cpu.smpAffinitized:#{@new_resource.cpu_smp_affinitized}")
+    configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
+    configure_application_pool(@new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}")
+    configure_application_pool(@new_resource.worker_idle_timeout && is_new_idle_timeout, "processModel.idleTimeout:#{@new_resource.worker_idle_timeout}")
+    configure_application_pool(is_new_load_user_profile, "processModel.loadUserProfile:#{@new_resource.load_user_profile}")
+    configure_application_pool(is_new_disallow_rotation_on_config_change, "recycling.disallowRotationOnConfigChange:#{@new_resource.disallow_rotation_on_config_change}")
+    configure_application_pool(is_new_pinging_enabled, "processModel.pingingEnabled:#{@new_resource.pinging_enabled}")
+    configure_application_pool(is_new_load_balancer_capabilities, "failure.loadBalancerCapabilities:#{@new_resource.load_balancer_capabilities}")
+    configure_application_pool(is_new_rapid_fail_protection, "failure.rapidFailProtection:#{@new_resource.rapid_fail_protection}")
+    configure_application_pool(is_new_disallow_overlapping_rotation, "recycling.disallowOverlappingRotation:#{@new_resource.disallow_overlapping_rotation}")
+    configure_application_pool(is_new_cpu_limit, "cpu.limit:#{@new_resource.cpu_limit}")
+    configure_application_pool(is_new_cpu_smp_affinitized, "cpu.smpAffinitized:#{@new_resource.cpu_smp_affinitized}")
 
     # Application Pool Identity Settings
     if ((@new_resource.pool_username && @new_resource.pool_username != '') and
@@ -234,12 +234,12 @@ def configure
 end
 
 private
-  def configure_application_pool(condition, config)
-    if(condition)
-      $was_updated = true
-      cmd = "#{appcmd(node)} set config /section:applicationPools"
-      cmd << " \"/[name='#{@new_resource.pool_name}'].#{config}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-    end
+def configure_application_pool(condition, config)
+  if(condition)
+    $was_updated = true
+    cmd = "#{appcmd(node)} set config /section:applicationPools"
+    cmd << " \"/[name='#{@new_resource.pool_name}'].#{config}\""
+    Chef::Log.debug(cmd)
+    shell_out!(cmd)
   end
+end
