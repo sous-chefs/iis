@@ -139,15 +139,30 @@ def configure
     
     # processModel items
     is_new_max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
-    is_new_pinging_enabled = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingingEnabled", @new_resource.pinging_enabled.to_s)
     is_new_load_user_profile = is_new_value?(doc.root, "APPPOOL/add/processModel/@loadUserProfile", @new_resource.load_user_profile.to_s)
     is_new_identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", @new_resource.pool_identity.to_s)
     is_new_user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
     is_new_password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
+    is_new_set_profile_environment = is_new_value?(doc.root, "APPPOOL/add/processModel/@setProfileEnvironment", @new_resource.set_profile_environment.to_s)
+    is_new_logon_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@logonType", @new_resource.logon_type.to_s)
+    is_new_manual_group_membership = is_new_value?(doc.root, "APPPOOL/add/processModel/@manualGroupMembership", @new_resource.manual_group_membership.to_s)
+    is_new_idle_timeout = is_new_value?(doc.root, "APPPOOL/add/processModel/@idleTimeout", @new_resource.idle_timeout.to_s)
+    is_new_shutdown_time_limit = is_new_value?(doc.root, "APPPOOL/add/processModel/@shutdownTimeLimit", @new_resource.shutdown_time_limit.to_s)
+    is_new_startup_time_limit = is_new_value?(doc.root, "APPPOOL/add/processModel/@startupTimeLimit", @new_resource.startup_time_limit.to_s)
+    is_new_pinging_enabled = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingingEnabled", @new_resource.pinging_enabled.to_s)
+    is_new_ping_interval = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingInterval", @new_resource.pinging_interval.to_s)
+    is_new_ping_response_time = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingResponseTime", @new_resource.pinging_response_time.to_s)
     
     # failure items
     is_new_load_balancer_capabilities = is_new_value?(doc.root, "APPPOOL/add/failure/@loadBalancerCapabilities", @new_resource.load_balancer_capabilities.to_s)
+    is_new_orphan_worker_process = is_new_value?(doc.root, "APPPOOL/add/failure/@orphanWorkerProcess", @new_resource.orphan_worker_process.to_s)
+    is_new_orphan_action_exe = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@orphanActionExe", @new_resource.orphan_action_exe.to_s)
+    is_new_orphan_action_params = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@orphanActionParams", @new_resource.orphan_action_params.to_s)
     is_new_rapid_fail_protection = is_new_value?(doc.root, "APPPOOL/add/failure/@rapidFailProtection", @new_resource.rapid_fail_protection.to_s)
+    is_new_rapid_fail_protection_interval = is_new_value?(doc.root, "APPPOOL/add/failure/@rapidFailProtectionInterval", @new_resource.rapid_fail_protection_interval.to_s)
+    is_new_rapid_fail_protection_max_crashes = is_new_value?(doc.root, "APPPOOL/add/failure/@rapidFailProtectionMaxCrashes", @new_resource.rapid_fail_protection_max_crashes.to_s)
+    is_new_auto_shutdown_exe = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@autoShutdownExe", @new_resource.auto_shutdown_exe.to_s)
+    is_new_auto_shutdown_params = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@autoShutdownParams", @new_resource.auto_shutdown_params.to_s)
     
     # recycling items
     is_new_disallow_overlapping_rotation = is_new_value?(doc.root, "APPPOOL/add/recycling/@disallowOverlappingRotation", @new_resource.disallow_overlapping_rotation.to_s)
@@ -159,8 +174,12 @@ def configure
     is_new_log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory")
 
     # cpu items
+    is_new_cpu_action = is_new_value?(doc.root, "APPPOOL/add/cpu/@action", @new_resource.cpu_action.to_s) 
     is_new_cpu_limit = is_new_value?(doc.root, "APPPOOL/add/cpu/@limit", @new_resource.cpu_limit.to_s)
     is_new_smp_affinitized = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpAffinitized", @new_resource.cpu_smp_affinitized.to_s)
+    is_new_cpu_reset_interval = is_new_value?(doc.root, "APPPOOL/add/cpu/@resetInterval", @new_resource.cpu_reset_interval.to_s) 
+    is_new_smp_processor_affinity_mask = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask", @new_resource.smp_processor_affinity_mask.to_s) 
+    is_new_smp_processor_affinity_mask_2 = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask2", @new_resource.smp_processor_affinity_mask_2.to_s) 
 
     # Application Pool set commands
     if ((is_new_auto_start || is_new_start_mode) or
@@ -186,17 +205,43 @@ def configure
     end
 
     # Application Pool Config
-    configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
-    configure_application_pool(@new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}")
+    # processModel items
     configure_application_pool(@new_resource.worker_idle_timeout && is_new_idle_timeout, "processModel.idleTimeout:#{@new_resource.worker_idle_timeout}")
     configure_application_pool(is_new_load_user_profile, "processModel.loadUserProfile:#{@new_resource.load_user_profile}")
-    configure_application_pool(is_new_disallow_rotation_on_config_change, "recycling.disallowRotationOnConfigChange:#{@new_resource.disallow_rotation_on_config_change}")
+    configure_application_pool(is_new_set_profile_environment, "processModel.setProfileEnvironment:#{@new_resource.set_profile_environment}")
+    configure_application_pool(is_new_logon_type, "processModel.logonType:#{@new_resource.logon_type}")
+    configure_application_pool(is_new_manual_group_membership, "processModel.manualGroupMembership:#{@new_resource.manual_group_membership}")
+    configure_application_pool(is_new_idle_timeout, "processModel.idleTimeout:#{@new_resource.idle_timeout}")
+    configure_application_pool(is_new_shutdown_time_limit, "processModel.shutdownTimeLimit:#{@new_resource.shutdown_time_limit}")
+    configure_application_pool(is_new_startup_time_limit, "processModel.startupTimeLimit:#{@new_resource.startup_time_limit}")
     configure_application_pool(is_new_pinging_enabled, "processModel.pingingEnabled:#{@new_resource.pinging_enabled}")
-    configure_application_pool(is_new_load_balancer_capabilities, "failure.loadBalancerCapabilities:#{@new_resource.load_balancer_capabilities}")
-    configure_application_pool(is_new_rapid_fail_protection, "failure.rapidFailProtection:#{@new_resource.rapid_fail_protection}")
+    configure_application_pool(is_new_ping_interval, "processModel.pingInterval:#{@new_resource.pinging_interval}")
+    configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{@new_resource.pinging_response_time}")
+    
+    # recycling items
+    configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
+    configure_application_pool(@new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}")
+    configure_application_pool(is_new_disallow_rotation_on_config_change, "recycling.disallowRotationOnConfigChange:#{@new_resource.disallow_rotation_on_config_change}")
     configure_application_pool(is_new_disallow_overlapping_rotation, "recycling.disallowOverlappingRotation:#{@new_resource.disallow_overlapping_rotation}")
+
+    # failure items
+    configure_application_pool(is_new_load_balancer_capabilities, "failure.loadBalancerCapabilities:#{@new_resource.load_balancer_capabilities}")
+    configure_application_pool(is_new_orphan_worker_process, "failure.orphanWorkerProcess:#{@new_resource.orphan_worker_process}")
+    configure_application_pool(is_new_orphan_action_exe, "failure.orphanActionExe:#{@new_resource.orphan_action_exe}")
+    configure_application_pool(is_new_orphan_action_params, "failure.orphanActionParams:#{@new_resource.orphan_action_params}")
+    configure_application_pool(is_new_rapid_fail_protection, "failure.rapidFailProtection:#{@new_resource.rapid_fail_protection}")
+    configure_application_pool(is_new_rapid_fail_protection_interval, "failure.rapidFailProtectionInterval:#{@new_resource.rapid_fail_protection_interval}")
+    configure_application_pool(is_new_rapid_fail_protection_max, "failure.rapidFailProtectionMaxCrashes:#{@new_resource.rapid_fail_protection_max_crashes}")
+    configure_application_pool(is_new_auto_shutdown_exe, "failure.autoShutdownExe:#{@new_resource.auto_shutdown_exe}")
+    configure_application_pool(is_new_auto_shutdown_params, "failure.autoShutdownParams:#{@new_resource.auto_shutdown_params}")
+
+    # cpu items
+    configure_application_pool(is_new_cpu_action, "cpu.action:#{@new_resource.cpu_action}")
     configure_application_pool(is_new_cpu_limit, "cpu.limit:#{@new_resource.cpu_limit}")
+    configure_application_pool(is_new_cpu_reset_interval, "cpu.resetInterval:#{@new_resource.cpu_reset_interval}")
     configure_application_pool(is_new_cpu_smp_affinitized, "cpu.smpAffinitized:#{@new_resource.cpu_smp_affinitized}")
+    configure_application_pool(is_new_smp_processor_affinity_mask, "cpu.smpProcessorAffinityMask:#{@new_resource.smp_processor_affinity_mask}")
+    configure_application_pool(is_new_smp_processor_affinity_mask_2, "cpu.smpProcessorAffinityMask2:#{@new_resource.smp_processor_affinity_mask_2}")
 
     # Application Pool Identity Settings
     if ((@new_resource.pool_username && @new_resource.pool_username != '') and

@@ -35,15 +35,19 @@ attribute :thirty_two_bit, :kind_of => Symbol
 
 # processModel items
 attribute :max_proc, :kind_of => Integer
-attribute :pinging_enabled, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :load_user_profile, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :pool_identity, :kind_of => Symbol, :equal_to => [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity ], :default => :ApplicationPoolIdentity
 attribute :pool_username, :kind_of => String
 attribute :pool_password, :kind_of => String
-
-# failure items
-attribute :load_balancer_capabilities, :kind_of => Symbol, :equal_to => [:HttpLevel, :TcpLevel], :default => :HttpLevel
-attribute :rapid_fail_protection, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :set_profile_environment, :kind => [TrueClass, FalseClass], :default => true
+attribute :logon_type, :kind => Symbol, :equal_to => [:LogonBatch, :LogonService], :default => :LogonBatch
+attribute :manual_group_membership, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :idle_timeout, :kind_of => String, :default => '00:20:00'
+attribute :shutdown_time_limit, :kind_of => String, :default => '00:01:30'
+attribute :startup_time_limit, :kind_of => String, :default => '00:01:30'
+attribute :pinging_enabled, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :ping_interval, :kind_of => String, :default => '00:00:30'
+attribute :ping_response_time, :kind_of => String, :default => '00:01:30'
 
 # recycling items
 attribute :disallow_rotation_on_config_change, :kind_of => [TrueClass, FalseClass], :default => false
@@ -53,9 +57,24 @@ attribute :recycle_after_time, :kind_of => String
 attribute :recycle_at_time, :kind_of => String
 attribute :private_mem, :kind_of => Integer
 
+# failure items
+attribute :load_balancer_capabilities, :kind_of => Symbol, :equal_to => [:HttpLevel, :TcpLevel], :default => :HttpLevel
+attribute :orphan_worker_process, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :orphan_action_exe, :kind_of => String
+attribute :orphan_action_params, :kind_of => String
+attribute :rapid_fail_protection, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :rapid_fail_protection_interval, :kind_of => String, :default => '00:05:00'
+attribute :rapid_fail_protection_max_crashes, :kind_of => Integer, :default => 5
+attribute :auto_shutdown_exe, :kind_of => String
+attribute :auto_shutdown_params, :kind_of => String
+
 #cpu items
+attribute :cpu_action, :kind_of => Symbol, :equal_to => [:NoAction, :KillW3wp, :Throttle, :ThrottleUnderLoad], :default => :NoAction
 attribute :cpu_limit, :kind_of => Integer, :default => 0
+attribute :cpu_reset_interval, :kind_of => String, :default => '00:05:00'
 attribute :cpu_smp_affinitized, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :smp_processor_affinity_mask, :kind_of => Bignum, :default => 4294967295
+attribute :smp_processor_affinity_mask_2, :kind_of => Bignum, :default => 4294967295
 
 attr_accessor :exists, :running
 
