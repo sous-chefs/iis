@@ -163,20 +163,34 @@ Creates an application pool in IIS.
 - `pool_name` - name attribute. Specifies the name of the pool to create.
 - `runtime_version` - specifies what .NET version of the runtime to use.
 - `pipeline_mode` - specifies what pipeline mode to create the pool with, valid values are :Integrated or :Classic, the default is :Integrated
-- `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
+
+- `start_mode` - Specifies the startup type for the application pool - default :OnDemand (:OnDemand, :AlwaysRunning) - optional
+- `auto_start` - When true, indicates to the World Wide Web Publishing Service (W3SVC) that the application pool should be automatically started when it is created or when IIS 
+- `queue_length` - Indicates to HTTP.sys how many requests to queue for an application pool before rejecting future requests. - default is 1000 - optional
+- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are :true or :false
+
+- `max_proc` - specifies the number of worker processes associated with the pool.
+- `pinging_enabled` - Specifies whether pinging is enabled for the worker process. - default is true - optional
+- `load_user_profile` - This property is used only when a service starts in a named user account. - Default is false - optional
+- `pool_identity` - the account identity that they app pool will run as
+- `pool_username` - username for the identity for the application pool
+- `pool_password` password for the identity for the application pool is started. Default is true - optional
+
 - `worker_idle_timeout` - specifies the idle time-out value for a pool, d.hh:mm:ss, d optional
 - `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
 - `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
-- `max_proc` - specifies the number of worker processes associated with the pool.
-- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are :true or :false
-- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
-- `pool_identity` - the account identity that they app pool will run as
-- `pool_username` - username for the identity for the application pool
-- `pool_password` password for the identity for the application pool
-- `start_mode` - Specifies the startup type for the application pool - default :OnDemand (:OnDemand, :AlwaysRunning) - optional
-- `auto_start` - When true, indicates to the World Wide Web Publishing Service (W3SVC) that the application pool should be automatically started when it is created or when IIS is started. Default is true - optional
-- `load_user_profile` - This property is used only when a service starts in a named user account. - Default is false - optional
+- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools is shutting down. - default is true - optional
+
+- `load_balancer_capabilities` - Specifies behavior when a worker process cannot be started, such as when the request queue is full or an application pool is in rapid-fail protection. - default is :HttpLevel - optional
+- `rapid_fail_protection` - Setting to true instructs the WWW service to remove from service all applications that are in an application pool - default is true - optional
+
 - `disallow_rotation_on_config_change` - The DisallowRotationOnConfigChange property specifies whether or not the World Wide Web Publishing Service (WWW Service) should rotate worker processes in an application pool when the configuration has changed. - Default is false - optional
+- `disallow_overlapping_rotation` - Specifies whether the WWW Service should start another worker process to replace the existing worker process while that process 
+- `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
+
+
+- `cpu_limit` - Configures the maximum percentage of CPU time (in 1/1000ths of one percent) that the worker processes in an application pool are allowed to consume over a period of time as indicated by the resetInterval attribute. If the limit set by the limit attribute is exceeded, an event is written to the event log and an optional set of events can be triggered. These optional events are determined by the action attribute. - default is 0 - optional
+- `cpu_smp_affinitized` - Specifies whether a particular worker process assigned to an application pool should also be assigned to a given CPU. - default is false - optional
 
 ### Example
 

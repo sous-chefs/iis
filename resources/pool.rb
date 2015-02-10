@@ -38,6 +38,13 @@ attribute :start_mode, :kind_of => Symbol, :equal_to => [:AlwaysRunning, :OnDema
 attribute :auto_start, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :load_user_profile, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :disallow_rotation_on_config_change, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :queue_length, :kind_of => Integer
+attribute :pinging_enabled, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :load_balancer_capabilities, :kind_of => Symbol, :equal_to => [:HttpLevel, :TcpLevel], :default => :HttpLevel
+attribute :rapid_fail_protection, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :disallow_overlapping_rotation, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :cpu_limit, :kind_of => Integer, :default => 0
+attribute :cpu_smp_affinitized, :kind_of => [TrueClass, FalseClass], :default => false
 
 attr_accessor :exists, :running
 
