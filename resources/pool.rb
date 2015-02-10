@@ -21,28 +21,39 @@
 
 actions :add, :config, :delete, :start, :stop, :restart, :recycle
 
+# root
 attribute :pool_name, :kind_of => String, :name_attribute => true
-attribute :runtime_version, :kind_of => String
 attribute :no_managed_code, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :pipeline_mode, :kind_of => Symbol, :equal_to => [:Integrated, :Classic]
-attribute :private_mem, :kind_of => Integer
-attribute :worker_idle_timeout, :kind_of => String
-attribute :recycle_after_time, :kind_of => String
-attribute :recycle_at_time, :kind_of => String
-attribute :max_proc, :kind_of => Integer
+attribute :runtime_version, :kind_of => String
+
+# add items
+attribute :start_mode, :kind_of => Symbol, :equal_to => [:AlwaysRunning, :OnDemand], :default => :OnDemand
+attribute :auto_start, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :queue_length, :kind_of => Integer, :default => 1000
 attribute :thirty_two_bit, :kind_of => Symbol
+
+# processModel items
+attribute :max_proc, :kind_of => Integer
+attribute :pinging_enabled, :kind_of => [TrueClass, FalseClass], :default => true
+attribute :load_user_profile, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :pool_identity, :kind_of => Symbol, :equal_to => [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity ], :default => :ApplicationPoolIdentity
 attribute :pool_username, :kind_of => String
 attribute :pool_password, :kind_of => String
-attribute :start_mode, :kind_of => Symbol, :equal_to => [:AlwaysRunning, :OnDemand], :default => :OnDemand
-attribute :auto_start, :kind_of => [TrueClass, FalseClass], :default => true
-attribute :load_user_profile, :kind_of => [TrueClass, FalseClass], :default => false
-attribute :disallow_rotation_on_config_change, :kind_of => [TrueClass, FalseClass], :default => false
-attribute :queue_length, :kind_of => Integer, :default => 1000
-attribute :pinging_enabled, :kind_of => [TrueClass, FalseClass], :default => true
+
+# failure items
 attribute :load_balancer_capabilities, :kind_of => Symbol, :equal_to => [:HttpLevel, :TcpLevel], :default => :HttpLevel
 attribute :rapid_fail_protection, :kind_of => [TrueClass, FalseClass], :default => true
+
+# recycling items
+attribute :disallow_rotation_on_config_change, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :disallow_overlapping_rotation, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :worker_idle_timeout, :kind_of => String
+attribute :recycle_after_time, :kind_of => String
+attribute :recycle_at_time, :kind_of => String
+attribute :private_mem, :kind_of => Integer
+
+#cpu items
 attribute :cpu_limit, :kind_of => Integer, :default => 0
 attribute :cpu_smp_affinitized, :kind_of => [TrueClass, FalseClass], :default => false
 
