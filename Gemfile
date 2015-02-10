@@ -5,4 +5,5 @@ group :development do
   gem 'kitchen-vagrant', git: 'https://github.com/afiune/kitchen-vagrant.git', :branch => 'Transport'
   gem "berkshelf"
   gem "vagrant-wrapper", ">= 2.0"
+  gem "chefspec"
 end
