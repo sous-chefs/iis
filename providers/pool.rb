@@ -150,8 +150,8 @@ def configure
     is_new_shutdown_time_limit = is_new_value?(doc.root, "APPPOOL/add/processModel/@shutdownTimeLimit", @new_resource.shutdown_time_limit.to_s)
     is_new_startup_time_limit = is_new_value?(doc.root, "APPPOOL/add/processModel/@startupTimeLimit", @new_resource.startup_time_limit.to_s)
     is_new_pinging_enabled = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingingEnabled", @new_resource.pinging_enabled.to_s)
-    is_new_ping_interval = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingInterval", @new_resource.pinging_interval.to_s)
-    is_new_ping_response_time = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingResponseTime", @new_resource.pinging_response_time.to_s)
+    is_new_ping_interval = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingInterval", @new_resource.ping_interval.to_s)
+    is_new_ping_response_time = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingResponseTime", @new_resource.ping_response_time.to_s)
     
     # failure items
     is_new_load_balancer_capabilities = is_new_value?(doc.root, "APPPOOL/add/failure/@loadBalancerCapabilities", @new_resource.load_balancer_capabilities.to_s)
@@ -213,8 +213,8 @@ def configure
     configure_application_pool(is_new_shutdown_time_limit, "processModel.shutdownTimeLimit:#{@new_resource.shutdown_time_limit}")
     configure_application_pool(is_new_startup_time_limit, "processModel.startupTimeLimit:#{@new_resource.startup_time_limit}")
     configure_application_pool(is_new_pinging_enabled, "processModel.pingingEnabled:#{@new_resource.pinging_enabled}")
-    configure_application_pool(is_new_ping_interval, "processModel.pingInterval:#{@new_resource.pinging_interval}")
-    configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{@new_resource.pinging_response_time}")
+    configure_application_pool(is_new_ping_interval, "processModel.pingInterval:#{@new_resource.ping_interval}")
+    configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{@new_resource.ping_response_time}")
     
     # recycling items
     configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
