@@ -199,8 +199,8 @@ Creates an application pool in IIS.
 #### Failure Items
 - `load_balancer_capabilities` - Specifies behavior when a worker process cannot be started, such as when the request queue is full or an application pool is in rapid-fail protection. - default is :HttpLevel - optional
 - `orphan_worker_process` - Specifies whether to assign a worker process to an orphan state instead of terminating it when an application pool fails. - default is false - optional
-- `orphan_action_exe` - Specifies an executable to run when the WWW service orphans a worker process (if the orphanWorkerProcess attribute is set to true). You can use the - default is false - optional
-- `orphan_action_params` - Indicates command-line parameters for the executable named by the orphanActionExe attribute. To specify the process ID of the orphaned process, use %1%. - default is false - optional
+- `orphan_action_exe` - Specifies an executable to run when the WWW service orphans a worker process (if the orphanWorkerProcess attribute is set to true). You can use the orphanActionParams attribute to send parameters to the executable. - optional
+- `orphan_action_params` - Indicates command-line parameters for the executable named by the orphanActionExe attribute. To specify the process ID of the orphaned process, use %1%. - optional
 - `rapid_fail_protection` - Setting to true instructs the WWW service to remove from service all applications that are in an application pool - default is true - optional
 - `rapid_fail_protection_interval` - Specifies the number of minutes before the failure count for a process is reset. - default is '00:05:00' - optional
 - `rapid_fail_protection_max_crashes` - Specifies the maximum number of failures that are allowed within the number of minutes specified by the rapidFailProtectionInterval attribute. - default is 5 - optional
