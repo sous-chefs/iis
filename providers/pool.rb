@@ -180,31 +180,18 @@ def configure
     is_new_smp_processor_affinity_mask = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask", @new_resource.smp_processor_affinity_mask.to_s) 
     is_new_smp_processor_affinity_mask_2 = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask2", @new_resource.smp_processor_affinity_mask_2.to_s) 
 
-    # Application Pool set commands
-    if ((is_new_auto_start || is_new_start_mode) or
-       (@new_resource.runtime_version && is_new_managed_runtime_version) or
-       (@new_resource.recycle_at_time && is_new_recycle_at_time) or
-       (@new_resource.recycle_after_time && is_new_recycle_after_time) or
-       (@new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64) or
-       (@new_resource.max_proc && is_new_max_processes) or
-       (@new_resource.queue_length && is_new_queue_length))
-      @was_updated = true
-      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
-      cmd << " /autoStart:#{@new_resource.auto_start.to_s}" if is_new_auto_start
-      cmd << " /startMode:#{@new_resource.start_mode.to_s}" if is_new_start_mode
-      cmd << " /managedRuntimeVersion:v#{@new_resource.runtime_version}" if @new_resource.runtime_version && is_new_managed_runtime_version
-      cmd << " /recycling.periodicRestart.time:#{@new_resource.recycle_after_time}" if @new_resource.recycle_after_time && is_new_recycle_after_time
-      cmd << " /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}" if @new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64
-      cmd << " /-recycling.periodicRestart.schedule" if @new_resource.recycle_at_time && is_new_recycle_at_time
-      cmd << " /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']" if @new_resource.recycle_at_time && is_new_recycle_at_time
-      cmd << " /processModel.maxProcesses:#{@new_resource.max_proc}" if @new_resource.max_proc && is_new_max_processes
-      cmd << " /queueLength:#{@new_resource.queue_length}" if @new_resource.queue_length && is_new_queue_length
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-    end
-
     # Application Pool Config
+    @cmd = "#{appcmd(node)} set config /section:applicationPools"
+
+    # root items
+    configure_application_pool(is_new_auto_start, "autoStart:#{@new_resource.auto_start}")
+    configure_application_pool(is_new_start_mode, "startMode:#{@new_resource.start_mode}")
+    configure_application_pool(@new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{@new_resource.runtime_version}")
+    configure_application_pool(@new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64, "enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}")
+    configure_application_pool(@new_resource.queue_length && is_new_queue_length, "queueLength:#{@new_resource.queue_length}")
+
     # processModel items
+    configure_application_pool(@new_resource.max_proc && is_new_max_processes, "processModel.maxProcesses:#{@new_resource.max_proc}")
     configure_application_pool(is_new_load_user_profile, "processModel.loadUserProfile:#{@new_resource.load_user_profile}")
     configure_application_pool(is_new_set_profile_environment, "processModel.setProfileEnvironment:#{@new_resource.set_profile_environment}")
     configure_application_pool(is_new_logon_type, "processModel.logonType:#{@new_resource.logon_type}")
@@ -217,6 +204,9 @@ def configure
     configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{@new_resource.ping_response_time}")
     
     # recycling items
+    configure_application_pool(@new_resource.recycle_after_time && is_new_recycle_after_time, "recycling.periodicRestart.time:#{@new_resource.recycle_after_time}")
+    configure_application_pool(@new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule", '-')
+    configure_application_pool(@new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']")
     configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
     configure_application_pool(@new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}")
     configure_application_pool(is_new_disallow_rotation_on_config_change, "recycling.disallowRotationOnConfigChange:#{@new_resource.disallow_rotation_on_config_change}")
@@ -240,6 +230,11 @@ def configure
     configure_application_pool(is_new_cpu_smp_affinitized, "cpu.smpAffinitized:#{@new_resource.cpu_smp_affinitized}")
     configure_application_pool(is_new_smp_processor_affinity_mask, "cpu.smpProcessorAffinityMask:#{@new_resource.smp_processor_affinity_mask}")
     configure_application_pool(is_new_smp_processor_affinity_mask_2, "cpu.smpProcessorAffinityMask2:#{@new_resource.smp_processor_affinity_mask_2}")
+
+    if(@cmd != "#{appcmd(node)} set config /section:applicationPools")
+      Chef::Log.debug(@cmd)
+      shell_out!(@cmd)
+    end
 
     # Application Pool Identity Settings
     if ((@new_resource.pool_username && @new_resource.pool_username != '') and
@@ -277,12 +272,9 @@ def configure
 end
 
 private
-def configure_application_pool(condition, config)
+def configure_application_pool(condition, config, add_remove = '+')
   if(condition)
     @was_updated = true
-    cmd = "#{appcmd(node)} set config /section:applicationPools"
-    cmd << " \"/[name='#{@new_resource.pool_name}'].#{config}\""
-    Chef::Log.debug(cmd)
-    shell_out!(cmd)
+    @cmd << " \"/#{add_remove}[name='#{@new_resource.pool_name}'].#{config}\""
   end
 end
