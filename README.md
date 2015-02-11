@@ -170,7 +170,7 @@ Creates an application pool in IIS.
 - `start_mode` - Specifies the startup type for the application pool - default :OnDemand (:OnDemand, :AlwaysRunning) - optional
 - `auto_start` - When true, indicates to the World Wide Web Publishing Service (W3SVC) that the application pool should be automatically started when it is created or when IIS
 - `queue_length` - Indicates to HTTP.sys how many requests to queue for an application pool before rejecting future requests. - default is 1000 - optional
-- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are :true or :false
+- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are true or false, default is false - optional
 
 #### Process Model Items
 - `max_proc` - specifies the number of worker processes associated with the pool.

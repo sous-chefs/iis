@@ -31,7 +31,7 @@ attribute :runtime_version, :kind_of => String
 attribute :start_mode, :kind_of => Symbol, :equal_to => [:AlwaysRunning, :OnDemand], :default => :OnDemand
 attribute :auto_start, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :queue_length, :kind_of => Integer, :default => 1000
-attribute :thirty_two_bit, :kind_of => Symbol
+attribute :thirty_two_bit, :kind_of => [TrueClass, FalseClass], :default => false
 
 # processModel items
 attribute :max_proc, :kind_of => Integer
