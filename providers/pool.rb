@@ -175,7 +175,7 @@ def configure
     # cpu items
     is_new_cpu_action = is_new_value?(doc.root, "APPPOOL/add/cpu/@action", @new_resource.cpu_action.to_s) 
     is_new_cpu_limit = is_new_value?(doc.root, "APPPOOL/add/cpu/@limit", @new_resource.cpu_limit.to_s)
-    is_new_smp_affinitized = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpAffinitized", @new_resource.cpu_smp_affinitized.to_s)
+    is_new_cpu_smp_affinitized = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpAffinitized", @new_resource.cpu_smp_affinitized.to_s)
     is_new_cpu_reset_interval = is_new_value?(doc.root, "APPPOOL/add/cpu/@resetInterval", @new_resource.cpu_reset_interval.to_s) 
     is_new_smp_processor_affinity_mask = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask", @new_resource.smp_processor_affinity_mask.to_s) 
     is_new_smp_processor_affinity_mask_2 = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask2", @new_resource.smp_processor_affinity_mask_2.to_s) 
