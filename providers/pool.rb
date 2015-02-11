@@ -120,7 +120,7 @@ def site_identifier
 end
 
 def configure
-  $was_updated = false
+  @was_updated = false
   cmd_current_values = "#{appcmd(node)} list apppool \"#{@new_resource.pool_name}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
@@ -188,7 +188,7 @@ def configure
        (@new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64) or
        (@new_resource.max_proc && is_new_max_processes) or
        (@new_resource.queue_length && is_new_queue_length))
-      $was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
       cmd << " /autoStart:#{@new_resource.auto_start.to_s}" if is_new_auto_start
       cmd << " /startMode:#{@new_resource.start_mode.to_s}" if is_new_start_mode
@@ -246,7 +246,7 @@ def configure
       (@new_resource.pool_password && @new_resource.pool_password != '') and
       !is_new_user_name and
       !is_new_password)
-      $was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
@@ -256,14 +256,14 @@ def configure
     elsif ((@new_resource.pool_username.nil? || @new_resource.pool_username == '') and
       (@new_resource.pool_password.nil? || @new_resource.pool_username == '') and
       (is_new_identity_type and @new_resource.pool_identity != "SpecificUser"))
-      $was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
-    if $was_updated
+    if @was_updated
       @new_resource.updated_by_last_action(true)
       Chef::Log.info("#{@new_resource} configured application pool")
     else
@@ -279,7 +279,7 @@ end
 private
 def configure_application_pool(condition, config)
   if(condition)
-    $was_updated = true
+    @was_updated = true
     cmd = "#{appcmd(node)} set config /section:applicationPools"
     cmd << " \"/[name='#{@new_resource.pool_name}'].#{config}\""
     Chef::Log.debug(cmd)
