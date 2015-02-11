@@ -167,7 +167,6 @@ def configure
     # recycling items
     is_new_disallow_overlapping_rotation = is_new_value?(doc.root, "APPPOOL/add/recycling/@disallowOverlappingRotation", @new_resource.disallow_overlapping_rotation.to_s)
     is_new_disallow_rotation_on_config_change = is_new_value?(doc.root, "APPPOOL/add/recycling/@disallowRotationOnConfigChange", @new_resource.disallow_rotation_on_config_change.to_s)
-    is_new_idle_timeout = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
     is_new_recycle_after_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@time", @new_resource.recycle_after_time.to_s)
     is_new_recycle_at_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
     is_new_private_memory = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory", @new_resource.private_mem.to_s)
@@ -206,7 +205,6 @@ def configure
 
     # Application Pool Config
     # processModel items
-    configure_application_pool(@new_resource.worker_idle_timeout && is_new_idle_timeout, "processModel.idleTimeout:#{@new_resource.worker_idle_timeout}")
     configure_application_pool(is_new_load_user_profile, "processModel.loadUserProfile:#{@new_resource.load_user_profile}")
     configure_application_pool(is_new_set_profile_environment, "processModel.setProfileEnvironment:#{@new_resource.set_profile_environment}")
     configure_application_pool(is_new_logon_type, "processModel.logonType:#{@new_resource.logon_type}")

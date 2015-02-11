@@ -52,7 +52,6 @@ attribute :ping_response_time, :kind_of => String, :default => '00:01:30'
 # recycling items
 attribute :disallow_rotation_on_config_change, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :disallow_overlapping_rotation, :kind_of => [TrueClass, FalseClass], :default => false
-attribute :worker_idle_timeout, :kind_of => String
 attribute :recycle_after_time, :kind_of => String
 attribute :recycle_at_time, :kind_of => String
 attribute :private_mem, :kind_of => Integer
