@@ -225,13 +225,13 @@ def configure
     # failure items
     configure_application_pool(is_new_load_balancer_capabilities, "failure.loadBalancerCapabilities:#{@new_resource.load_balancer_capabilities}")
     configure_application_pool(is_new_orphan_worker_process, "failure.orphanWorkerProcess:#{@new_resource.orphan_worker_process}")
-    configure_application_pool(is_new_orphan_action_exe, "failure.orphanActionExe:#{@new_resource.orphan_action_exe}")
-    configure_application_pool(is_new_orphan_action_params, "failure.orphanActionParams:#{@new_resource.orphan_action_params}")
+    configure_application_pool(@new_resource.orphan_action_exe && is_new_orphan_action_exe, "failure.orphanActionExe:#{@new_resource.orphan_action_exe}")
+    configure_application_pool(@new_resource.orphan_action_params && is_new_orphan_action_params, "failure.orphanActionParams:#{@new_resource.orphan_action_params}")
     configure_application_pool(is_new_rapid_fail_protection, "failure.rapidFailProtection:#{@new_resource.rapid_fail_protection}")
     configure_application_pool(is_new_rapid_fail_protection_interval, "failure.rapidFailProtectionInterval:#{@new_resource.rapid_fail_protection_interval}")
     configure_application_pool(is_new_rapid_fail_protection_max, "failure.rapidFailProtectionMaxCrashes:#{@new_resource.rapid_fail_protection_max_crashes}")
-    configure_application_pool(is_new_auto_shutdown_exe, "failure.autoShutdownExe:#{@new_resource.auto_shutdown_exe}")
-    configure_application_pool(is_new_auto_shutdown_params, "failure.autoShutdownParams:#{@new_resource.auto_shutdown_params}")
+    configure_application_pool(@new_resource.auto_shutdown_exe && is_new_auto_shutdown_exe, "failure.autoShutdownExe:#{@new_resource.auto_shutdown_exe}")
+    configure_application_pool(@new_resource.auto_shutdown_params && is_new_auto_shutdown_params, "failure.autoShutdownParams:#{@new_resource.auto_shutdown_params}")
 
     # cpu items
     configure_application_pool(is_new_cpu_action, "cpu.action:#{@new_resource.cpu_action}")
