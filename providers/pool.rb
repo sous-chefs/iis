@@ -135,7 +135,7 @@ def configure
     is_new_start_mode = is_new_value?(doc.root, "APPPOOL/add/@startMode", @new_resource.start_mode.to_s)
     is_new_auto_start = is_new_value?(doc.root, "APPPOOL/add/@autoStart", @new_resource.auto_start.to_s)
     is_new_queue_length = is_new_value?(doc.root, "APPPOOL/add/@queueLength", @new_resource.queue_length.to_s)
-    is_new_enable_32_bit_app_on_win_64 = is_new_or_empty_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s.downcase)
+    is_new_enable_32_bit_app_on_win_64 = is_new_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s)
     
     # processModel items
     is_new_max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
