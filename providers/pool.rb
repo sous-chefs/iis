@@ -204,8 +204,14 @@ def configure
     configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{@new_resource.ping_response_time}")
     
     # recycling items
+    ## Special case this collection removal for now.
+    if(@new_resource.recycle_at_time && is_new_recycle_at_time)
+      @was_updated = true
+      cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{@new_resource.pool_name}'].recycling.periodicRestart.schedule\""
+      Chef::Log.debug(@cmd)
+      shell_out!(@cmd)
+    end
     configure_application_pool(@new_resource.recycle_after_time && is_new_recycle_after_time, "recycling.periodicRestart.time:#{@new_resource.recycle_after_time}")
-    configure_application_pool(@new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule", '-')
     configure_application_pool(@new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']", '+')
     configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
     configure_application_pool(@new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}")
@@ -241,7 +247,7 @@ def configure
       (@new_resource.pool_password && @new_resource.pool_password != '') and
       is_new_user_name and
       is_new_password)
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.userName:#{@new_resource.pool_username}\""
