@@ -43,6 +43,22 @@ module Opscode
         end
       end
 
+      def self.older_than_windows2012?
+        if RUBY_PLATFORM =~ /mswin|mingw32|windows/
+          win_version = Chef::ReservedNames::Win32::Version.new
+          win_version.windows_7? ||
+          win_version.windows_server_2008_r2? ||
+          win_version.windows_server_2008? ||
+          win_version.windows_vista? ||
+          win_version.windows_server_2003_r2? ||
+          win_version.windows_home_server? ||
+          win_version.windows_server_2003? ||
+          win_version.windows_xp? ||
+          win_version.windows_2000?
+        end
+      end
+
+
       def windows_cleanpath(path)
         if(defined?(Chef::Util::PathHelper.cleanpath) != nil)
           return Chef::Util::PathHelper.cleanpath(path)
