@@ -174,8 +174,14 @@ Creates an application pool in IIS.
 
 #### Process Model Items
 - `max_proc` - specifies the number of worker processes associated with the pool.
+<<<<<<< HEAD
 - `load_user_profile` - This property is used only when a service starts in a named user account. - Default is false - optional
 - `pool_identity` - the account identity that they app pool will run as
+=======
+- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are :true or :false
+- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
+- `pool_identity` - the account identity that they app pool will run as, valid values are :SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity
+>>>>>>> pr/2
 - `pool_username` - username for the identity for the application pool
 - `pool_password` password for the identity for the application pool is started. Default is true - optional
 - `set_profile_environment` - When setProfileEnvironment is set to True, WAS creates an environment block to pass to CreateProcessAsUser when creating a worker process. This ensures that the environment is set based on the user profile for the new process - default is true - optional
