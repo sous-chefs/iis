@@ -2,7 +2,7 @@
 # Cookbook Name:: iis
 # Library:: helper
 #
-# Author:: Julian C. Dunn <jdunn@getchef.com>
+# Author:: Julian C. Dunn <jdunn@chef.io>
 #
 # Copyright 2013, Chef Software, Inc.
 #

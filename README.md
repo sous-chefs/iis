@@ -88,12 +88,12 @@ end
 ```
 
 ```ruby
-# do the same but map to testfu.opscode.com domain
+# do the same but map to testfu.chef.io domain
 iis_site 'Testfu Site' do
   protocol :http
   port 80
   path "#{node['iis']['docroot']}/testfu"
-  host_header "testfu.opscode.com"
+  host_header "testfu.chef.io"
   action [:add,:start]
 end
 ```
@@ -440,8 +440,8 @@ Note: Not every possible IIS module has a corresponding recipe. The foregoing re
 License and Author
 ==================
 
-* Author:: Seth Chisamore (<schisamo@opscode.com>)
-* Author:: Julian Dunn (<jdunn@getchef.com>)
+* Author:: Seth Chisamore (<schisamo@chef.io>)
+* Author:: Julian Dunn (<jdunn@chef.io>)
 
 Copyright:: 2011-2013, Chef Software, Inc.
 
