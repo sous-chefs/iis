@@ -7,4 +7,5 @@ group :development do
   gem 'vagrant-wrapper', '>= 2.0'
   gem 'chefspec'
   gem 'stove'
+  gem 'foodcritic'
 end
