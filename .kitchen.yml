@@ -32,5 +32,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[rule_test::default]
+      - recipe[iis::default]
 
