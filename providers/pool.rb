@@ -120,96 +120,123 @@ def site_identifier
 end
 
 def configure
-  was_updated = false
+  @was_updated = false
   cmd_current_values = "#{appcmd(node)} list apppool \"#{@new_resource.pool_name}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    is_new_log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory")
-    is_new_private_memory = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory", @new_resource.private_mem.to_s)
-    is_new_max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
-    is_new_enable_32_bit_app_on_win_64 = is_new_or_empty_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s.downcase)
-    is_new_recycle_after_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@time", @new_resource.recycle_after_time.to_s)
-    is_new_recycle_at_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
+
+    # root items
     is_new_managed_runtime_version = is_new_value?(doc.root, "APPPOOL/@RuntimeVersion", "v#{@new_resource.runtime_version}")
-    is_new_idle_timeout = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
+    
+    # add items
+    is_new_start_mode = is_new_value?(doc.root, "APPPOOL/add/@startMode", @new_resource.start_mode.to_s)
+    is_new_auto_start = is_new_value?(doc.root, "APPPOOL/add/@autoStart", @new_resource.auto_start.to_s)
+    is_new_queue_length = is_new_value?(doc.root, "APPPOOL/add/@queueLength", @new_resource.queue_length.to_s)
+    is_new_enable_32_bit_app_on_win_64 = is_new_value?(doc.root, "APPPOOL/add/@enable32BitAppOnWin64", @new_resource.thirty_two_bit.to_s)
+    
+    # processModel items
+    is_new_max_processes = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@maxProcesses", @new_resource.max_proc.to_s)
+    is_new_load_user_profile = is_new_value?(doc.root, "APPPOOL/add/processModel/@loadUserProfile", @new_resource.load_user_profile.to_s)
     is_new_identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", @new_resource.pool_identity.to_s)
     is_new_user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
     is_new_password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
+    is_new_set_profile_environment = is_new_value?(doc.root, "APPPOOL/add/processModel/@setProfileEnvironment", @new_resource.set_profile_environment.to_s)
+    is_new_logon_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@logonType", @new_resource.logon_type.to_s)
+    is_new_manual_group_membership = is_new_value?(doc.root, "APPPOOL/add/processModel/@manualGroupMembership", @new_resource.manual_group_membership.to_s)
+    is_new_idle_timeout = is_new_value?(doc.root, "APPPOOL/add/processModel/@idleTimeout", @new_resource.idle_timeout.to_s)
+    is_new_shutdown_time_limit = is_new_value?(doc.root, "APPPOOL/add/processModel/@shutdownTimeLimit", @new_resource.shutdown_time_limit.to_s)
+    is_new_startup_time_limit = is_new_value?(doc.root, "APPPOOL/add/processModel/@startupTimeLimit", @new_resource.startup_time_limit.to_s)
+    is_new_pinging_enabled = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingingEnabled", @new_resource.pinging_enabled.to_s)
+    is_new_ping_interval = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingInterval", @new_resource.ping_interval.to_s)
+    is_new_ping_response_time = is_new_value?(doc.root, "APPPOOL/add/processModel/@pingResponseTime", @new_resource.ping_response_time.to_s)
+    
+    # failure items
+    is_new_load_balancer_capabilities = is_new_value?(doc.root, "APPPOOL/add/failure/@loadBalancerCapabilities", @new_resource.load_balancer_capabilities.to_s)
+    is_new_orphan_worker_process = is_new_value?(doc.root, "APPPOOL/add/failure/@orphanWorkerProcess", @new_resource.orphan_worker_process.to_s)
+    is_new_orphan_action_exe = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@orphanActionExe", @new_resource.orphan_action_exe.to_s)
+    is_new_orphan_action_params = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@orphanActionParams", @new_resource.orphan_action_params.to_s)
+    is_new_rapid_fail_protection = is_new_value?(doc.root, "APPPOOL/add/failure/@rapidFailProtection", @new_resource.rapid_fail_protection.to_s)
+    is_new_rapid_fail_protection_interval = is_new_value?(doc.root, "APPPOOL/add/failure/@rapidFailProtectionInterval", @new_resource.rapid_fail_protection_interval.to_s)
+    is_new_rapid_fail_protection_max_crashes = is_new_value?(doc.root, "APPPOOL/add/failure/@rapidFailProtectionMaxCrashes", @new_resource.rapid_fail_protection_max_crashes.to_s)
+    is_new_auto_shutdown_exe = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@autoShutdownExe", @new_resource.auto_shutdown_exe.to_s)
+    is_new_auto_shutdown_params = is_new_or_empty_value?(doc.root, "APPPOOL/add/failure/@autoShutdownParams", @new_resource.auto_shutdown_params.to_s)
+    
+    # recycling items
+    is_new_disallow_overlapping_rotation = is_new_value?(doc.root, "APPPOOL/add/recycling/@disallowOverlappingRotation", @new_resource.disallow_overlapping_rotation.to_s)
+    is_new_disallow_rotation_on_config_change = is_new_value?(doc.root, "APPPOOL/add/recycling/@disallowRotationOnConfigChange", @new_resource.disallow_rotation_on_config_change.to_s)
+    is_new_recycle_after_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@time", @new_resource.recycle_after_time.to_s)
+    is_new_recycle_at_time = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add/@value", @new_resource.recycle_at_time.to_s)
+    is_new_private_memory = is_new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/@privateMemory", @new_resource.private_mem.to_s)
+    is_new_log_event_on_recycle = is_new_value?(doc.root, "APPPOOL/add/recycling/@logEventOnRecycle", "Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory")
 
-    if is_new_log_event_on_recycle
-      was_updated = true
-      cmd = "#{appcmd(node)} set config /section:applicationPools "
-      cmd << "\"/[name='#{@new_resource.pool_name}'].recycling.logEventOnRecycle:"
-      cmd << "PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
+    # cpu items
+    is_new_cpu_action = is_new_value?(doc.root, "APPPOOL/add/cpu/@action", @new_resource.cpu_action.to_s) 
+    is_new_cpu_limit = is_new_value?(doc.root, "APPPOOL/add/cpu/@limit", @new_resource.cpu_limit.to_s)
+    is_new_cpu_smp_affinitized = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpAffinitized", @new_resource.cpu_smp_affinitized.to_s)
+    is_new_cpu_reset_interval = is_new_value?(doc.root, "APPPOOL/add/cpu/@resetInterval", @new_resource.cpu_reset_interval.to_s) 
+    is_new_smp_processor_affinity_mask = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask", @new_resource.smp_processor_affinity_mask.to_s) 
+    is_new_smp_processor_affinity_mask_2 = is_new_value?(doc.root, "APPPOOL/add/cpu/@smpProcessorAffinityMask2", @new_resource.smp_processor_affinity_mask_2.to_s) 
+
+    # Application Pool Config
+    @cmd = "#{appcmd(node)} set config /section:applicationPools"
+
+    # root items
+    configure_application_pool(is_new_auto_start, "autoStart:#{@new_resource.auto_start}")
+    configure_application_pool(is_new_start_mode, "startMode:#{@new_resource.start_mode}")
+    configure_application_pool(@new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{@new_resource.runtime_version}")
+    configure_application_pool(@new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64, "enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}")
+    configure_application_pool(@new_resource.queue_length && is_new_queue_length, "queueLength:#{@new_resource.queue_length}")
+
+    # processModel items
+    configure_application_pool(@new_resource.max_proc && is_new_max_processes, "processModel.maxProcesses:#{@new_resource.max_proc}")
+    configure_application_pool(is_new_load_user_profile, "processModel.loadUserProfile:#{@new_resource.load_user_profile}")
+    configure_application_pool(is_new_set_profile_environment, "processModel.setProfileEnvironment:#{@new_resource.set_profile_environment}")
+    configure_application_pool(is_new_logon_type, "processModel.logonType:#{@new_resource.logon_type}")
+    configure_application_pool(is_new_manual_group_membership, "processModel.manualGroupMembership:#{@new_resource.manual_group_membership}")
+    configure_application_pool(is_new_idle_timeout, "processModel.idleTimeout:#{@new_resource.idle_timeout}")
+    configure_application_pool(is_new_shutdown_time_limit, "processModel.shutdownTimeLimit:#{@new_resource.shutdown_time_limit}")
+    configure_application_pool(is_new_startup_time_limit, "processModel.startupTimeLimit:#{@new_resource.startup_time_limit}")
+    configure_application_pool(is_new_pinging_enabled, "processModel.pingingEnabled:#{@new_resource.pinging_enabled}")
+    configure_application_pool(is_new_ping_interval, "processModel.pingInterval:#{@new_resource.ping_interval}")
+    configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{@new_resource.ping_response_time}")
+    
+    # recycling items
+    configure_application_pool(@new_resource.recycle_after_time && is_new_recycle_after_time, "recycling.periodicRestart.time:#{@new_resource.recycle_after_time}")
+    configure_application_pool(@new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule", '-')
+    configure_application_pool(@new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']", '+')
+    configure_application_pool(is_new_log_event_on_recycle, "recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy")
+    configure_application_pool(@new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{@new_resource.private_mem}")
+    configure_application_pool(is_new_disallow_rotation_on_config_change, "recycling.disallowRotationOnConfigChange:#{@new_resource.disallow_rotation_on_config_change}")
+    configure_application_pool(is_new_disallow_overlapping_rotation, "recycling.disallowOverlappingRotation:#{@new_resource.disallow_overlapping_rotation}")
+
+    # failure items
+    configure_application_pool(is_new_load_balancer_capabilities, "failure.loadBalancerCapabilities:#{@new_resource.load_balancer_capabilities}")
+    configure_application_pool(is_new_orphan_worker_process, "failure.orphanWorkerProcess:#{@new_resource.orphan_worker_process}")
+    configure_application_pool(@new_resource.orphan_action_exe && is_new_orphan_action_exe, "failure.orphanActionExe:#{@new_resource.orphan_action_exe}")
+    configure_application_pool(@new_resource.orphan_action_params && is_new_orphan_action_params, "failure.orphanActionParams:#{@new_resource.orphan_action_params}")
+    configure_application_pool(is_new_rapid_fail_protection, "failure.rapidFailProtection:#{@new_resource.rapid_fail_protection}")
+    configure_application_pool(is_new_rapid_fail_protection_interval, "failure.rapidFailProtectionInterval:#{@new_resource.rapid_fail_protection_interval}")
+    configure_application_pool(is_new_rapid_fail_protection_max_crashes, "failure.rapidFailProtectionMaxCrashes:#{@new_resource.rapid_fail_protection_max_crashes}")
+    configure_application_pool(@new_resource.auto_shutdown_exe && is_new_auto_shutdown_exe, "failure.autoShutdownExe:#{@new_resource.auto_shutdown_exe}")
+    configure_application_pool(@new_resource.auto_shutdown_params && is_new_auto_shutdown_params, "failure.autoShutdownParams:#{@new_resource.auto_shutdown_params}")
+
+    # cpu items
+    configure_application_pool(is_new_cpu_action, "cpu.action:#{@new_resource.cpu_action}")
+    configure_application_pool(is_new_cpu_limit, "cpu.limit:#{@new_resource.cpu_limit}")
+    configure_application_pool(is_new_cpu_reset_interval, "cpu.resetInterval:#{@new_resource.cpu_reset_interval}")
+    configure_application_pool(is_new_cpu_smp_affinitized, "cpu.smpAffinitized:#{@new_resource.cpu_smp_affinitized}")
+    configure_application_pool(is_new_smp_processor_affinity_mask, "cpu.smpProcessorAffinityMask:#{@new_resource.smp_processor_affinity_mask}")
+    configure_application_pool(is_new_smp_processor_affinity_mask_2, "cpu.smpProcessorAffinityMask2:#{@new_resource.smp_processor_affinity_mask_2}")
+
+    if(@cmd != "#{appcmd(node)} set config /section:applicationPools")
+      Chef::Log.debug(@cmd)
+      shell_out!(@cmd)
     end
-    if @new_resource.private_mem && is_new_private_memory
-      was_updated = true
-      cmd = "#{appcmd(node)} set config /section:applicationPools"
-      cmd << " \"/[name='#{@new_resource.pool_name}'].recycling.periodicRestart.privateMemory:"
-      cmd << "#{@new_resource.private_mem}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-    end
-    if @new_resource.max_proc && is_new_max_processes
-      was_updated = true
-      cmd = "#{appcmd(node)} set apppool \"#{@new_resource.pool_name}\""
-      cmd << " -processModel.maxProcesses:#{@new_resource.max_proc}"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-    end
-    if @new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64
-      was_updated = true
-      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
-      cmd << " /enable32BitAppOnWin64:#{@new_resource.thirty_two_bit}"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-    end
-    if @new_resource.recycle_after_time && is_new_recycle_after_time
-      was_updated = true
-      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
-      cmd << " /recycling.periodicRestart.time:#{@new_resource.recycle_after_time}"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-    end
-    if @new_resource.recycle_at_time && is_new_recycle_at_time
-      was_updated = true
-      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
-      cmd << " /-recycling.periodicRestart.schedule"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
-      cmd << " /+recycling.periodicRestart.schedule.[value='#{@new_resource.recycle_at_time}']"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-    end
-    if @new_resource.runtime_version && is_new_managed_runtime_version
-      was_updated = true
-      cmd = "#{appcmd(node)} set apppool \"/apppool.name:#{@new_resource.pool_name}\""
-      cmd << " /managedRuntimeVersion:v#{@new_resource.runtime_version}"
-      Chef::Log.debug(cmd) if @new_resource.runtime_version
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-    end
-    if @new_resource.worker_idle_timeout && is_new_idle_timeout
-      was_updated = true
-      cmd = "#{appcmd(node)} set config /section:applicationPools"
-      cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.idleTimeout:#{@new_resource.worker_idle_timeout}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
-    end
+
+    # Application Pool Identity Settings
     if ((@new_resource.pool_username && @new_resource.pool_username != '') and
       (@new_resource.pool_password && @new_resource.pool_password != '') and
       is_new_user_name and
@@ -221,19 +248,17 @@ def configure
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.password:#{@new_resource.pool_password}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
     elsif ((@new_resource.pool_username.nil? || @new_resource.pool_username == '') and
       (@new_resource.pool_password.nil? || @new_resource.pool_username == '') and
       (is_new_identity_type and @new_resource.pool_identity != "SpecificUser"))
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:#{@new_resource.pool_identity}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
-      @new_resource.updated_by_last_action(true)
     end
 
-    if was_updated
+    if @was_updated
       @new_resource.updated_by_last_action(true)
       Chef::Log.info("#{@new_resource} configured application pool")
     else
@@ -243,5 +268,13 @@ def configure
     log "Failed to run iis_pool action :config, #{cmd_current_values.stderr}" do
       level :warn
     end
+  end
+end
+
+private
+def configure_application_pool(condition, config, add_remove = '')
+  if(condition)
+    @was_updated = true
+    @cmd << " \"/#{add_remove}[name='#{@new_resource.pool_name}'].#{config}\""
   end
 end

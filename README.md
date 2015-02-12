@@ -160,19 +160,59 @@ Creates an application pool in IIS.
 
 ### Attribute Parameters
 
+#### Root Items
 - `pool_name` - name attribute. Specifies the name of the pool to create.
 - `runtime_version` - specifies what .NET version of the runtime to use.
 - `pipeline_mode` - specifies what pipeline mode to create the pool with, valid values are :Integrated or :Classic, the default is :Integrated
-- `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
-- `worker_idle_timeout` - specifies the idle time-out value for a pool, d.hh:mm:ss, d optional
-- `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
-- `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
+- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools is shutting down. - default is true - optional
+
+#### Add Items
+- `start_mode` - Specifies the startup type for the application pool - default :OnDemand (:OnDemand, :AlwaysRunning) - optional
+- `auto_start` - When true, indicates to the World Wide Web Publishing Service (W3SVC) that the application pool should be automatically started when it is created or when IIS
+- `queue_length` - Indicates to HTTP.sys how many requests to queue for an application pool before rejecting future requests. - default is 1000 - optional
+- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are true or false, default is false - optional
+
+#### Process Model Items
 - `max_proc` - specifies the number of worker processes associated with the pool.
-- `thirty_two_bit` - set the pool to run in 32 bit mode, valid values are :true or :false
-- `no_managed_code` - allow Unmanaged Code in setting up IIS app pools
+- `load_user_profile` - This property is used only when a service starts in a named user account. - Default is false - optional
 - `pool_identity` - the account identity that they app pool will run as, valid values are :SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity
 - `pool_username` - username for the identity for the application pool
-- `pool_password` password for the identity for the application pool
+- `pool_password` password for the identity for the application pool is started. Default is true - optional
+- `set_profile_environment` - When setProfileEnvironment is set to True, WAS creates an environment block to pass to CreateProcessAsUser when creating a worker process. This ensures that the environment is set based on the user profile for the new process - default is true - optional
+- `logon_type` - Specifies the logon type for the process identity. (For additional information about [logon types](http://msdn.microsoft.com/en-us/library/aa378184%28VS.85%29.aspx), see the LogonUser Function topic on Microsoft's MSDN Web site.) - Available [:LogonBatch, :LogonService] - default is :LogonBatch - optional
+- `manual_group_membership` - Specifies whether the IIS_IUSRS group Security Identifier (SID) is added to the worker process token. When false, IIS automatically uses an application pool identity as though it were a member of the built-in IIS_IUSRS group, which has access to necessary file and system resources. When true, an application pool identity must be explicitly added to all resources that a worker process requires at runtime. - default is false - optional
+- `idle_timeout` - Specifies how long (in minutes) a worker process should run idle if no new requests are received and the worker process is not processing requests. After the allocated time passes, the worker process should request that it be shut down by the WWW service. - default is '00:20:00' - optional
+- `shutdown_time_limit` - Specifies the time that the W3SVC service waits after it initiated a recycle. If the worker process does not shut down within the shutdownTimeLimit, it will be terminated by the W3SVC service. - default is '00:01:30' - optional
+- `startup_time_limit` - Specifies the time that IIS waits for an application pool to start. If the application pool does not startup within the startupTimeLimit, the worker process is terminated and the rapid-fail protection count is incremented. - default is '00:01:30' - optional
+- `pinging_enabled` - Specifies whether pinging is enabled for the worker process. - default is true - optional
+- `ping_interval` - Specifies the time between health-monitoring pings that the WWW service sends to a worker process - default is '00:00:30' - optional
+- `ping_response_time` - Specifies the time that a worker process is given to respond to a health-monitoring ping. After the time limit is exceeded, the WWW service terminates the worker process - default is '00:01:30' - optional
+
+#### Recycling Items
+- `disallow_rotation_on_config_change` - The DisallowRotationOnConfigChange property specifies whether or not the World Wide Web Publishing Service (WWW Service) should rotate worker processes in an application pool when the configuration has changed. - Default is false - optional
+- `disallow_overlapping_rotation` - Specifies whether the WWW Service should start another worker process to replace the existing worker process while that process
+- `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
+- `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
+- `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
+
+#### Failure Items
+- `load_balancer_capabilities` - Specifies behavior when a worker process cannot be started, such as when the request queue is full or an application pool is in rapid-fail protection. - default is :HttpLevel - optional
+- `orphan_worker_process` - Specifies whether to assign a worker process to an orphan state instead of terminating it when an application pool fails. - default is false - optional
+- `orphan_action_exe` - Specifies an executable to run when the WWW service orphans a worker process (if the orphanWorkerProcess attribute is set to true). You can use the orphanActionParams attribute to send parameters to the executable. - optional
+- `orphan_action_params` - Indicates command-line parameters for the executable named by the orphanActionExe attribute. To specify the process ID of the orphaned process, use %1%. - optional
+- `rapid_fail_protection` - Setting to true instructs the WWW service to remove from service all applications that are in an application pool - default is true - optional
+- `rapid_fail_protection_interval` - Specifies the number of minutes before the failure count for a process is reset. - default is '00:05:00' - optional
+- `rapid_fail_protection_max_crashes` - Specifies the maximum number of failures that are allowed within the number of minutes specified by the rapidFailProtectionInterval attribute. - default is 5 - optional
+- `auto_shutdown_exe` - Specifies an executable to run when the WWW service shuts down an application pool. - optional
+- `auto_shutdown_params` - Specifies command-line parameters for the executable that is specified in the autoShutdownExe attribute. - optional
+
+#### CPU Items
+- `cpu_action` - Configures the action that IIS takes when a worker process exceeds its configured CPU limit. The action attribute is configured on a per-application pool basis. - Available options [:NoAction, :KillW3wp, :Throttle, :ThrottleUnderLoad] - default is :NoAction - optional
+- `cpu_limit` - Configures the maximum percentage of CPU time (in 1/1000ths of one percent) that the worker processes in an application pool are allowed to consume over a period of time as indicated by the resetInterval attribute. If the limit set by the limit attribute is exceeded, an event is written to the event log and an optional set of events can be triggered. These optional events are determined by the action attribute. - default is 0 - optional
+- `cpu_reset_interval` - Specifies the reset period (in minutes) for CPU monitoring and throttling limits on an application pool. When the number of minutes elapsed since the last process accounting reset equals the number specified by this property, IIS resets the CPU timers for both the logging and limit intervals. - default is '00:05:00' - optional
+- `cpu_smp_affinitized` - Specifies whether a particular worker process assigned to an application pool should also be assigned to a given CPU. - default is false - optional
+- `smp_processor_affinity_mask` - Specifies the hexadecimal processor mask for multi-processor computers, which indicates to which CPU the worker processes in an application pool should be bound. Before this property takes effect, the smpAffinitized attribute must be set to true for the application pool. - default is 4294967295 - optional
+- `smp_processor_affinity_mask_2` - Specifies the high-order DWORD hexadecimal processor mask for 64-bit multi-processor computers, which indicates to which CPU the worker processes in an application pool should be bound. Before this property takes effect, the smpAffinitized attribute must be set to true for the application pool. - default is 4294967295 - optional
 
 ### Example
 
