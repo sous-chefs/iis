@@ -1,5 +1,5 @@
 describe 'iis::default'  {
-  It "does something useful" {
-    $true | Should Be $false
+  It "Checks for Web Server Role" {
+    (Get-WindowsFeature -name Web-Server).Installed | Should Be $true
   }
 }
