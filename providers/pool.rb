@@ -212,8 +212,8 @@ def configure
     end
     if ((@new_resource.pool_username && @new_resource.pool_username != '') and
       (@new_resource.pool_password && @new_resource.pool_password != '') and
-      !is_new_user_name and
-      !is_new_password)
+      is_new_user_name and
+      is_new_password)
       was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{@new_resource.pool_name}'].processModel.identityType:SpecificUser\""
