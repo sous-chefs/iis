@@ -14,27 +14,23 @@ provisioner:
   name: chef_zero
 
 platforms:
-  - name: windows-8.1-chef11.10.4
+  - name: windows_2012r2-chef11
     driver_config:
-      box: windows-8.1
-      box_url: # Put in a path to your .box image here.
-    provisioner:
-      require_chef_omnibus: 11.10.4
-  - name: windows-8.1-chef11.16.4
-    driver_config:
-      box: windows-8.1
-      box_url: # Put in a path to your .box image here.
+      box: win2k12r2
+      box_url: #insert your boxfile url here   
+      gui: true
     provisioner:
       require_chef_omnibus: 11.16.4
-  - name: windows-8.1-chef12
+  - name: windows_2012r2-chef12
     driver_config:
-      box: windows-8.1
-      box_url: # Put in a path to your .box image here.
+      box: win2k12r2
+      box_url: #insert your boxfile url here  
+      gui: true
     provisioner:
-      require_chef_omnibus: 12
+      require_chef_omnibus: 12.0.3
 
 suites:
   - name: default
     run_list:
-      - recipe[iis::default]
+      - recipe[rule_test::default]
 
