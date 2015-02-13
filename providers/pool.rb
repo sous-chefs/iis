@@ -143,7 +143,6 @@ def configure
     is_new_identity_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@identityType", @new_resource.pool_identity.to_s)
     is_new_user_name = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@userName", @new_resource.pool_username.to_s)
     is_new_password = is_new_or_empty_value?(doc.root, "APPPOOL/add/processModel/@password", @new_resource.pool_password.to_s)
-    is_new_set_profile_environment = is_new_value?(doc.root, "APPPOOL/add/processModel/@setProfileEnvironment", @new_resource.set_profile_environment.to_s)
     is_new_logon_type = is_new_value?(doc.root, "APPPOOL/add/processModel/@logonType", @new_resource.logon_type.to_s)
     is_new_manual_group_membership = is_new_value?(doc.root, "APPPOOL/add/processModel/@manualGroupMembership", @new_resource.manual_group_membership.to_s)
     is_new_idle_timeout = is_new_value?(doc.root, "APPPOOL/add/processModel/@idleTimeout", @new_resource.idle_timeout.to_s)
@@ -193,7 +192,6 @@ def configure
     # processModel items
     configure_application_pool(@new_resource.max_proc && is_new_max_processes, "processModel.maxProcesses:#{@new_resource.max_proc}")
     configure_application_pool(is_new_load_user_profile, "processModel.loadUserProfile:#{@new_resource.load_user_profile}")
-    configure_application_pool(is_new_set_profile_environment, "processModel.setProfileEnvironment:#{@new_resource.set_profile_environment}")
     configure_application_pool(is_new_logon_type, "processModel.logonType:#{@new_resource.logon_type}")
     configure_application_pool(is_new_manual_group_membership, "processModel.manualGroupMembership:#{@new_resource.manual_group_membership}")
     configure_application_pool(is_new_idle_timeout, "processModel.idleTimeout:#{@new_resource.idle_timeout}")
