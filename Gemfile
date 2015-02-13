@@ -6,4 +6,5 @@ group :development do
   gem 'berkshelf'
   gem 'vagrant-wrapper', '>= 2.0'
   gem 'chefspec'
+  gem 'stove'
 end
