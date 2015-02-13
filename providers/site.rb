@@ -64,7 +64,7 @@ action :config do
     doc = Document.new(xml)
     is_new_bindings = is_new_value?(doc.root, "SITE/@bindings", @new_resource.bindings.to_s)
     is_new_physical_path = is_new_or_empty_value?(doc.root, "SITE/site/application/virtualDirectory/@physicalPath", @new_resource.path.to_s)
-    is_new_port_host_provided = XPath.first(doc.root, "SITE/@bindings").to_s.include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:#{@new_resource.host_header}")
+    is_new_port_host_provided = !"#{XPath.first(doc.root, "SITE/@bindings").to_s},".include?("#{@new_resource.protocol.to_s}/*:#{@new_resource.port}:#{@new_resource.host_header},")
     is_new_site_id = is_new_value?(doc.root, "SITE/site/@id", @new_resource.site_id.to_s)
     is_new_log_directory = is_new_or_empty_value?(doc.root,"SITE/logFiles/@directory",@new_resource.log_directory.to_s)
     is_new_log_period = is_new_or_empty_value?(doc.root, "SITE/logFile/@period", @new_resource.log_period.to_s)
