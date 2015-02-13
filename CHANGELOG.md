@@ -1,3 +1,11 @@
+v4.0.0 (2015-02-12)
+-------------------
+- Improved pool resource with many more apppool properties that can be set.
+- Fixed bug with default attribute inheritance.
+- New recipe to enable ASP.NET 4.5
+- Skeleton serverspec+test-kitchen framework.
+- Added Berksfile, Gemfile and .kitchen.yml to assist developers.
+
 v3.0.12 (2015-1-16)
 -------------------
 - Fixed issue [#107] function is_new_or_empty was returning reverse results.
