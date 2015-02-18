@@ -20,6 +20,7 @@
 #
 
 actions :add, :config, :delete, :start, :stop, :restart, :recycle
+default_action :add
 
 # root
 attribute :pool_name, :kind_of => String, :name_attribute => true
@@ -75,8 +76,3 @@ attribute :smp_processor_affinity_mask, :kind_of => Bignum, :default => 42949672
 attribute :smp_processor_affinity_mask_2, :kind_of => Bignum, :default => 4294967295
 
 attr_accessor :exists, :running
-
-def initialize(*args)
-  super
-  @action = :add
-end
