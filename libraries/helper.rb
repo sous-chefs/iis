@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-module Opscode
+module Chef
   module IIS
     module Helper
       if RUBY_PLATFORM =~ /mswin|mingw32|windows/

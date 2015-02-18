@@ -24,7 +24,7 @@ require 'rexml/document'
 
 include Chef::Mixin::ShellOut
 include REXML
-include Opscode::IIS::Helper
+include Chef::IIS::Helper
 
 action :add do
   unless @current_resource.exists

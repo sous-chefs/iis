@@ -50,7 +50,7 @@ v3.0.4 (2014-12-25)
 
 v3.0.0 Unreleased
 -------------------
-- [#91](https://github.com/opscode-cookbooks/iis/pull/91) - bulk addition of new features
+- [#91](https://github.com/chef-cookbooks/iis/pull/91) - bulk addition of new features
   - Virtual Directory Support (allows virtual directories to be added to both websites and to webapplications under sites)
   - section unlock and lock support (this is used to allow for the web.config of a site to define the authentication methods)
   - fixed issue with :add on pool provider not running all config (this was a known issue and is now resolved)
@@ -104,36 +104,36 @@ Adding extra windows platform checks to helper library
 v1.6.4
 ------
 ### Bug
-- **[COOK-4138](https://tickets.opscode.com/browse/COOK-4138)** - iis cookbook won't load on non-Windows platforms
+- **[COOK-4138](https://tickets.chef.io/browse/COOK-4138)** - iis cookbook won't load on non-Windows platforms
 
 
 v1.6.2
 ------
 ### Improvement
-- **[COOK-3634](https://tickets.opscode.com/browse/COOK-3634)** - provide ability to set app pool managedRuntimeVersion to "No Managed Code"
+- **[COOK-3634](https://tickets.chef.io/browse/COOK-3634)** - provide ability to set app pool managedRuntimeVersion to "No Managed Code"
 
 
 v1.6.0
 ------
 ### Improvement
-- **[COOK-3922](https://tickets.opscode.com/browse/COOK-3922)** - refactor IIS cookbook to not require WebPI
+- **[COOK-3922](https://tickets.chef.io/browse/COOK-3922)** - refactor IIS cookbook to not require WebPI
 
 
 v1.5.6
 ------
 ### Improvement
-- **[COOK-3770](https://tickets.opscode.com/browse/COOK-3770)** - Add Enabled Protocols to IIS App Recipe
+- **[COOK-3770](https://tickets.chef.io/browse/COOK-3770)** - Add Enabled Protocols to IIS App Recipe
 
 
 v1.5.4
 ------
 ### New Feature
-- **[COOK-3675](https://tickets.opscode.com/browse/COOK-3675)** - Add recipe for CGI module
+- **[COOK-3675](https://tickets.chef.io/browse/COOK-3675)** - Add recipe for CGI module
 
 v1.5.2
 ------
 ### Bug
-- **[COOK-3232](https://tickets.opscode.com/browse/COOK-3232)** - Allow `iis_app` resource `:config` action with a virtual path
+- **[COOK-3232](https://tickets.chef.io/browse/COOK-3232)** - Allow `iis_app` resource `:config` action with a virtual path
 
 v1.5.0
 ------

@@ -20,7 +20,7 @@
 
 include_recipe "iis"
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
+if Chef::IIS::Helper.older_than_windows2008r2?
   features = %w{Web-Mgmt-Console Web-Mgmt-Service}
 else
   features = %w{IIS-ManagementConsole IIS-ManagementService}

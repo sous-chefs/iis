@@ -20,7 +20,7 @@
 
 require 'chef/mixin/shell_out'
 include Chef::Mixin::ShellOut
-include Opscode::IIS::Helper
+include Chef::IIS::Helper
 
 # Support whyrun
 def whyrun_supported?

@@ -20,7 +20,7 @@
 
 include_recipe "iis"
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
+if Chef::IIS::Helper.older_than_windows2008r2?
   features = %w{Web-Ftp-Server Web-Ftp-Service Web-Ftp-Ext}
 else
   features = %w{IIS-FTPServer IIS-FTPSvc IIS-FTPExtensibility}

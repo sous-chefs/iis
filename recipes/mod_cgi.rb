@@ -21,7 +21,7 @@
 include_recipe "iis"
 
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
+if Chef::IIS::Helper.older_than_windows2008r2?
   feature = 'Web-CGI'
 else
   feature = 'IIS-CGI'

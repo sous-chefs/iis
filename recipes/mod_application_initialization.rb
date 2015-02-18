@@ -20,7 +20,7 @@
 
 include_recipe "iis"
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
+if Chef::IIS::Helper.older_than_windows2008r2?
   log "Application Initialization module is not supported on Windows 2008 or lower, ignoring"
 else
   windows_feature "IIS-ApplicationInit" do
