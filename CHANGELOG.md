@@ -1,65 +1,28 @@
-v4.0.1 (TODO)
+v4.1.0 (2015-02-20)
 -------------------
+- Removed iis_pool attribute 'set_profile_environment' incompatible with < IIS-8.
 - Added pester test framework.
+- Condensed and fixed change-log to show public releases only.
 
 v4.0.0 (2015-02-12)
 -------------------
+- [#91](https://github.com/chef-cookbooks/iis/pull/91) - bulk addition of new features
+  - Virtual Directory Support (allows virtual directories to be added to both websites and to webapplications under sites).
+  - section unlock and lock support (this is used to allow for the web.config of a site to define the authentication methods).
+  - fixed issue with :add on pool provider not running all config (this was a known issue and is now resolved).
+  - fixed issue with :config on all providers causing application pool recycles (every chef-client run).
+  - moved to better method for XML checking of previous settings to detect changes (changed all check to use xml searching with appcmd instead of the previous method [none]).
 - Improved pool resource with many more apppool properties that can be set.
 - Fixed bug with default attribute inheritance.
-- New recipe to enable ASP.NET 4.5
+- New recipe to enable ASP.NET 4.5.
 - Skeleton serverspec+test-kitchen framework.
 - Added Berksfile, Gemfile and .kitchen.yml to assist developers.
-
-v3.0.12 (2015-1-16)
--------------------
 - Fixed issue [#107] function is_new_or_empty was returning reverse results.
-
-v3.0.11 (2015-1-14)
--------------------
-- Removed BOM char from multiple files that was causing recipe compile errors
-
-v3.0.10 (2015-1-13)
--------------------
-- Removed dependency on "chef-client", ">= 3.7.0"
-- Changed all files to UTF-8 file format
-
-v3.0.9 (2015-1-5)
--------------------
-- Fixed issue with iis_vdir under iis_app usage.
-
-v3.0.8 (2015-1-5)
--------------------
-- Fixed issue with iis_vdir continually adding
-- Fixed issue with iis_pool not putting ApplicationPoolIdentity
-
-v3.0.7 (2015-1-5)
--------------------
-- Fixed issue with iis_vdir
-
-v3.0.6 (2015-1-2)
--------------------
-- Fixed issue with iis_pool with username/password
-
-v3.0.5 (2015-1-2)
--------------------
-- [#98] Fixed issues with bindings
-
-v3.0.4 (2014-12-25)
--------------------
-- [#95] had to remove unneeded variables
-- incorrect variables
-- add dependencies
-- bumped version
-- added backwards compatibility for chef-client < 12.x.x Chef::Util::PathHelper
-
-v3.0.0 Unreleased
--------------------
-- [#91](https://github.com/chef-cookbooks/iis/pull/91) - bulk addition of new features
-  - Virtual Directory Support (allows virtual directories to be added to both websites and to webapplications under sites)
-  - section unlock and lock support (this is used to allow for the web.config of a site to define the authentication methods)
-  - fixed issue with :add on pool provider not running all config (this was a known issue and is now resolved)
-  - fixed issue with :config on all providers causing application pool recycles (every chef-client run)
-  - moved to better method for XML checking of previous settings to detect changes (changed all check to use xml searching with appcmd instead of the previous method [none])
+- Removed dependency on "chef-client", ">= 3.7.0".
+- Changed all files to UTF-8 file format.
+- Fixed issue with iis_pool not putting ApplicationPoolIdentity and username/password.
+- [#98] Fixed issues with bindings.
+- added backwards compatibility for chef-client < 12.x.x Chef::Util::PathHelper.
 
 v2.1.6 (2014-11-12)
 -------------------
