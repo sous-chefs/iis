@@ -1,3 +1,7 @@
+v4.0.1 (TODO)
+-------------------
+- Added pester test framework.
+
 v4.0.0 (2015-02-12)
 -------------------
 - Improved pool resource with many more apppool properties that can be set.
