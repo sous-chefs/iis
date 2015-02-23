@@ -22,7 +22,7 @@
 require 'chef/mixin/shell_out'
 
 include Chef::Mixin::ShellOut
-include Chef::IIS::Helper
+include Opscode::IIS::Helper
 
 action :config do
   cmd = "#{appcmd(node)} set config #{new_resource.cfg_cmd}"

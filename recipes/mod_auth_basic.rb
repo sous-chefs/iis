@@ -20,7 +20,7 @@
 
 include_recipe "iis"
 
-if Chef::IIS::Helper.older_than_windows2008r2?
+if Opscode::IIS::Helper.older_than_windows2008r2?
   feature = 'Web-Basic-Auth'
 else
   feature = 'IIS-BasicAuthentication'
