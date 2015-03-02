@@ -50,10 +50,10 @@ action :config do
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    is_new_path = is_new_or_empty_value?(doc.root, "APP/application/@path", new_resource.path.to_s)
-    is_new_application_pool = is_new_or_empty_value?(doc.root, "APP/application/@applicationPool", new_resource.application_pool.to_s)
-    is_new_enabled_protocols = is_new_or_empty_value?(doc.root, "APP/application/@enabledProtocols", new_resource.enabled_protocols.to_s)
-    is_new_physical_path = is_new_or_empty_value?(doc.root, "APP/application/virtualDirectory/@physicalPath", new_resource.physical_path.to_s)
+    is_new_path = is_new_or_empty_value?(doc.root, "//APP/application/@path", new_resource.path.to_s)
+    is_new_application_pool = is_new_or_empty_value?(doc.root, "//APP/application/@applicationPool", new_resource.application_pool.to_s)
+    is_new_enabled_protocols = is_new_or_empty_value?(doc.root, "//APP/application/@enabledProtocols", new_resource.enabled_protocols.to_s)
+    is_new_physical_path = is_new_or_empty_value?(doc.root, "//APP/application/virtualDirectory/@physicalPath", windows_cleanpath(new_resource.physical_path.to_s))
 
     #only get the beginning of the command if there is something that changeds
     cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if ((new_resource.path && is_new_path) or
@@ -67,31 +67,31 @@ action :config do
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols && is_new_enabled_protocols
     Chef::Log.debug(cmd)
     
-    if(cmd == nil)
-      Chef::Log.debug("#{new_resource} application - nothing to do")
-    else
+    if(cmd != nil)
       shell_out!(cmd)
-      
-      if ((new_resource.path && is_new_path) or
-        (new_resource.application_pool && is_new_application_pool) or
-        (new_resource.enabled_protocols && is_new_enabled_protocols))
-        was_updated = true
-      end
-
-      if new_resource.physical_path && is_new_physical_path
-        was_updated = true
-        cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
-        cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
-        Chef::Log.debug(cmd)
-        shell_out!(cmd)
-      end
-      if was_updated
-        new_resource.updated_by_last_action(true)
-        Chef::Log.info("#{new_resource} configured application")
-      else
-        Chef::Log.debug("#{new_resource} application - nothing to do")
-      end
     end
+
+    if ((new_resource.path && is_new_path) or
+      (new_resource.application_pool && is_new_application_pool) or
+      (new_resource.enabled_protocols && is_new_enabled_protocols))
+      was_updated = true
+    end
+
+    if new_resource.physical_path && is_new_physical_path
+      was_updated = true
+      cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
+      cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+    end
+
+    if was_updated
+      new_resource.updated_by_last_action(true)
+      Chef::Log.info("#{new_resource} configured application")
+    else
+      Chef::Log.debug("#{new_resource} application - nothing to do")
+    end
+
   else
     log "Failed to run iis_app action :config, #{cmd_current_values.stderr}" do
       level :warn
