@@ -27,7 +27,7 @@ platforms:
       box_url: #insert your boxfile url here  
       gui: true
     provisioner:
-      require_chef_omnibus: 12.0.3
+      require_chef_omnibus: 12.1.0
 
 suites:
   - name: default
