@@ -1,8 +1,10 @@
-v4.1.0 (2015-02-20)
+v4.1.0 (2015-03-04)
 -------------------
 - Removed iis_pool attribute 'set_profile_environment' incompatible with < IIS-8.
 - Added pester test framework.
 - Condensed and fixed change-log to show public releases only.
+- Fixed bug where bindings were being overwritten by :config.
+- Code-cleanup and cosmetic fixes.
 
 v4.0.0 (2015-02-12)
 -------------------
