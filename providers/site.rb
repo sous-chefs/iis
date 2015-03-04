@@ -76,7 +76,7 @@ action :config do
       cmd << " /bindings:\"#{new_resource.bindings}\""
       shell_out!(cmd)
       new_resource.updated_by_last_action(true)
-    elsif ((new_resource.port || new_resource.host_header || new_resource.protocol) and is_new_port_host_provided)
+    elsif (((new_resource.port || new_resource.host_header || new_resource.protocol) and is_new_port_host_provided) && !new_resource.bindings)
       was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /bindings:#{new_resource.protocol.to_s}/*:#{new_resource.port}:#{new_resource.host_header}"
