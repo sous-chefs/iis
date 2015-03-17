@@ -71,26 +71,27 @@ action :config do
       Chef::Log.debug("#{new_resource} application - nothing to do")
     else
       shell_out!(cmd)
+      was_updated = true
+    end
       
-      if ((new_resource.path && is_new_path) or
-        (new_resource.application_pool && is_new_application_pool) or
-        (new_resource.enabled_protocols && is_new_enabled_protocols))
-        was_updated = true
-      end
+    if ((new_resource.path && is_new_path) or
+      (new_resource.application_pool && is_new_application_pool) or
+      (new_resource.enabled_protocols && is_new_enabled_protocols))
+      was_updated = true
+    end
 
-      if new_resource.physical_path && is_new_physical_path
-        was_updated = true
-        cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
-        cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
-        Chef::Log.debug(cmd)
-        shell_out!(cmd)
-      end
-      if was_updated
-        new_resource.updated_by_last_action(true)
-        Chef::Log.info("#{new_resource} configured application")
-      else
-        Chef::Log.debug("#{new_resource} application - nothing to do")
-      end
+    if new_resource.physical_path && is_new_physical_path
+      was_updated = true
+      cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
+      cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+    end
+    if was_updated
+      new_resource.updated_by_last_action(true)
+      Chef::Log.info("#{new_resource} configured application")
+    else
+      Chef::Log.debug("#{new_resource} application - nothing to do")
     end
   else
     log "Failed to run iis_app action :config, #{cmd_current_values.stderr}" do
