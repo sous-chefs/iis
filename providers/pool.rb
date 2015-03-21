@@ -252,6 +252,15 @@ def configure
       cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.pool_password}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
+    elsif ((new_resource.pool_username && new_resource.pool_username != '') and
+      (new_resource.pool_password.nil? || new_resource.pool_username == '') and
+      is_new_user_name)
+      @was_updated = true
+      cmd = "#{appcmd(node)} set config /section:applicationPools"
+      cmd << " \"/[name='#{new_resource.pool_name}'].processModel.identityType:SpecificUser\""
+      cmd << " \"/[name='#{new_resource.pool_name}'].processModel.userName:#{new_resource.pool_username}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
     elsif ((new_resource.pool_username.nil? || new_resource.pool_username == '') and
       (new_resource.pool_password.nil? || new_resource.pool_username == '') and
       (is_new_identity_type and new_resource.pool_identity != "SpecificUser"))
