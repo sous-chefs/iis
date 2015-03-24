@@ -61,10 +61,12 @@ module Opscode
 
       def windows_cleanpath(path)
         if defined?(Chef::Util::PathHelper.cleanpath) != nil
-          Chef::Util::PathHelper.cleanpath(path)
+          path = Chef::Util::PathHelper.cleanpath(path)
         else
-          win_friendly_path(path)
+          path = win_friendly_path(path)
         end
+        # Remove any trailing slashes to prevent them from accidentally escaping any quotes.
+        path.chomp('/').chomp('\\')
       end
 
       def is_new_value?(document, xpath, value_to_check)
