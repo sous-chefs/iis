@@ -36,7 +36,7 @@ action :add do
     cmd << " /allowSubDirConfig:#{new_resource.allow_sub_dir_config}" if new_resource.allow_sub_dir_config
 
     Chef::Log.info(cmd)
-    shell_out!(cmd, {:returns => [0,42]})
+    shell_out!(cmd, {:returns => [0,42,183]})
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} added new virtual directory to application: '#{new_resource.application_name}'")
   else
