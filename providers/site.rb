@@ -26,7 +26,7 @@ include REXML
 include Opscode::IIS::Helper
 
 action :add do
-  unless @current_resource.exists
+  if !@current_resource.exists
     cmd = "#{appcmd(node)} add site /name:\"#{new_resource.site_name}\""
     cmd << " /id:#{new_resource.site_id}" if new_resource.site_id
     cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.path)}\"" if new_resource.path
@@ -42,10 +42,10 @@ action :add do
     if new_resource.options
       cmd << " #{new_resource.options}"
     end
-    shell_out!(cmd, {:returns => [0,42]})
+    shell_out!(cmd,  returns: [0, 42])
 
     if new_resource.application_pool
-      shell_out!("#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\"", {:returns => [0,42]})
+      shell_out!("#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\"",  returns: [0, 42])
     end
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} added new site '#{new_resource.site_name}'")
@@ -62,13 +62,13 @@ action :config do
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    is_new_bindings = is_new_value?(doc.root, "SITE/@bindings", new_resource.bindings.to_s)
-    is_new_physical_path = is_new_or_empty_value?(doc.root, "SITE/site/application/virtualDirectory/@physicalPath", new_resource.path.to_s)
-    is_new_port_host_provided = !"#{XPath.first(doc.root, "SITE/@bindings").to_s},".include?("#{new_resource.protocol.to_s}/*:#{new_resource.port}:#{new_resource.host_header},")
-    is_new_site_id = is_new_value?(doc.root, "SITE/site/@id", new_resource.site_id.to_s)
-    is_new_log_directory = is_new_or_empty_value?(doc.root,"SITE/logFiles/@directory",new_resource.log_directory.to_s)
-    is_new_log_period = is_new_or_empty_value?(doc.root, "SITE/logFile/@period", new_resource.log_period.to_s)
-    is_new_log_trunc = is_new_or_empty_value?(doc.root, "SITE/logFiles/@truncateSize",new_resource.log_truncsize.to_s)
+    is_new_bindings = new_value?(doc.root, 'SITE/@bindings', new_resource.bindings.to_s)
+    is_new_physical_path = new_or_empty_value?(doc.root, 'SITE/site/application/virtualDirectory/@physicalPath', new_resource.path.to_s)
+    is_new_port_host_provided = !"#{XPath.first(doc.root, 'SITE/@bindings')},".include?("#{new_resource.protocol}/*:#{new_resource.port}:#{new_resource.host_header},")
+    is_new_site_id = new_value?(doc.root, 'SITE/site/@id', new_resource.site_id.to_s)
+    is_new_log_directory = new_or_empty_value?(doc.root, 'SITE/logFiles/@directory', new_resource.log_directory.to_s)
+    is_new_log_period = new_or_empty_value?(doc.root, 'SITE/logFile/@period', new_resource.log_period.to_s)
+    is_new_log_trunc = new_or_empty_value?(doc.root, 'SITE/logFiles/@truncateSize', new_resource.log_truncsize.to_s)
 
     if (new_resource.bindings && is_new_bindings)
       was_updated = true
@@ -76,10 +76,10 @@ action :config do
       cmd << " /bindings:\"#{new_resource.bindings}\""
       shell_out!(cmd)
       new_resource.updated_by_last_action(true)
-    elsif (((new_resource.port || new_resource.host_header || new_resource.protocol) and is_new_port_host_provided) && !new_resource.bindings)
+    elsif (((new_resource.port || new_resource.host_header || new_resource.protocol) && is_new_port_host_provided) && !new_resource.bindings)
       was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
-      cmd << " /bindings:#{new_resource.protocol.to_s}/*:#{new_resource.port}:#{new_resource.host_header}"
+      cmd << " /bindings:#{new_resource.protocol}/*:#{new_resource.port}:#{new_resource.host_header}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
       new_resource.updated_by_last_action(true)
@@ -92,7 +92,7 @@ action :config do
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
-    
+
     if new_resource.site_id && is_new_site_id
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /id:#{new_resource.site_id}"
@@ -141,7 +141,7 @@ end
 action :delete do
   if @current_resource.exists
     Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-    shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} deleted")
   else
@@ -150,8 +150,8 @@ action :delete do
 end
 
 action :start do
-  unless @current_resource.running
-    shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", {:returns => [0,42]})
+  if !@current_resource.running
+    shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} started")
   else
@@ -162,7 +162,7 @@ end
 action :stop do
   if @current_resource.running
     Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", {:returns => [0,42]})
+    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} stopped")
   else
@@ -171,9 +171,9 @@ action :stop do
 end
 
 action :restart do
-  shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
   sleep 2
-  shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", {:returns => [0,42]})
+  shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
   new_resource.updated_by_last_action(true)
   Chef::Log.info("#{new_resource} restarted")
 end
@@ -192,7 +192,7 @@ def load_current_resource
     if result
       @current_resource.site_id(result[2].to_i)
       @current_resource.exists = true
-      bindings = result[3]
+      @current_resource.bindings = result[3]
       @current_resource.running = (result[4] =~ /Started/) ? true : false
     else
       @current_resource.exists = false
