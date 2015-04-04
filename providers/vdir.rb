@@ -126,7 +126,6 @@ def load_current_resource
   @current_resource.application_name(application_name_check)
   @current_resource.path(new_resource.path)
   @current_resource.physical_path(new_resource.physical_path)
-  
 end
 
 private

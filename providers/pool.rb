@@ -102,25 +102,31 @@ def load_current_resource
   cmd = shell_out("#{appcmd(node)} list apppool")
   # APPPOOL "DefaultAppPool" (MgdVersion:v2.0,MgdMode:Integrated,state:Started)
   Chef::Log.debug("#{new_resource} list apppool command output: #{cmd.stdout}")
-  if cmd.stderr.empty?
-    result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
-    result = result.match(/^APPPOOL\s\"(#{new_resource.pool_name})\"\s\(MgdVersion:(.*),MgdMode:(.*),state:(.*)\)$/)
-    Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
-    if result
-      @current_resource.exists = true
-      @current_resource.running = (result[4] =~ /Started/) ? true : false
-    else
-      @current_resource.exists = false
-      @current_resource.running = false
-    end
+  result = list_pools.match(/^APPPOOL\s\"(#{new_resource.pool_name})\"\s\(MgdVersion:(.*),MgdMode:(.*),state:(.*)\)$/)
+  Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
+  if result
+    @current_resource.exists = true
+    @current_resource.running = (result[4] =~ /Started/) ? true : false
   else
-    log "Failed to run iis_pool action :load_current_resource, #{cmd_current_values.stderr}" do
-      level :warn
-    end
+    @current_resource.exists = false
+    @current_resource.running = false
   end
 end
 
 private
+  def list_pools
+    cmd = shell_out("#{appcmd(node)} list apppool")
+    # APPPOOL "DefaultAppPool" (MgdVersion:v2.0,MgdMode:Integrated,state:Started)
+    Chef::Log.debug("#{new_resource} list apppool command output: #{cmd.stdout}")
+    if cmd.stderr.empty?
+      return cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
+    else
+      log "Failed to run iis_pool action :load_current_resource, #{cmd_current_values.stderr}" do
+        level :warn
+      end
+    end
+  end
+
   def pool_exists?
     exists = false
     cmd = shell_out("#{appcmd(node)} list apppool")
