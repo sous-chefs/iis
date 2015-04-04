@@ -45,8 +45,17 @@ action :add do
     shell_out!(cmd, {:returns => [0,42]})
 
     if new_resource.application_pool
-      shell_out!("#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\"", {:returns => [0,42]})
+      Chef::Log.info("Setting up application pool")
+      res = shell_out!("#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\"", {:returns => [0,42]})
+      Chef::Log.info(res.stdout)
     end
+
+    if !verify_creation_occurred?(method(:site_exists?))
+      Chef::Log.error("Site wasn't created within 5 seconds...")  
+    end
+
+    Chef::Log.info("Made it here.")
+    
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} added new site '#{new_resource.site_name}'")
   else
@@ -181,26 +190,44 @@ end
 def load_current_resource
   @current_resource = Chef::Resource::IisSite.new(new_resource.name)
   @current_resource.site_name(new_resource.site_name)
-  cmd = shell_out("#{appcmd(node)} list site")
-  Chef::Log.debug(appcmd(node))
-  # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
-  Chef::Log.debug("#{new_resource} list site command output: #{cmd.stdout}")
-  if cmd.stderr.empty?
-    result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
-    result = result.match(/^SITE\s\"(#{new_resource.site_name})\"\s\(id:(.*),bindings:(.*),state:(.*)\)$/)
-    Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
-    if result
-      @current_resource.site_id(result[2].to_i)
-      @current_resource.exists = true
-      bindings = result[3]
-      @current_resource.running = (result[4] =~ /Started/) ? true : false
-    else
-      @current_resource.exists = false
-      @current_resource.running = false
-    end
+  result = list_sites.match(/^SITE\s\"(#{new_resource.site_name})\"\s\(id:(.*),bindings:(.*),state:(.*)\)$/)
+  Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
+  if result
+    @current_resource.site_id(result[2].to_i)
+    @current_resource.exists = true
+    bindings = result[3]
+    @current_resource.running = (result[4] =~ /Started/) ? true : false
   else
-    log "Failed to run iis_site action :config, #{cmd.stderr}" do
-      level :warn
-    end
+    @current_resource.exists = false
+    @current_resource.running = false
   end
 end
+
+private
+  def list_sites
+    cmd = shell_out("#{appcmd(node)} list site")
+    Chef::Log.debug(appcmd(node))
+    # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
+    Chef::Log.debug("#{new_resource} list site command output: #{cmd.stdout}")
+    if cmd.stderr.empty?
+      return cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
+    else
+      log "Failed to run iis_site action :config, #{cmd.stderr}" do
+        level :warn
+      end
+    end
+  end
+
+  def site_exists?
+    exists = false
+    result = list_sites
+    result = result.match(/^SITE\s\"(#{new_resource.site_name})\"\s/)
+    Chef::Log.info("#{new_resource} current_resource match output: #{result}")
+    if result
+      exists = true
+    else
+      exists = false
+    end
+
+    return exists
+  end

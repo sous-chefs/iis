@@ -35,6 +35,11 @@ action :add do
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
     Chef::Log.debug(cmd)
     shell_out!(cmd)
+    
+    if !verify_creation_occurred?(method(:app_exists?))
+      Chef::Log.error("Application wasn't created within 5 seconds...")  
+    end
+
     new_resource.updated_by_last_action(true)
     Chef::Log.info("App created")
   else
@@ -115,26 +120,33 @@ def load_current_resource
   @current_resource.site_name(new_resource.site_name)
   @current_resource.path(new_resource.path)
   @current_resource.application_pool(new_resource.application_pool)
-  cmd = shell_out("#{appcmd(node)} list app")
-  Chef::Log.debug("#{new_resource} list app command output: #{cmd.stdout}")
-  regex = /^APP\s\"#{new_resource.site_name}#{new_resource.path}\"/
-  Chef::Log.debug("Running regex")
-  if cmd.stderr.empty?
-    result = cmd.stdout.match(regex)
-    Chef::Log.debug("#{new_resource} current_resource match output:#{result}")
-    if result
-      @current_resource.exists = true
-    else
-      @current_resource.exists = false
-    end
-  else
-    log "Failed to run iis_app action :load_current_resource, #{cmd_current_values.stderr}" do
-      level :warn
-    end
-  end
+  @current_resource.exists = app_exists?
 end
 
 private
+  def app_exists?
+    exists = false
+    cmd = shell_out("#{appcmd(node)} list app")
+    Chef::Log.debug("#{new_resource} list app command output: #{cmd.stdout}")
+    regex = /^APP\s\"#{new_resource.site_name}#{new_resource.path}\"/
+    Chef::Log.debug("Running regex")
+    if cmd.stderr.empty?
+      result = cmd.stdout.match(regex)
+      Chef::Log.debug("#{new_resource} current_resource match output:#{result}")
+      if result
+        exists = true
+      else
+        exists = false
+      end
+    else
+      log "Failed to run iis_app action :load_current_resource, #{cmd_current_values.stderr}" do
+        level :warn
+      end
+    end
+
+    return exists
+  end
+
   def site_identifier
     "#{new_resource.site_name}#{new_resource.path}"
   end

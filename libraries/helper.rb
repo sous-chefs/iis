@@ -58,6 +58,22 @@ module Opscode
         end
       end
 
+      def verify_creation_occurred?(method_exists, number_of_tries = 5)
+        counter = 0
+        # Test 5 times and wait for the application was added successfully
+        while counter < number_of_tries do
+          counter += 1
+
+          if !method_exists.call
+            # Sleeps 1 second to wait for appcmd add to finish
+            sleep(1)
+          else
+            return true
+          end
+        end
+
+        return false
+      end
 
       def windows_cleanpath(path)
         if defined?(Chef::Util::PathHelper.cleanpath) != nil
