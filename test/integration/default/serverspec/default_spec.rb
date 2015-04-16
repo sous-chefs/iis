@@ -19,17 +19,16 @@
 require 'spec_helper'
 
 describe 'iis::default' do
-
   # We are expecting to run these tests against recent versions of Windows
   # as that's what's in our test matrix (Windows 2008r2 and above).
   # This let's us avoid re-implementing all the cookbook logic to MUX the
   # various package names for back-compat.
-  
+
   describe windows_feature('IIS-WebServerRole') do
     it { should be_installed }
   end
 
-  describe service("World Wide Web Publishing Service") do
+  describe service('World Wide Web Publishing Service') do
     it { should be_running }
     it { should have_start_mode('Automatic') }
   end

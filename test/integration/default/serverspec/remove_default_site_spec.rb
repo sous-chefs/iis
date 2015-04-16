@@ -19,7 +19,6 @@
 require 'spec_helper'
 
 describe 'iis::remove_default_site' do
-
   describe iis_website('Default Website') do
     it { should_not exist }
   end
