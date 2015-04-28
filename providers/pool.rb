@@ -277,7 +277,7 @@ private
 
 def configure_application_pool(condition, config, add_remove = '')
   unless condition
-    returns
+    :returns
   end
 
   @was_updated = true
