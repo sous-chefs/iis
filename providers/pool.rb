@@ -131,6 +131,7 @@ def configure
 
     # root items
     is_new_managed_runtime_version = new_value?(doc.root, 'APPPOOL/@RuntimeVersion', "v#{new_resource.runtime_version}")
+    is_new_pipeline_mode = new_value?(doc.root, 'APPPOOL/@PipelineMode'.capitalize, "#{new_resource.pipeline_mode}".to_s.capitalize)
 
     # add items
     is_new_start_mode = new_value?(doc.root, 'APPPOOL/add/@startMode', new_resource.start_mode.to_s)
@@ -187,6 +188,7 @@ def configure
     configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
     configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
     configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{new_resource.runtime_version}")
+    configure_application_pool(new_resource.pipeline_mode && is_new_pipeline_mode, "managedPipelineMode:#{new_resource.pipeline_mode}.capitalize")
     configure_application_pool(new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64, "enable32BitAppOnWin64:#{new_resource.thirty_two_bit}")
     configure_application_pool(new_resource.queue_length && is_new_queue_length, "queueLength:#{new_resource.queue_length}")
 
