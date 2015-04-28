@@ -143,6 +143,7 @@ private
       is_new_log_directory = new_or_empty_value?(doc.root, 'SITE/logFiles/@directory', new_resource.log_directory.to_s)
       is_new_log_period = new_or_empty_value?(doc.root, 'SITE/logFile/@period', new_resource.log_period.to_s)
       is_new_log_trunc = new_or_empty_value?(doc.root, 'SITE/logFiles/@truncateSize', new_resource.log_truncsize.to_s)
+      is_new_application_pool = new_value?(doc.root, 'SITE/site/application/@applicationPool', new_resource.application_pool)
 
       if (new_resource.bindings && is_new_bindings)
         was_updated = true
@@ -159,6 +160,13 @@ private
         new_resource.updated_by_last_action(true)
       end
 
+      if new_resource.application_pool && is_new_application_pool
+        was_updated = true
+        cmd = "#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\""
+        Chef::Log.debug(cmd)
+        shell_out!(cmd,  returns: [0, 42])
+      end
+      
       if new_resource.path && is_new_physical_path
         was_updated = true
         cmd = "#{appcmd(node)} set vdir \"#{new_resource.site_name}/\""
