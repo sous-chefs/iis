@@ -114,7 +114,7 @@ def load_current_resource
     if result
       @current_resource.site_id(result[2].to_i)
       @current_resource.exists = true
-      @current_resource.bindings = result[3]
+      @current_resource.bindings(result[3])
       @current_resource.running = (result[4] =~ /Started/) ? true : false
     else
       @current_resource.exists = false
