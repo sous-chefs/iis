@@ -33,19 +33,22 @@ action :config do
   if cmd.stderr.empty?
     xml = cmd.stdout
     doc = Document.new xml
-		current_default_documents = XPath.match(doc.root, 'defaultDocument/files/add/@value').map{|x| x.value}
+		current_default_documents = XPath.match(doc.root, '//files/add/@value').map{|x| x.value}
 
 		cmd = "#{appcmd(node)} set config /section:defaultDocument"
+		Chef::Log.info("#{current_default_documents}: #{new_resource.default_documents}")
 
 		new_resource.default_documents.each do |document|
+			Chef::Log.info("#{document}: #{!current_default_documents.include? document}")
 			if !current_default_documents.include? document
-				cmd << " /+files.[value='#{document}'"
+				cmd << " /+files.[value='#{document}']"
 			end
 		end
 
 		current_default_documents.each do |document|
+			Chef::Log.info("#{document}: #{!new_resource.default_documents.include? document}")
 			if !new_resource.default_documents.include? document
-				cmd << " /-files.[value='#{document}'"
+				cmd << " /-files.[value='#{document}']"
 			end
 		end
 
@@ -64,7 +67,7 @@ action :config do
 end
 
 def load_current_resource
-	@current_resource = Chef::Resource::IisRoot.new
+  @current_resource = Chef::Resource::IisRoot.new(new_resource.name)
   @current_resource.default_documents(new_resource.default_documents)
   @current_resource.default_documents_enabled(new_resource.default_documents_enabled)
 end
