@@ -64,7 +64,7 @@ action :config do
 end
 
 def load_current_resource
-	@current_resource = Chef::Resource::IisApp.new
+	@current_resource = Chef::Resource::IisRoot.new
   @current_resource.default_documents(new_resource.default_documents)
   @current_resource.default_documents_enabled(new_resource.default_documents_enabled)
 end
