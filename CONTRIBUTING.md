@@ -36,9 +36,11 @@ a successful Chef run, but this is not absolutely required.
 ### Tests
 
 This cookbook is set up to run tests under [Test Kitchen](http://kitchen.ci/).
+You need to follow the latest instructions to have test-kitchen windows support
+configured on your machine.  For example, follow this
+[blog post](http://kitchen.ci/blog/test-kitchen-windows-test-flight-with-vagrant/)
 You should be able to run the ``bundle install`` and then ``bundle exec kitchen test``
-to run the integration tests. This will download an evaluation image of Windows and 
-run a couple of included recipes from the 'test' folder. You must have [VirtualBox](https://www.virtualbox.org/)
+to run the integration tests. You must have [VirtualBox](https://www.virtualbox.org/)
 and [Vagrant](https://www.vagrantup.com/) installed on your system. In the future we
 want to add [ServerSpec](http://serverspec.org/) tests as well.
 

@@ -1,8 +1,6 @@
 ---
 driver:
-  forward_agent: yes
   name: vagrant
-  vm_hostname: false # do not bother trying to change the hostname (sometimes fails)
   customize:
     cpus: 2
     memory: 4096
@@ -14,20 +12,16 @@ provisioner:
   name: chef_zero
 
 platforms:
-  - name: windows_2012r2-chef11
+  - name: win2012-chef11
     driver_config:
-      box: win2k12r2
-      box_url: #insert your boxfile url here   
-      gui: true
+      box: windows-2012r2
     provisioner:
       require_chef_omnibus: 11.16.4
-  - name: windows_2012r2-chef12
+  - name: win2012-chef12
     driver_config:
-      box: win2k12r2
-      box_url: #insert your boxfile url here  
-      gui: true
+      box: windows-2012r2
     provisioner:
-      require_chef_omnibus: 12.3.0
+      require_chef_omnibus: latest
 
 suites:
   - name: default
