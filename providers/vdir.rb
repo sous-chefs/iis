@@ -34,6 +34,7 @@ action :add do
     cmd << " /password:\"#{new_resource.password}\"" if new_resource.password
     cmd << " /logonMethod:#{new_resource.logon_method}" if new_resource.logon_method
     cmd << " /allowSubDirConfig:#{new_resource.allow_sub_dir_config}" if new_resource.allow_sub_dir_config
+    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
 
     Chef::Log.info(cmd)
     shell_out!(cmd,  returns: [0, 42, 183])
