@@ -82,6 +82,71 @@ module Opscode
           "#{node['iis']['home']}\\appcmd.exe"
         end
       end
+
+      def default_documents specifier = ''
+        # handles default documents
+        cmd = shell_out "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
+        if cmd.stderr.empty?
+          xml = cmd.stdout
+          doc = Document.new xml
+          is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', new_resource.default_documents_enabled.to_s)
+          current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{|x| x.value}
+
+          cmd = "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
+
+          if is_new_default_documents_enabled
+            cmd << " /enabled:#{new_resource.default_documents_enabled}"
+          end
+
+          new_resource.default_documents.each do |document|
+            if !current_default_documents.include? document
+              cmd << " /+files.[value='#{document}']"
+            end
+          end
+
+          current_default_documents.each do |document|
+            if !new_resource.default_documents.include? document
+              cmd << " /-files.[value='#{document}']"
+            end
+          end
+
+          if cmd != "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
+            shell_out! cmd
+            Chef::Log.info('Default Documents updated')
+            was_updated = true
+          end
+        end
+      end
+
+      def mime_maps specifier = ''
+        # handles mime maps
+        cmd = shell_out "#{appcmd(node)} list config #{specifier} /section:staticContent /config:* /xml"
+        if cmd.stderr.empty?
+          xml = cmd.stdout
+          doc = Document.new xml
+          current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map{|x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
+
+          cmd = "#{appcmd(node)} set config #{specifier} /section:staticContent"
+
+          new_resource.mime_maps.each do |mime_map|
+            if !current_mime_maps.include? mime_map
+              cmd << " /+\"[#{mime_map}]\""
+            end
+          end
+
+          current_mime_maps.each do |mime_map|
+            if !new_resource.mime_maps.include? mime_map
+              cmd << " /+\"[#{mime_map}]\""
+            end
+          end
+
+          if cmd != "#{appcmd(node)} set config #{specifier} /section:staticContent"
+            shell_out! cmd
+            Chef::Log.info('mime maps updated')
+            was_updated = true
+          end
+        end
+      end
     end
   end
 end
