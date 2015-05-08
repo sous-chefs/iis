@@ -52,9 +52,14 @@ private
 	  if cmd.stderr.empty?
 	    xml = cmd.stdout
 	    doc = Document.new xml
-			current_default_documents = XPath.match(doc.root, '//system.webServer-defaultDocument/files/add/@value').map{|x| x.value}
+	    is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', new_resource.default_documents_enabled.to_s)
+			current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{|x| x.value}
 
 			cmd = "#{appcmd(node)} set config /section:defaultDocument"
+
+			if is_new_default_documents_enabled
+				cmd << " /enabled:#{new_resource.default_documents_enabled}"
+			end
 
 			new_resource.default_documents.each do |document|
 				if !current_default_documents.include? document
@@ -82,7 +87,7 @@ private
 	  if cmd.stderr.empty?
 	    xml = cmd.stdout
 	    doc = Document.new xml
-			current_mime_maps = XPath.match(doc.root, '//system.webServer-staticContent/mimeMap').map{|x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
+			current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map{|x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
 
 			cmd = "#{appcmd(node)} set config /section:staticContent"
 
