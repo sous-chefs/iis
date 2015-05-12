@@ -136,7 +136,7 @@ module Opscode
 
           current_mime_maps.each do |mime_map|
             if !new_resource.mime_maps.include? mime_map
-              cmd << " /+\"[#{mime_map}]\""
+              cmd << " /-\"[#{mime_map}]\""
             end
           end
 
