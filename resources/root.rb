@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-actions :config
+actions :config, :add, :delete
 default_action :config
 
 # default documents

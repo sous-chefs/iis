@@ -83,34 +83,39 @@ module Opscode
         end
       end
 
-      def default_documents specifier = ''
-        # handles default documents
-        cmd = shell_out "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
+      def default_documents new_resource, add = true, remove = false, specifier = ''
+        cmd = shell_out get_default_documents_command specifier
+        current_default_documents_object = nil
+
         if cmd.stderr.empty?
           xml = cmd.stdout
           doc = Document.new xml
+
           is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', new_resource.default_documents_enabled.to_s)
           current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{|x| x.value}
+          cmd = set_default_documents_command specifier
 
-          cmd = "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
-
-          if is_new_default_documents_enabled
+          if current_default_documents_object["default_documents_enabled"]
             cmd << " /enabled:#{new_resource.default_documents_enabled}"
           end
 
-          new_resource.default_documents.each do |document|
-            if !current_default_documents.include? document
-              cmd << " /+files.[value='#{document}']"
+          if add
+            new_resource.default_documents.each do |document|
+              if !current_default_documents_object["default_documents"].include? document
+                cmd << " /+files.[value='#{document}']"
+              end
             end
           end
 
-          current_default_documents.each do |document|
-            if !new_resource.default_documents.include? document
-              cmd << " /-files.[value='#{document}']"
+          if remove
+            current_default_documents_object["default_documents"].each do |document|
+              if !new_resource.default_documents.include? document
+                cmd << " /-files.[value='#{document}']"
+              end
             end
           end
 
-          if cmd != "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
+          if cmd != set_default_documents_command specifier
             shell_out! cmd
             Chef::Log.info('Default Documents updated')
             was_updated = true
@@ -118,35 +123,56 @@ module Opscode
         end
       end
 
-      def mime_maps specifier = ''
+      def mime_maps new_resource_mime_maps, add = true, remove = true, specifier = ''
         # handles mime maps
-        cmd = shell_out "#{appcmd(node)} list config #{specifier} /section:staticContent /config:* /xml"
+        cmd = shell_out get_mime_map_command specifier
         if cmd.stderr.empty?
           xml = cmd.stdout
           doc = Document.new xml
           current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map{|x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
 
-          cmd = "#{appcmd(node)} set config #{specifier} /section:staticContent"
+          cmd = set_mime_map_command specifier
 
-          new_resource.mime_maps.each do |mime_map|
-            if !current_mime_maps.include? mime_map
-              cmd << " /+\"[#{mime_map}]\""
+          if add
+            new_resource_mime_maps.each do |mime_map|
+              if !current_mime_maps.include? mime_map
+                cmd << " /+\"[#{mime_map}]\""
+              end
             end
           end
 
-          current_mime_maps.each do |mime_map|
-            if !new_resource.mime_maps.include? mime_map
-              cmd << " /-\"[#{mime_map}]\""
+          if remove
+            current_mime_maps.each do |mime_map|
+              if !new_resource_mime_maps.include? mime_map
+                cmd << " /-\"[#{mime_map}]\""
+              end
             end
           end
 
-          if cmd != "#{appcmd(node)} set config #{specifier} /section:staticContent"
+          if cmd != set_mime_map_command specifier
             shell_out! cmd
             Chef::Log.info('mime maps updated')
             was_updated = true
           end
         end
       end
+
+      private
+        def get_default_documents_command specifier = ''
+          "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
+        end
+
+        def set_default_documents_command specifier = ''
+          "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
+        end
+
+        def get_mime_map_command specifier = ''
+          "#{appcmd(node)} list config #{specifier} /section:staticContent /config:* /xml"
+        end
+
+        def set_mime_map_command specifier = ''
+          "#{appcmd(node)} set config #{specifier} /section:staticContent"
+        end
     end
   end
 end
