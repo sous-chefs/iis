@@ -69,12 +69,8 @@ module Opscode
         path.chomp('/').chomp('\\')
       end
 
-      def new_value?(document, xpath, value_to_check, case_sensitive = true)
-        if case_sensitive
+      def new_value?(document, xpath, value_to_check)
           XPath.first(document, xpath).to_s != value_to_check.to_s
-        else
-          XPath.first(document, xpath).to_s.downcase != value_to_check.to_s.downcase
-        end
       end
 
       def new_or_empty_value?(document, xpath, value_to_check)
