@@ -70,7 +70,7 @@ module Opscode
       end
 
       def new_value?(document, xpath, value_to_check)
-          XPath.first(document, xpath).to_s != value_to_check.to_s
+        XPath.first(document, xpath).to_s != value_to_check.to_s
       end
 
       def new_or_empty_value?(document, xpath, value_to_check)
