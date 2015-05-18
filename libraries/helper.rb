@@ -115,7 +115,7 @@ module Opscode
             end
           end
 
-          if cmd != set_default_documents_command specifier
+          if (cmd != set_default_documents_command(specifier))
             shell_out! cmd
             Chef::Log.info('Default Documents updated')
             was_updated = true
@@ -149,7 +149,7 @@ module Opscode
             end
           end
 
-          if cmd != set_mime_map_command specifier
+          if (cmd != set_mime_map_command(specifier))
             shell_out! cmd
             Chef::Log.info('mime maps updated')
             was_updated = true
