@@ -23,8 +23,8 @@ include Opscode::IIS::Helper
 action :add do
   was_updated = false
 
-  was_updated = default_documents new_resource true false || was_updated
-  was_updated = mime_maps new_resource.mime_maps true false || was_updated
+  was_updated = default_documents(new_resource, true, false) | was_updated
+  was_updated = mime_maps(new_resource.mime_maps, true, false) | was_updated
 
   if was_updated
     new_resource.updated_by_last_action(true)
@@ -36,8 +36,8 @@ end
 action :delete do
   was_updated = false
 
-  was_updated = default_documents new_resource false true || was_updated
-  was_updated = mime_maps new_resource.mime_maps false true || was_updated
+  was_updated = default_documents(new_resource, false, true) | was_updated
+  was_updated = mime_maps(new_resource.mime_maps, false, true) | was_updated
 
   if was_updated
     new_resource.updated_by_last_action(true)
@@ -49,8 +49,8 @@ end
 action :config do
 	was_updated = false
 
-	was_updated = default_documents new_resource || was_updated
-	was_updated = mime_maps new_resource || was_updated
+	was_updated = default_documents(new_resource) | was_updated
+	was_updated = mime_maps(new_resource) | was_updated
 
 	if was_updated
     new_resource.updated_by_last_action(true)
