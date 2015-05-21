@@ -86,7 +86,7 @@ module Opscode
         end
       end
 
-      def default_documents new_resource, add = true, remove = false, specifier = ''
+      def default_documents default_documents, default_documents_enabled, add = true, remove = true, specifier = ''
         cmd = shell_out get_default_documents_command specifier
         current_default_documents_object = nil
 
