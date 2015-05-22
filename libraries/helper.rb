@@ -86,33 +86,33 @@ module Opscode
         end
       end
 
-      def default_documents default_documents, default_documents_enabled, add = true, remove = true, specifier = ''
+      def default_documents default_document, default_documents_enabled, add = true, remove = true, specifier = ''
         cmd = shell_out get_default_documents_command specifier
-        current_default_documents_object = nil
-
         if cmd.stderr.empty?
           xml = cmd.stdout
           doc = Document.new xml
 
-          is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', new_resource.default_documents_enabled.to_s)
+          is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', default_documents_enabled.to_s)
           current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{|x| x.value}
           cmd = set_default_documents_command specifier
 
-          if current_default_documents_object["default_documents_enabled"]
-            cmd << " /enabled:#{new_resource.default_documents_enabled}"
+          if is_new_default_documents_enabled
+            cmd << " /enabled:#{default_documents_enabled}"
           end
 
-          if add
-            new_resource.default_documents.each do |document|
-              if !current_default_documents_object["default_documents"].include? document
+          if add || remove
+            default_document.each do |document|
+              if !current_default_documents.include?(document) && add
                 cmd << " /+files.[value='#{document}']"
+              elsif current_default_documents.include?(document) && remove
+                cmd << " /-files.[value='#{document}']"
               end
             end
           end
 
-          if remove
-            current_default_documents_object["default_documents"].each do |document|
-              if !new_resource.default_documents.include? document
+          if add && remove
+            current_default_documents.each do |document|
+              if !default_document.include? document
                 cmd << " /-files.[value='#{document}']"
               end
             end
@@ -136,22 +136,24 @@ module Opscode
 
           cmd = set_mime_map_command specifier
 
-          if add
+          if add || remove
             new_resource_mime_maps.each do |mime_map|
-              if !current_mime_maps.include? mime_map
+              if !current_mime_maps.include? mime_map && add
                 cmd << " /+\"[#{mime_map}]\""
+              elsif current_mime_maps.include? mime_map && remove
+                cmd << " /-\"[#{mime_map}]\""
               end
             end
           end
 
-          if remove
+          if add && remove
             current_mime_maps.each do |mime_map|
               if !new_resource_mime_maps.include? mime_map
                 cmd << " /-\"[#{mime_map}]\""
               end
             end
           end
-
+          
           if (cmd != set_mime_map_command(specifier))
             shell_out! cmd
             Chef::Log.info('mime maps updated')
