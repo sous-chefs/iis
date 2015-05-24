@@ -61,6 +61,24 @@ Allows for easy management of the IIS Root Machine settings
 - `delete_default_documents` - The items you want to delete from the default document collection, only used during `:delete`. Array of strings, default: `[]`
 - `delete_mime_maps` - The items you want to delete from the mime-map/mime-type collection, only used during `:delete`. Array of strings, default: `[]`
 
+### Examples
+
+```ruby
+# Add foo.html to default documents, and add '.dmg' as mime type extension at root level
+iis_root 'add stuff' do
+  add_default_documents ['foo.html']
+  add_mime_maps ["fileExtension='.dmg',mimeType='application/octet-stream'"]
+  action :add
+end
+```
+```ruby
+# Remove index.html from default document and .323 as a mime type at root level
+iis_root 'delete stuff' do
+  delete_default_documents ['index.html']
+  delete_mime_maps ["fileExtension='.323',mimeType='text/h323'"]
+  action :delete
+end
+```
 iis_site
 ---------
 
