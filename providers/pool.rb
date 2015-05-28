@@ -187,7 +187,6 @@ def configure
     @cmd = "#{appcmd(node)} set config /section:applicationPools"
 
     # root items
-    configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
     if(get_iis_version > '7.0') 
       configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
     end
