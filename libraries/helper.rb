@@ -3,6 +3,7 @@
 # Library:: helper
 #
 # Author:: Julian C. Dunn <jdunn@chef.io>
+# Author:: Justin Schuhmann <jmschu02@gmail.com>
 #
 # Copyright 2013, Chef Software, Inc.
 #
@@ -30,10 +31,8 @@ module Opscode
       end
 
       require 'rexml/document'
-      require 'chef/mixin/shell_out'
       require 'win32/registry'
 
-      include Chef::Mixin::ShellOut
       include REXML
       include Windows::Helper
 
@@ -89,82 +88,6 @@ module Opscode
         end
       end
 
-      def default_documents default_document, default_documents_enabled, add = true, remove = true, specifier = ''
-        cmd = shell_out get_default_documents_command specifier
-        if cmd.stderr.empty?
-          xml = cmd.stdout
-          doc = Document.new xml
-
-          is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', default_documents_enabled.to_s)
-          current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{|x| x.value}
-          cmd = set_default_documents_command specifier
-
-          if is_new_default_documents_enabled
-            cmd << " /enabled:#{default_documents_enabled}"
-          end
-
-          if add || remove
-            default_document.each do |document|
-              if !current_default_documents.include?(document) && add
-                cmd << " /+files.[value='#{document}']"
-              elsif current_default_documents.include?(document) && remove
-                cmd << " /-files.[value='#{document}']"
-              end
-            end
-          end
-
-          if add && remove
-            current_default_documents.each do |document|
-              if !default_document.include? document
-                cmd << " /-files.[value='#{document}']"
-              end
-            end
-          end
-
-          if (cmd != set_default_documents_command(specifier))
-            shell_out! cmd
-            Chef::Log.info('Default Documents updated')
-            was_updated = true
-          end
-        end
-      end
-
-      def mime_maps new_resource_mime_maps, add = true, remove = true, specifier = ''
-        # handles mime maps
-        cmd = shell_out get_mime_map_command specifier
-        if cmd.stderr.empty?
-          xml = cmd.stdout
-          doc = Document.new xml
-          current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map{|x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
-
-          cmd = set_mime_map_command specifier
-
-          if add || remove
-            new_resource_mime_maps.each do |mime_map|
-              if !current_mime_maps.include? mime_map && add
-                cmd << " /+\"[#{mime_map}]\""
-              elsif current_mime_maps.include? mime_map && remove
-                cmd << " /-\"[#{mime_map}]\""
-              end
-            end
-          end
-
-          if add && remove
-            current_mime_maps.each do |mime_map|
-              if !new_resource_mime_maps.include? mime_map
-                cmd << " /-\"[#{mime_map}]\""
-              end
-            end
-          end
-          
-          if (cmd != set_mime_map_command(specifier))
-            shell_out! cmd
-            Chef::Log.info('mime maps updated')
-            was_updated = true
-          end
-        end
-      end
-
       def get_iis_version
         if @iis_version == nil
           version_string = Win32::Registry::HKEY_LOCAL_MACHINE.open('SOFTWARE\Microsoft\InetStp').read('VersionString')[1]
@@ -173,23 +96,6 @@ module Opscode
         end
         return @iis_version
       end
-
-      private
-        def get_default_documents_command specifier = ''
-          "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
-        end
-
-        def set_default_documents_command specifier = ''
-          "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
-        end
-
-        def get_mime_map_command specifier = ''
-          "#{appcmd(node)} list config #{specifier} /section:staticContent /config:* /xml"
-        end
-
-        def set_mime_map_command specifier = ''
-          "#{appcmd(node)} set config #{specifier} /section:staticContent"
-        end
     end
   end
 end
