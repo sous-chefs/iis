@@ -28,10 +28,10 @@ module Opscode
 
       if RUBY_PLATFORM =~ /mswin|mingw32|windows/
         require 'chef/win32/version'
+        require 'win32/registry'
       end
 
       require 'rexml/document'
-      require 'win32/registry'
 
       include REXML
       include Windows::Helper
