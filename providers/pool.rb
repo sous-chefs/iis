@@ -169,7 +169,7 @@ def configure
     is_new_disallow_overlapping_rotation = new_value?(doc.root, 'APPPOOL/add/recycling/@disallowOverlappingRotation', new_resource.disallow_overlapping_rotation.to_s)
     is_new_disallow_rotation_on_config_change = new_value?(doc.root, 'APPPOOL/add/recycling/@disallowRotationOnConfigChange', new_resource.disallow_rotation_on_config_change.to_s)
     is_new_recycle_after_time = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/periodicRestart/@time', new_resource.recycle_after_time.to_s)
-    is_new_recycle_at_time = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add/@value', new_resource.recycle_at_time.to_s)
+    is_new_recycle_at_time = new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add[@value='#{new_resource.recycle_at_time.to_s}']/@value", new_resource.recycle_at_time.to_s)
     is_new_private_memory = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/periodicRestart/@privateMemory', new_resource.private_mem.to_s)
     is_new_log_event_on_recycle = new_value?(doc.root, 'APPPOOL/add/recycling/@logEventOnRecycle', 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory')
 
@@ -212,6 +212,7 @@ def configure
       Chef::Log.debug(@cmd)
       shell_out!(@cmd)
     end
+
     configure_application_pool(new_resource.recycle_after_time && is_new_recycle_after_time, "recycling.periodicRestart.time:#{new_resource.recycle_after_time}")
     configure_application_pool(new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule.[value='#{new_resource.recycle_at_time}']", '+')
     configure_application_pool(is_new_log_event_on_recycle, 'recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy')
@@ -276,7 +277,6 @@ def configure
 end
 
 private
-
 def configure_application_pool(condition, config, add_remove = '')
   unless condition
     return
