@@ -204,13 +204,17 @@ def configure
     configure_application_pool(is_new_ping_interval, "processModel.pingInterval:#{new_resource.ping_interval}")
     configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{new_resource.ping_response_time}")
 
+    node_array = XPath.match(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add")
+    should_clear_apppool_schedules = (new_resource.recycle_at_time && is_new_recycle_at_time) || node_array.length > 1
+
     # recycling items
     ## Special case this collection removal for now.
-    if (new_resource.recycle_at_time && is_new_recycle_at_time)
+    if(should_clear_apppool_schedules)
       @was_updated = true
-      cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{new_resource.pool_name}'].recycling.periodicRestart.schedule\""
-      Chef::Log.debug(@cmd)
-      shell_out!(@cmd)
+      is_new_recycle_at_time = true
+      clear_pool_schedule_cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{new_resource.pool_name}'].recycling.periodicRestart.schedule\""
+      Chef::Log.debug(clear_pool_schedule_cmd)
+      shell_out!(clear_pool_schedule_cmd)
     end
 
     configure_application_pool(new_resource.recycle_after_time && is_new_recycle_after_time, "recycling.periodicRestart.time:#{new_resource.recycle_after_time}")
