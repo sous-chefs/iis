@@ -3,6 +3,7 @@
 # Library:: helper
 #
 # Author:: Julian C. Dunn <jdunn@chef.io>
+# Author:: Justin Schuhmann <jmschu02@gmail.com>
 #
 # Copyright 2013, Chef Software, Inc.
 #
@@ -23,11 +24,15 @@ module Opscode
   module IIS
     # Contains functions that are used throughout this cookbook
     module Helper
+      @iis_version = nil
+
       if RUBY_PLATFORM =~ /mswin|mingw32|windows/
         require 'chef/win32/version'
+        require 'win32/registry'
       end
 
       require 'rexml/document'
+
       include REXML
       include Windows::Helper
 
@@ -81,6 +86,15 @@ module Opscode
         @appcmd ||= begin
           "#{node['iis']['home']}\\appcmd.exe"
         end
+      end
+
+      def get_iis_version
+        if @iis_version == nil
+          version_string = Win32::Registry::HKEY_LOCAL_MACHINE.open('SOFTWARE\Microsoft\InetStp').read('VersionString')[1]
+          version_string.slice! 'Version '
+          @iis_version = version_string
+        end
+        return @iis_version
       end
     end
   end
