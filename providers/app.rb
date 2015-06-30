@@ -33,6 +33,7 @@ action :add do
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
     cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\"" if new_resource.physical_path
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
+    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     new_resource.updated_by_last_action(true)
