@@ -29,9 +29,9 @@ include Opscode::IIS::Helper
 action :add do
   if !@current_resource.exists
     cmd = "#{appcmd(node)} add apppool /name:\"#{new_resource.pool_name}\""
-    cmd << ' /managedRuntimeVersion:' if new_resource.runtime_version || new_resource.no_managed_code
-    cmd << "v#{new_resource.runtime_version}" if new_resource.runtime_version && !new_resource.no_managed_code
+    cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version || !new_resource.no_managed_code
     cmd << " /managedPipelineMode:#{new_resource.pipeline_mode.capitalize}" if new_resource.pipeline_mode
+    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     configure
