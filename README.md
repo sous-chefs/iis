@@ -121,6 +121,12 @@ end
 ```ruby
 # create and start a new site that maps to
 # the physical location C:\inetpub\wwwroot\testfu
+# first the physical location must exist
+directory "#{node['iis']['docroot']}/testfu" do
+  action :create
+end
+
+# now create and start the site (note this will use the default application pool which must exist)
 iis_site 'Testfu Site' do
   protocol :http
   port 80
@@ -131,6 +137,12 @@ end
 
 ```ruby
 # do the same but map to testfu.chef.io domain
+# first the physical location must exist
+directory "#{node['iis']['docroot']}/testfu" do
+  action :create
+end
+
+# now create and start the site (note this will use the default application pool which must exist)
 iis_site 'Testfu Site' do
   protocol :http
   port 80
@@ -143,11 +155,17 @@ end
 ```ruby
 # create and start a new site that maps to
 # the physical C:\inetpub\wwwroot\testfu
+# first the physical location must exist
+directory "#{node['iis']['docroot']}/testfu" do
+  action :create
+end
+
 # also adds bindings to http and https
 # binding http to the ip address 10.12.0.136,
 # the port 80, and the host header www.domain.com
 # also binding https to any ip address,
 # the port 443, and the host header www.domain.com
+# now create and start the site (note this will use the default application pool which must exist)
 iis_site 'FooBar Site' do
   bindings "http/10.12.0.136:80:www.domain.com,https/*:443:www.domain.com
   path "#{node['iis']['docroot']}/testfu"
