@@ -28,7 +28,7 @@ include Opscode::IIS::Helper
 action :lock do
   @current_resource.exists = new_value?(doc.root, 'CONFIG/@overrideMode', 'Deny')
 
-  if !@current_resource.exists
+  if @current_resource.exists
     cmd = "#{appcmd(node)} lock config -section:\"#{new_resource.section}\" -commit:apphost"
     Chef::Log.debug(cmd)
     shell_out!(cmd, returns: new_resource.returns)
@@ -42,7 +42,7 @@ end
 action :unlock do
   @current_resource.exists = new_value?(doc.root, 'CONFIG/@overrideMode', 'Allow')
 
-  if !@current_resource.exists
+  if @current_resource.exists
     cmd = "#{appcmd(node)} unlock config -section:\"#{new_resource.section}\" -commit:apphost"
     Chef::Log.debug(cmd)
     shell_out!(cmd, returns: new_resource.returns)
@@ -59,7 +59,7 @@ def load_current_resource
 end
 
 def doc
-  cmd_current_values = "#{appcmd(node)} list config \"\" -section:#{new_resource.section} /config:* /xml"
+  cmd_current_values = "#{appcmd(node)} list config -section:#{new_resource.section} /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
