@@ -195,6 +195,13 @@ end
 ```
 
 ```ruby
+# Increase file upload size for 'MySite'
+iis_config "\"MySite\" /section:requestfiltering /requestlimits.maxallowedcontentlength:50000000" do
+  action :config
+end
+```
+
+```ruby
 # Loads an array of commands from the node
 cfg_cmds = node['iis']['cfg_cmd']
 cfg_cmds.each do |cmd|
