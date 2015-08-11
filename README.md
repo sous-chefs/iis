@@ -203,14 +203,14 @@ end
 
 ```ruby
 # Set IUSR username and password authentication
-iis_config "\"MyWebsite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"IUSR_foobar\" /password:\"p@assword\" /commit:apphost" do
+iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"IUSR_foobar\" /password:\"p@assword\" /commit:apphost" do
   action :config
 end
 ```
 
 ```ruby
 # Authenticate with application pool
-iis_config "\"MyWebsite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"\" /commit:apphost" do
+iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"\" /commit:apphost" do
    action :config
 end
 
