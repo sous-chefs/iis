@@ -3,6 +3,24 @@ Description
 
 Installs and configures Microsoft Internet Information Services (IIS) 7.0/7.5/8.0
 
+Contents
+========
+
+  * [Attributes](#attributes)
+  * [Resource/Provider](#resourceprovider)
+    * [iis_root](#iis_root)
+    * [iis_site](#iis_site)
+    * [iis_config](#iis_config)
+    * [iis_pool](#iis_pool)
+    * [iis_app](#iis_app)
+    * [iis_vdir](#iis_vdir)
+    * [iis_section](#iis_section)
+    * [iis_module](#iis_module)
+  * [Usage](#usage)
+    * [default](#default)
+    * [mod\_\*](#mod_)
+  * [License and Author](#license-and-author)
+
 Requirements
 ============
 
