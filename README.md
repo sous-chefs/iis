@@ -8,17 +8,17 @@ Contents
 
   * [Attributes](#attributes)
   * [Resource/Provider](#resourceprovider)
-    * [iis_root](#iis_root)
-    * [iis_site](#iis_site)
-    * [iis_config](#iis_config)
-    * [iis_pool](#iis_pool)
-    * [iis_app](#iis_app)
-    * [iis_vdir](#iis_vdir)
-    * [iis_section](#iis_section)
-    * [iis_module](#iis_module)
+    * [iis_root](#iis_root) Allows for easy management of the IIS Root Machine settings
+    * [iis_site](#iis_site) Allows for easy management of IIS virtual sites (ie vhosts).
+    * [iis_config](#iis_config) Runs a config command on your IIS instance.
+    * [iis_pool](#iis_pool) Creates an application pool in IIS.
+    * [iis_app](#iis_app) Creates an application in IIS.
+    * [iis_vdir](#iis_vdir) Allows easy management of IIS virtual directories (i.e. vdirs).
+    * [iis_section](#iis_section) Allows for the locking/unlocking of application web.config sections.
+    * [iis_module](#iis_module) Manages modules globally or on a per site basis.
   * [Usage](#usage)
-    * [default](#default)
-    * [mod\_\*](#mod_)
+    * [default](#default) Default recipe
+    * [mod\_\*](#mod_) Recipes for installing individual IIS modules (extensions). 
   * [License and Author](#license-and-author)
 
 Requirements
