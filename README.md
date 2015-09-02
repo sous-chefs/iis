@@ -220,6 +220,21 @@ end
 ```
 
 ```ruby
+# Set IUSR username and password authentication
+iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"IUSR_foobar\" /password:\"p@assword\" /commit:apphost" do
+  action :config
+end
+```
+
+```ruby
+# Authenticate with application pool
+iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"\" /commit:apphost" do
+   action :config
+end
+
+```
+
+```ruby
 # Loads an array of commands from the node
 cfg_cmds = node['iis']['cfg_cmd']
 cfg_cmds.each do |cmd|
