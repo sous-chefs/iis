@@ -1,6 +1,6 @@
 ## Quick-contribute
 
-* Create an issue on the github [issue tracker](https://github.com/chef-cookbooks/iis/issues)
+* Create an issue on the github [issue tracker](https://github.com/opscode-cookbooks/iis/issues)
 * Link to your patch as a rebased git branch or pull request from the ticket
 
 ## Contributor License Agreement
