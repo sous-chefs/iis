@@ -29,7 +29,11 @@ include Opscode::IIS::Helper
 action :add do
   if !@current_resource.exists
     cmd = "#{appcmd(node)} add apppool /name:\"#{new_resource.pool_name}\""
-    cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version || !new_resource.no_managed_code
+    if new_resource.no_managed_code
+      cmd << " /managedRuntimeVersion:\"#{new_resource.runtime_version}\""
+    else
+      cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version || !new_resource.no_managed_code
+    end
     cmd << " /managedPipelineMode:#{new_resource.pipeline_mode.capitalize}" if new_resource.pipeline_mode
     cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
     Chef::Log.debug(cmd)
@@ -194,7 +198,12 @@ def configure
     if(get_iis_version > '7.0')
       configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
     end
-    configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{new_resource.runtime_version}")
+
+    if new_resource.no_managed_code
+      configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:#{new_resource.runtime_version}")
+    else
+      configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{new_resource.runtime_version}")
+    end
     configure_application_pool(new_resource.pipeline_mode && is_new_pipeline_mode, "managedPipelineMode:#{new_resource.pipeline_mode}")
     configure_application_pool(new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64, "enable32BitAppOnWin64:#{new_resource.thirty_two_bit}")
     configure_application_pool(new_resource.queue_length && is_new_queue_length, "queueLength:#{new_resource.queue_length}")
