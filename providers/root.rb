@@ -47,16 +47,16 @@ action :delete do
 end
 
 action :config do
-	was_updated = false
+  was_updated = false
 
-	was_updated = default_documents(new_resource.default_documents, new_resource.default_documents_enabled) | was_updated
-	was_updated = mime_maps(new_resource.mime_maps) | was_updated
+  was_updated = default_documents(new_resource.default_documents, new_resource.default_documents_enabled) | was_updated
+  was_updated = mime_maps(new_resource.mime_maps) | was_updated
 
-	if was_updated
+  if was_updated
     new_resource.updated_by_last_action(true)
   else
     Chef::Log.debug("#{new_resource} - nothing to do")
-	end
+  end
 end
 
 def load_current_resource

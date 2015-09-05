@@ -122,13 +122,13 @@ def load_current_resource
   @current_resource.application_name(application_name_check)
   @current_resource.path(new_resource.path)
   @current_resource.physical_path(new_resource.physical_path)
-  cmd = shell_out("#{ appcmd(node) } list vdir \"#{application_identifier}\"")
-  Chef::Log.debug("#{ new_resource } list vdir command output: #{ cmd.stdout }")
+  cmd = shell_out("#{appcmd(node)} list vdir \"#{application_identifier}\"")
+  Chef::Log.debug("#{new_resource} list vdir command output: #{cmd.stdout}")
 
   if cmd.stderr.empty?
     # VDIR "Testfu Site/Content/Test"
     result = cmd.stdout.match(/^VDIR\s\"#{Regexp.escape(application_identifier)}\"/)
-    Chef::Log.debug("#{ new_resource } current_resource match output: #{ result }")
+    Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
     if result
       @current_resource.exists = true
     else

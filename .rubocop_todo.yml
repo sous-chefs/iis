@@ -108,11 +108,6 @@ Style/MultilineTernaryOperator:
 Style/NegatedIf:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/NilComparison:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 # Configuration parameters: AllowSafeAssignment.
@@ -125,32 +120,10 @@ Style/ParenthesesAroundCondition:
 Style/RedundantReturn:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/SpaceAfterControlKeyword:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/SpaceBeforeBlockBraces:
-  Enabled: false
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-Style/SpaceInsideBlockBraces:
-  Enabled: false
-
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/SpaceInsideStringInterpolation:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/StringLiterals:
   Enabled: false
 
 # Offense count: 1
@@ -159,18 +132,3 @@ Style/StringLiterals:
 Style/SymbolProc:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/Tab:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/TrailingBlankLines:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
-  Enabled: false

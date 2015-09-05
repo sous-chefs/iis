@@ -91,7 +91,7 @@ module Opscode
       end
 
       def get_iis_version
-        if @iis_version == nil
+        if @iis_version.nil?
           version_string = Win32::Registry::HKEY_LOCAL_MACHINE.open('SOFTWARE\Microsoft\InetStp').read('VersionString')[1]
           version_string.slice! 'Version '
           @iis_version = version_string
@@ -106,7 +106,7 @@ module Opscode
           doc = Document.new xml
 
           is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', default_documents_enabled.to_s)
-          current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{|x| x.value}
+          current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{ |x| x.value }
           cmd = set_default_documents_command specifier
 
           if is_new_default_documents_enabled
@@ -145,7 +145,7 @@ module Opscode
         if cmd.stderr.empty?
           xml = cmd.stdout
           doc = Document.new xml
-          current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map{|x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
+          current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map{ |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
 
           cmd = set_mime_map_command specifier
 
@@ -166,7 +166,7 @@ module Opscode
               end
             end
           end
-          
+
           if (cmd != set_mime_map_command(specifier))
             shell_out! cmd
             Chef::Log.info('mime maps updated')

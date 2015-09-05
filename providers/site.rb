@@ -166,7 +166,7 @@ private
         Chef::Log.debug(cmd)
         shell_out!(cmd,  returns: [0, 42])
       end
-      
+
       if new_resource.path && is_new_physical_path
         was_updated = true
         cmd = "#{appcmd(node)} set vdir \"#{new_resource.site_name}/\""
