@@ -176,6 +176,7 @@ module Opscode
       end
 
       private
+
         def get_default_documents_command specifier = ''
           "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
         end

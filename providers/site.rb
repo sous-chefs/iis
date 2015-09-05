@@ -128,6 +128,7 @@ def load_current_resource
 end
 
 private
+
   def configure
     was_updated = false
     cmd_current_values = "#{appcmd(node)} list site \"#{new_resource.site_name}\" /config:* /xml"
