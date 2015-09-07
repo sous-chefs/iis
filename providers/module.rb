@@ -38,9 +38,7 @@ action :add do
         cmd << " /app.name:\"#{new_resource.application}\""
       end
 
-      if new_resource.type
-        cmd << " /type:\"#{new_resource.type}\""
-      end
+      cmd << " /type:\"#{new_resource.type}\"" if new_resource.type
 
       if new_resource.precondition
         cmd << " /preCondition:\"#{new_resource.precondition}\""

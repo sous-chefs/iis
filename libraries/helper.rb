@@ -96,17 +96,17 @@ module Opscode
           version_string.slice! 'Version '
           @iis_version = version_string
         end
-        return @iis_version
+        @iis_version
       end
 
-      def default_documents default_document, default_documents_enabled, add = true, remove = true, specifier = ''
+      def default_documents(default_document, default_documents_enabled, add = true, remove = true, specifier = '')
         cmd = shell_out get_default_documents_command specifier
         if cmd.stderr.empty?
           xml = cmd.stdout
           doc = Document.new xml
 
           is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', default_documents_enabled.to_s)
-          current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map{ |x| x.value }
+          current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map(&:value)
           cmd = set_default_documents_command specifier
 
           if is_new_default_documents_enabled
@@ -125,7 +125,7 @@ module Opscode
 
           if add && remove
             current_default_documents.each do |document|
-              if !default_document.include? document
+              unless default_document.include? document
                 cmd << " /-files.[value='#{document}']"
               end
             end
@@ -139,13 +139,13 @@ module Opscode
         end
       end
 
-      def mime_maps new_resource_mime_maps, add = true, remove = true, specifier = ''
+      def mime_maps(new_resource_mime_maps, add = true, remove = true, specifier = '')
         # handles mime maps
         cmd = shell_out get_mime_map_command specifier
         if cmd.stderr.empty?
           xml = cmd.stdout
           doc = Document.new xml
-          current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map{ |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
+          current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map { |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
 
           cmd = set_mime_map_command specifier
 
@@ -161,7 +161,7 @@ module Opscode
 
           if add && remove
             current_mime_maps.each do |mime_map|
-              if !new_resource_mime_maps.include? mime_map
+              unless new_resource_mime_maps.include? mime_map
                 cmd << " /-\"[#{mime_map}]\""
               end
             end
@@ -177,21 +177,21 @@ module Opscode
 
       private
 
-        def get_default_documents_command specifier = ''
-          "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
-        end
+      def get_default_documents_command(specifier = '')
+        "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
+      end
 
-        def set_default_documents_command specifier = ''
-          "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
-        end
+      def set_default_documents_command(specifier = '')
+        "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
+      end
 
-        def get_mime_map_command specifier = ''
-          "#{appcmd(node)} list config #{specifier} /section:staticContent /config:* /xml"
-        end
+      def get_mime_map_command(specifier = '')
+        "#{appcmd(node)} list config #{specifier} /section:staticContent /config:* /xml"
+      end
 
-        def set_mime_map_command specifier = ''
-          "#{appcmd(node)} set config #{specifier} /section:staticContent"
-        end
+      def set_mime_map_command(specifier = '')
+        "#{appcmd(node)} set config #{specifier} /section:staticContent"
+      end
     end
   end
 end
