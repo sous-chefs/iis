@@ -1,1 +1,26 @@
-inherit_from: .rubocop_todo.yml
+AllCops:
+  Exclude:
+    - vendor/**/*
+
+Lint/RequireParentheses:
+  Enabled: false
+Lint/UselessAssignment:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/LineLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Style/AccessorMethodName:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Style/MultilineTernaryOperator:
+  Enabled: false
