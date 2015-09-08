@@ -110,7 +110,7 @@ def load_current_resource
       @current_resource.running = false
     end
   else
-    log "Failed to run iis_pool action :load_current_resource, #{cmd_current_values.stderr}" do
+    log "Failed to run iis_pool action :load_current_resource, #{cmd.stderr}" do
       level :warn
     end
   end
