@@ -1,7 +1,7 @@
 iis Cookbook
 ============
 
-[![Build Status](https://travis-ci.org/opscode-cookbooks/iis.svg?branch=master)](https://travis-ci.org/opscode-cookbooks/iis)
+[![Build Status](https://travis-ci.org/chef-cookbooks/iis.svg?branch=master)](https://travis-ci.org/chef-cookbooks/iis)
 [![Cookbook Version](https://img.shields.io/cookbook/v/iis.svg)](https://supermarket.chef.io/cookbooks/iis)
 
 Installs and configures Microsoft Internet Information Services (IIS) 7.0/7.5/8.0
