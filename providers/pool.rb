@@ -43,7 +43,9 @@ action :add do
 end
 
 action :config do
-  configure
+  if configure
+    new_resource.updated_by_last_action(true)
+  end
 end
 
 action :delete do
@@ -275,7 +277,6 @@ def configure
     end
 
     if @was_updated
-      new_resource.updated_by_last_action(true)
       Chef::Log.info("#{new_resource} configured application pool")
     else
       Chef::Log.debug("#{new_resource} application pool - nothing to do")
@@ -285,6 +286,8 @@ def configure
       level :warn
     end
   end
+
+  @was_updated
 end
 
 private
