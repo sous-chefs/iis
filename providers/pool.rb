@@ -32,7 +32,7 @@ action :add do
     if new_resource.no_managed_code
       cmd << " /managedRuntimeVersion:\"#{new_resource.runtime_version}\""
     else
-      cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version || !new_resource.no_managed_code
+      cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version
     end
     cmd << " /managedPipelineMode:#{new_resource.pipeline_mode.capitalize}" if new_resource.pipeline_mode
     cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
