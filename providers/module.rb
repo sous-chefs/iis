@@ -44,7 +44,7 @@ action :add do
         cmd << " /preCondition:\"#{new_resource.precondition}\""
       end
 
-      shell_out!(cmd,  returns: [0, 42])
+      shell_out!(cmd, returns: [0, 42])
 
       Chef::Log.info("#{new_resource} added module '#{new_resource.module_name}'")
     end
@@ -61,7 +61,7 @@ action :delete do
         cmd << " /app.name:\"#{new_resource.application}\""
       end
 
-      shell_out!(cmd,  returns: [0, 42])
+      shell_out!(cmd, returns: [0, 42])
     end
 
     Chef::Log.info("#{new_resource} deleted")

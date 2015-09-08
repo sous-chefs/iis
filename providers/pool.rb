@@ -43,9 +43,7 @@ action :add do
 end
 
 action :config do
-  if configure
-    new_resource.updated_by_last_action(true)
-  end
+  new_resource.updated_by_last_action(true) if configure
 end
 
 action :delete do

@@ -40,12 +40,12 @@ action :add do
 
     # support for additional options -logDir, -limits, -ftpServer, etc...
     cmd << " #{new_resource.options}" if new_resource.options
-    shell_out!(cmd,  returns: [0, 42])
+    shell_out!(cmd, returns: [0, 42])
 
     configure
 
     if new_resource.application_pool
-      shell_out!("#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\"",  returns: [0, 42])
+      shell_out!("#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
     end
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} added new site '#{new_resource.site_name}'")
@@ -55,15 +55,13 @@ action :add do
 end
 
 action :config do
-  if configure
-    new_resource.updated_by_last_action(true)
-  end
+  new_resource.updated_by_last_action(true) if configure
 end
 
 action :delete do
   if @current_resource.exists
     Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-    shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
+    shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} deleted")
   else
@@ -73,7 +71,7 @@ end
 
 action :start do
   if !@current_resource.running
-    shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
+    shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} started")
   else
@@ -84,7 +82,7 @@ end
 action :stop do
   if @current_resource.running
     Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
+    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} stopped")
   else
@@ -93,9 +91,9 @@ action :stop do
 end
 
 action :restart do
-  shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
+  shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
   sleep 2
-  shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"",  returns: [0, 42])
+  shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
   new_resource.updated_by_last_action(true)
   Chef::Log.info("#{new_resource} restarted")
 end
@@ -165,7 +163,7 @@ def configure
       was_updated = true
       cmd = "#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\""
       Chef::Log.debug(cmd)
-      shell_out!(cmd,  returns: [0, 42])
+      shell_out!(cmd, returns: [0, 42])
     end
 
     if new_resource.path && is_new_physical_path

@@ -5,14 +5,14 @@ if defined?(ChefSpec)
   end
 
   [:config, :add, :delete].each do |action|
-    self.class.send(:define_method, "#{action}_iis_app", proc  do |app_name|
+    self.class.send(:define_method, "#{action}_iis_app", proc do |app_name|
       ChefSpec::Matchers::ResourceMatcher.new(:iis_app, action, app_name)
     end
                    )
   end
 
   [:config].each do |action|
-    self.class.send(:define_method, "#{action}_iis_lock", proc  do |section|
+    self.class.send(:define_method, "#{action}_iis_lock", proc do |section|
       ChefSpec::Matchers::ResourceMatcher.new(:iis_lock, action, section)
     end
                    )
@@ -40,14 +40,14 @@ if defined?(ChefSpec)
   end
 
   [:config].each do |action|
-    self.class.send(:define_method, "#{action}_iis_unlock", proc  do |section|
+    self.class.send(:define_method, "#{action}_iis_unlock", proc do |section|
       ChefSpec::Matchers::ResourceMatcher.new(:iis_unlock, action, section)
     end
                    )
   end
 
   [:add, :config, :delete].each do |action|
-    self.class.send(:define_method, "#{action}_iis_vdir", proc  do |section|
+    self.class.send(:define_method, "#{action}_iis_vdir", proc do |section|
       ChefSpec::Matchers::ResourceMatcher.new(:iis_vdir, action, section)
     end
                    )

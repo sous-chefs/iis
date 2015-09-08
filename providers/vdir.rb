@@ -37,7 +37,7 @@ action :add do
     cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
 
     Chef::Log.info(cmd)
-    shell_out!(cmd,  returns: [0, 42, 183])
+    shell_out!(cmd, returns: [0, 42, 183])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} added new virtual directory to application: '#{new_resource.application_name}'")
   else
@@ -109,7 +109,7 @@ end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd(node)} delete vdir \"#{application_identifier}\"",  returns: [0, 42])
+    shell_out!("#{appcmd(node)} delete vdir \"#{application_identifier}\"", returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} deleted")
   else
