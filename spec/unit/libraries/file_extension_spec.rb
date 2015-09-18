@@ -1,6 +1,5 @@
-require_relative '../spec_helper.rb'
-require_relative '../../libraries/file_extensions'
-require 'rspec'
+require_relative '../../../libraries/file_extensions'
+require 'spec_helper'
 include REXML
 
 describe 'IIS::RequestFiltering::FileExtensions::FileExtensionEntry' do
