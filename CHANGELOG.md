@@ -1,3 +1,7 @@
+iis Cookbook CHANGELOG
+======================
+This file is used to list changes made in each version of the iis cookbook.
+
 v4.1.1 (2015-05-07)
 -------------------
 - Detects changes in the physical path of apps.

@@ -34,9 +34,10 @@ action :add do
     cmd << " /password:\"#{new_resource.password}\"" if new_resource.password
     cmd << " /logonMethod:#{new_resource.logon_method}" if new_resource.logon_method
     cmd << " /allowSubDirConfig:#{new_resource.allow_sub_dir_config}" if new_resource.allow_sub_dir_config
+    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
 
     Chef::Log.info(cmd)
-    shell_out!(cmd,  returns: [0, 42, 183])
+    shell_out!(cmd, returns: [0, 42, 183])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} added new virtual directory to application: '#{new_resource.application_name}'")
   else
@@ -108,7 +109,7 @@ end
 
 action :delete do
   if @current_resource.exists
-    shell_out!("#{appcmd(node)} delete vdir \"#{application_identifier}\"",  returns: [0, 42])
+    shell_out!("#{appcmd(node)} delete vdir \"#{application_identifier}\"", returns: [0, 42])
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} deleted")
   else
@@ -121,13 +122,13 @@ def load_current_resource
   @current_resource.application_name(application_name_check)
   @current_resource.path(new_resource.path)
   @current_resource.physical_path(new_resource.physical_path)
-  cmd = shell_out("#{ appcmd(node) } list vdir \"#{application_identifier}\"")
-  Chef::Log.debug("#{ new_resource } list vdir command output: #{ cmd.stdout }")
+  cmd = shell_out("#{appcmd(node)} list vdir \"#{application_identifier}\"")
+  Chef::Log.debug("#{new_resource} list vdir command output: #{cmd.stdout}")
 
   if cmd.stderr.empty?
     # VDIR "Testfu Site/Content/Test"
     result = cmd.stdout.match(/^VDIR\s\"#{Regexp.escape(application_identifier)}\"/)
-    Chef::Log.debug("#{ new_resource } current_resource match output: #{ result }")
+    Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
     if result
       @current_resource.exists = true
     else

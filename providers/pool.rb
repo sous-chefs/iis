@@ -29,9 +29,13 @@ include Opscode::IIS::Helper
 action :add do
   if !@current_resource.exists
     cmd = "#{appcmd(node)} add apppool /name:\"#{new_resource.pool_name}\""
-    cmd << ' /managedRuntimeVersion:' if new_resource.runtime_version || new_resource.no_managed_code
-    cmd << "v#{new_resource.runtime_version}" if new_resource.runtime_version && !new_resource.no_managed_code
+    if new_resource.no_managed_code
+      cmd << " /managedRuntimeVersion:\"#{new_resource.runtime_version}\""
+    else
+      cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version
+    end
     cmd << " /managedPipelineMode:#{new_resource.pipeline_mode.capitalize}" if new_resource.pipeline_mode
+    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     configure
@@ -43,7 +47,7 @@ action :add do
 end
 
 action :config do
-  configure
+  new_resource.updated_by_last_action(true) if configure
 end
 
 action :delete do
@@ -108,7 +112,7 @@ def load_current_resource
       @current_resource.running = false
     end
   else
-    log "Failed to run iis_pool action :load_current_resource, #{cmd_current_values.stderr}" do
+    log "Failed to run iis_pool action :load_current_resource, #{cmd.stderr}" do
       level :warn
     end
   end
@@ -134,7 +138,9 @@ def configure
     is_new_pipeline_mode = new_value?(doc.root, 'APPPOOL/@PipelineMode', new_resource.pipeline_mode)
 
     # add items
-    is_new_start_mode = new_value?(doc.root, 'APPPOOL/add/@startMode', new_resource.start_mode.to_s)
+    if get_iis_version > '7.0'
+      is_new_start_mode = new_value?(doc.root, 'APPPOOL/add/@startMode', new_resource.start_mode.to_s)
+    end
     is_new_auto_start = new_value?(doc.root, 'APPPOOL/add/@autoStart', new_resource.auto_start.to_s)
     is_new_queue_length = new_value?(doc.root, 'APPPOOL/add/@queueLength', new_resource.queue_length.to_s)
     is_new_enable_32_bit_app_on_win_64 = new_value?(doc.root, 'APPPOOL/add/@enable32BitAppOnWin64', new_resource.thirty_two_bit.to_s)
@@ -142,10 +148,14 @@ def configure
     # processModel items
     is_new_max_processes = new_or_empty_value?(doc.root, 'APPPOOL/add/processModel/@maxProcesses', new_resource.max_proc.to_s)
     is_new_load_user_profile = new_value?(doc.root, 'APPPOOL/add/processModel/@loadUserProfile', new_resource.load_user_profile.to_s)
-    is_new_identity_type = new_value?(doc.root, 'APPPOOL/add/processModel/@identityType', new_resource.pool_identity.to_s)
+    if get_iis_version > '7.0'
+      is_new_identity_type = new_value?(doc.root, 'APPPOOL/add/processModel/@identityType', new_resource.pool_identity.to_s)
+    end
     is_new_user_name = new_or_empty_value?(doc.root, 'APPPOOL/add/processModel/@userName', new_resource.pool_username.to_s)
     is_new_password = new_or_empty_value?(doc.root, 'APPPOOL/add/processModel/@password', new_resource.pool_password.to_s)
-    is_new_logon_type = new_value?(doc.root, 'APPPOOL/add/processModel/@logonType', new_resource.logon_type.to_s)
+    if get_iis_version > '7.0'
+      is_new_logon_type = new_value?(doc.root, 'APPPOOL/add/processModel/@logonType', new_resource.logon_type.to_s)
+    end
     is_new_manual_group_membership = new_value?(doc.root, 'APPPOOL/add/processModel/@manualGroupMembership', new_resource.manual_group_membership.to_s)
     is_new_idle_timeout = new_value?(doc.root, 'APPPOOL/add/processModel/@idleTimeout', new_resource.idle_timeout.to_s)
     is_new_shutdown_time_limit = new_value?(doc.root, 'APPPOOL/add/processModel/@shutdownTimeLimit', new_resource.shutdown_time_limit.to_s)
@@ -169,7 +179,7 @@ def configure
     is_new_disallow_overlapping_rotation = new_value?(doc.root, 'APPPOOL/add/recycling/@disallowOverlappingRotation', new_resource.disallow_overlapping_rotation.to_s)
     is_new_disallow_rotation_on_config_change = new_value?(doc.root, 'APPPOOL/add/recycling/@disallowRotationOnConfigChange', new_resource.disallow_rotation_on_config_change.to_s)
     is_new_recycle_after_time = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/periodicRestart/@time', new_resource.recycle_after_time.to_s)
-    is_new_recycle_at_time = new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add[@value='#{new_resource.recycle_at_time.to_s}']/@value", new_resource.recycle_at_time.to_s)
+    is_new_recycle_at_time = new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add[@value='#{new_resource.recycle_at_time}']/@value", new_resource.recycle_at_time.to_s)
     is_new_private_memory = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/periodicRestart/@privateMemory', new_resource.private_mem.to_s)
     is_new_log_event_on_recycle = new_value?(doc.root, 'APPPOOL/add/recycling/@logEventOnRecycle', 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory')
 
@@ -185,9 +195,15 @@ def configure
     @cmd = "#{appcmd(node)} set config /section:applicationPools"
 
     # root items
-    configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
-    configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
-    configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{new_resource.runtime_version}")
+    if get_iis_version > '7.0'
+      configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
+    end
+
+    if new_resource.no_managed_code
+      configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:#{new_resource.runtime_version}")
+    else
+      configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{new_resource.runtime_version}")
+    end
     configure_application_pool(new_resource.pipeline_mode && is_new_pipeline_mode, "managedPipelineMode:#{new_resource.pipeline_mode}")
     configure_application_pool(new_resource.thirty_two_bit && is_new_enable_32_bit_app_on_win_64, "enable32BitAppOnWin64:#{new_resource.thirty_two_bit}")
     configure_application_pool(new_resource.queue_length && is_new_queue_length, "queueLength:#{new_resource.queue_length}")
@@ -204,12 +220,12 @@ def configure
     configure_application_pool(is_new_ping_interval, "processModel.pingInterval:#{new_resource.ping_interval}")
     configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{new_resource.ping_response_time}")
 
-    node_array = XPath.match(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add")
+    node_array = XPath.match(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add')
     should_clear_apppool_schedules = (new_resource.recycle_at_time && is_new_recycle_at_time) || node_array.length > 1
 
     # recycling items
     ## Special case this collection removal for now.
-    if(should_clear_apppool_schedules)
+    if should_clear_apppool_schedules
       @was_updated = true
       is_new_recycle_at_time = true
       clear_pool_schedule_cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{new_resource.pool_name}'].recycling.periodicRestart.schedule\""
@@ -249,17 +265,17 @@ def configure
     end
 
     # Application Pool Identity Settings
-    if ((new_resource.pool_username && new_resource.pool_username != '') && (is_new_user_name || is_new_password))
+    if (new_resource.pool_username && new_resource.pool_username != '') && (is_new_user_name || is_new_password)
       @was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{new_resource.pool_name}'].processModel.identityType:SpecificUser\""
       cmd << " \"/[name='#{new_resource.pool_name}'].processModel.userName:#{new_resource.pool_username}\""
-      cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.pool_password}\"" if (new_resource.pool_password && new_resource.pool_password != '' && is_new_password)
+      cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.pool_password}\"" if new_resource.pool_password && new_resource.pool_password != '' && is_new_password
       Chef::Log.debug(cmd)
       shell_out!(cmd)
-    elsif ((new_resource.pool_username.nil? || new_resource.pool_username == '') &&
-      (new_resource.pool_password.nil? || new_resource.pool_username == '') &&
-      (is_new_identity_type && new_resource.pool_identity != 'SpecificUser'))
+    elsif (new_resource.pool_username.nil? || new_resource.pool_username == '') &&
+          (new_resource.pool_password.nil? || new_resource.pool_username == '') &&
+          (is_new_identity_type && new_resource.pool_identity != 'SpecificUser')
       @was_updated = true
       cmd = "#{appcmd(node)} set config /section:applicationPools"
       cmd << " \"/[name='#{new_resource.pool_name}'].processModel.identityType:#{new_resource.pool_identity}\""
@@ -268,7 +284,6 @@ def configure
     end
 
     if @was_updated
-      new_resource.updated_by_last_action(true)
       Chef::Log.info("#{new_resource} configured application pool")
     else
       Chef::Log.debug("#{new_resource} application pool - nothing to do")
@@ -278,13 +293,14 @@ def configure
       level :warn
     end
   end
+
+  @was_updated
 end
 
 private
+
 def configure_application_pool(condition, config, add_remove = '')
-  unless condition
-    return
-  end
+  return unless condition
 
   @was_updated = true
   @cmd << " \"/#{add_remove}[name='#{new_resource.pool_name}'].#{config}\""

@@ -33,6 +33,7 @@ action :add do
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
     cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\"" if new_resource.physical_path
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
+    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     new_resource.updated_by_last_action(true)
@@ -56,9 +57,9 @@ action :config do
     is_new_physical_path = new_or_empty_value?(doc.root, 'APP/application/virtualDirectory/@physicalPath', new_resource.physical_path.to_s)
 
     # only get the beginning of the command if there is something that changeds
-    cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if ((new_resource.path && is_new_path) ||
-                                                        (new_resource.application_pool && is_new_application_pool) ||
-                                                        (new_resource.enabled_protocols && is_new_enabled_protocols))
+    cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if (new_resource.path && is_new_path) ||
+                                                              (new_resource.application_pool && is_new_application_pool) ||
+                                                              (new_resource.enabled_protocols && is_new_enabled_protocols)
     # adds path to the cmd
     cmd << " /path:\"#{new_resource.path}\"" if new_resource.path && is_new_path
     # adds applicationPool to the cmd
@@ -67,16 +68,16 @@ action :config do
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols && is_new_enabled_protocols
     Chef::Log.debug(cmd)
 
-    if (cmd.nil?)
+    if cmd.nil?
       Chef::Log.debug("#{new_resource} application - nothing to do")
     else
       shell_out!(cmd)
       was_updated = true
     end
 
-    if ((new_resource.path && is_new_path) ||
-      (new_resource.application_pool && is_new_application_pool) ||
-      (new_resource.enabled_protocols && is_new_enabled_protocols))
+    if (new_resource.path && is_new_path) ||
+       (new_resource.application_pool && is_new_application_pool) ||
+       (new_resource.enabled_protocols && is_new_enabled_protocols)
       was_updated = true
     end
 
