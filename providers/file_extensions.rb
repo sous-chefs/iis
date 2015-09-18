@@ -1,6 +1,9 @@
 ####################################################################################################
 #
-# Set IIS to allow or deny file extensions. If the extension is blocked, IIS will return 404.7 code
+# Author:: Kevin Kennedy(kkennedy@healthwise.org)
+# Cookbook Name:: iis
+# Resource:: config
+# Description: Configure file extensions IIS should either allow or deny.
 #
 ####################################################################################################
 
@@ -17,8 +20,6 @@ action :config do
 end
 
 def fileExtensions
-  Chef::Log.debug("- new_resource.allowed_file_extensions: #{new_resource.allowed_file_extensions}")
-  Chef::Log.debug("- new_resource.excluded_file_extensions: #{new_resource.excluded_file_extensions}")
 
   ## Get XML for requestFiltering elements
   cmd_current_values = "#{appcmd(node)} list config /section:system.webServer/security/requestFiltering /xml"

@@ -15,13 +15,11 @@ module IIS
         @allowed
 
         def initialize(fileExtension, allowed)
-          #Chef::Log.info("- RequestFilter: #{fileExtension}, #{allowed}")
           @fileExtension = fileExtension
           @allowed = allowed
         end
 
         def equals?(requestFilter)
-          #Chef::Log.info("In equals: #{requestFilter.fileExtension}:#{requestFilter.allowed} vs #{@fileExtension}:#{@allowed} ")
           if (@fileExtension.downcase == requestFilter.fileExtension.downcase &&
               @allowed.to_s.downcase == requestFilter.allowed.to_s.downcase)
             return true
@@ -64,9 +62,7 @@ module IIS
         end
 
         def has_item(item)
-          #Chef::Log.info("item: #{item} #{item.fileExtension}")
           if (@items[item.fileExtension])
-            #Chef::Log.info("has_item: exists!")
             return item.equals?(@items[item.fileExtension])
           end
 
@@ -104,7 +100,6 @@ module IIS
         @excludedExtensions
 
         def initialize(fileExtensionContainer, baseAppCmdString, allowedExtensions, excludedExtensions)
-          #Chef::Log.info("baseAppCmdString: #{baseAppCmdString}")
           @fileExtensionContainer = fileExtensionContainer
           @baseAppCmdString = baseAppCmdString
           @allowedExtensions = allowedExtensions
@@ -114,7 +109,6 @@ module IIS
         def build_command()
           was_updated = false
           cmd = "#{@baseAppCmdString} set config -section:system.webServer/security/requestFiltering"
-          #Chef::Log.info("cmd: #{cmd}")
           @allowedExtensions.each do |extension|
             file_extension_cmd = build_file_extension_command(extension, true)
             if (file_extension_cmd != '')
@@ -140,7 +134,6 @@ module IIS
 
         ## Need to build the command
         def build_file_extension_command(extension, shouldAllow)
-          #Chef::Log.info("in build_command: #{extension} #{shouldAllow}")
           cmd = ''
 
           fileExtension = @fileExtensionContainer.get_file_extension(extension)
@@ -154,7 +147,6 @@ module IIS
             cmd << " /+fileExtensions.[fileExtension='#{extension}',allowed='#{shouldAllow}']"
           end
 
-          #Chef::Log.info("returning #{cmd}")
           return cmd
         end
       end
