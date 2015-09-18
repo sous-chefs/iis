@@ -30,7 +30,7 @@ attribute :host_header, kind_of: String, default: nil
 attribute :bindings, kind_of: String, default: nil
 attribute :application_pool, kind_of: String, default: nil
 attribute :options, kind_of: String, default: ''
-attribute :log_directory, kind_of: String, default: "#{node['iis']['pubroot']}\\logs\\LogFiles"
+attribute :log_directory, kind_of: String, default: node['iis']['log_dir']
 attribute :log_period, kind_of: Symbol, default: :Daily, equal_to: [:Daily, :Hourly, :MaxSize, :Monthly, :Weekly]
 attribute :log_truncsize, kind_of: Integer, default: 1_048_576
 

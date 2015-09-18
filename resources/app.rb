@@ -26,4 +26,7 @@ attribute :path, kind_of: String, default: '/'
 attribute :application_pool, kind_of: String
 attribute :physical_path, kind_of: String
 attribute :enabled_protocols, kind_of: String
+attribute :default_documents, kind_of: Array, default: []
+attribute :mime_maps, kind_of: Array, default: []
+
 attr_accessor :exists, :running
