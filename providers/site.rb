@@ -175,6 +175,7 @@ def configure
     end
 
     if new_resource.site_id && is_new_site_id
+      was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /id:#{new_resource.site_id}"
       Chef::Log.debug(cmd)
@@ -183,6 +184,7 @@ def configure
     end
 
     if new_resource.log_directory && is_new_log_directory
+      was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.directory:#{windows_cleanpath(new_resource.log_directory)}"
       Chef::Log.debug(cmd)
@@ -191,6 +193,7 @@ def configure
     end
 
     if new_resource.log_period && is_new_log_period
+      was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.period:#{new_resource.log_period}"
       Chef::Log.debug(cmd)
@@ -199,6 +202,7 @@ def configure
     end
 
     if new_resource.log_truncsize && is_new_log_trunc
+      was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.truncateSize:#{new_resource.log_truncsize}"
       Chef::Log.debug(cmd)
