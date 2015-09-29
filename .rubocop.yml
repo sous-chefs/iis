@@ -1,26 +1,31 @@
 AllCops:
   Exclude:
     - vendor/**/*
+    - Guardfile
 
-Lint/RequireParentheses:
+AlignParameters:
   Enabled: false
-Lint/UselessAssignment:
+ClassLength:
+  Enabled: false
+CyclomaticComplexity:
+  Enabled: false
+Documentation:
+  Enabled: false
+Encoding:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+LineLength:
+  Enabled: false
+MethodLength:
   Enabled: false
 Metrics/AbcSize:
   Enabled: false
-Metrics/CyclomaticComplexity:
+PerceivedComplexity:
   Enabled: false
-Metrics/LineLength:
+SingleSpaceBeforeFirstArg:
   Enabled: false
-Metrics/MethodLength:
+Style/ClassAndModuleChildren:
   Enabled: false
-Metrics/ModuleLength:
-  Enabled: false
-Metrics/PerceivedComplexity:
-  Enabled: false
-Style/AccessorMethodName:
-  Enabled: false
-Style/GuardClause:
-  Enabled: false
-Style/MultilineTernaryOperator:
+Style/FileName:
   Enabled: false
