@@ -213,28 +213,28 @@ Runs a config command on your IIS instance.
 ```ruby
 # Sets up logging
 iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:\"D:\\logs\"" do
-    action :config
+    action :set
 end
 ```
 
 ```ruby
 # Increase file upload size for 'MySite'
 iis_config "\"MySite\" /section:requestfiltering /requestlimits.maxallowedcontentlength:50000000" do
-  action :config
+  action :set
 end
 ```
 
 ```ruby
 # Set IUSR username and password authentication
 iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"IUSR_foobar\" /password:\"p@assword\" /commit:apphost" do
-  action :config
+  action :set
 end
 ```
 
 ```ruby
 # Authenticate with application pool
 iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"\" /commit:apphost" do
-   action :config
+   action :set
 end
 
 ```
@@ -244,7 +244,7 @@ end
 cfg_cmds = node['iis']['cfg_cmd']
 cfg_cmds.each do |cmd|
     iis_config "#{cmd}" do
-        action :config
+        action :set
     end
 end
 ```
@@ -252,7 +252,7 @@ end
 ```ruby
 # Add static machine key at site level
 iis_config "MySite /commit:site /section:machineKey /validation:AES /validationKey:AAAAAA /decryptionKey:ZZZZZ" do
-  action :config
+  action :set
 end
 ```
 
