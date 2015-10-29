@@ -30,7 +30,7 @@ action :add do
   if !@current_resource.exists
     cmd = "#{appcmd(node)} add apppool /name:\"#{new_resource.pool_name}\""
     if new_resource.no_managed_code
-      cmd << " /managedRuntimeVersion:\"#{new_resource.runtime_version}\""
+      cmd << " /managedRuntimeVersion:\"#{new_resource.runtime_version}\"" if new_resource.runtime_version
     else
       cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version
     end
