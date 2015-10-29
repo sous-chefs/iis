@@ -30,7 +30,7 @@ action :add do
   if !@current_resource.exists
     cmd = "#{appcmd(node)} add apppool /name:\"#{new_resource.pool_name}\""
     if new_resource.no_managed_code
-      cmd << " /managedRuntimeVersion:\"#{new_resource.runtime_version}\"" if new_resource.runtime_version
+      cmd << " /managedRuntimeVersion:\"\""
     else
       cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version
     end
@@ -200,7 +200,7 @@ def configure
     end
 
     if new_resource.no_managed_code
-      configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:#{new_resource.runtime_version}")
+      configure_application_pool(is_new_managed_runtime_version, "managedRuntimeVersion:\"\"")
     else
       configure_application_pool(new_resource.runtime_version && is_new_managed_runtime_version, "managedRuntimeVersion:v#{new_resource.runtime_version}")
     end
