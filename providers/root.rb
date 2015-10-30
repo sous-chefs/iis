@@ -19,12 +19,13 @@
 #
 
 include Opscode::IIS::Helper
+include Opscode::IIS::Processors
 
 action :add do
-  was_updated = false
+  @was_updated = false
 
-  was_updated = default_documents(new_resource.add_default_documents, new_resource.default_documents_enabled, true, false) | was_updated
-  was_updated = mime_maps(new_resource.add_mime_maps, true, false) | was_updated
+  @was_updated = default_documents(new_resource.add_default_documents, new_resource.default_documents_enabled, true, false) | @was_updated
+  @was_updated = mime_maps(new_resource.add_mime_maps, true, false) | @was_updated
 
   if was_updated
     new_resource.updated_by_last_action(true)
@@ -34,12 +35,12 @@ action :add do
 end
 
 action :delete do
-  was_updated = false
+  @was_updated = false
 
-  was_updated = default_documents(new_resource.delete_default_documents, new_resource.default_documents_enabled, false) | was_updated
-  was_updated = mime_maps(new_resource.delete_mime_maps, false) | was_updated
+  @was_updated = default_documents(new_resource.delete_default_documents, new_resource.default_documents_enabled, false) | @was_updated
+  @was_updated = mime_maps(new_resource.delete_mime_maps, false) | @was_updated
 
-  if was_updated
+  if @was_updated
     new_resource.updated_by_last_action(true)
   else
     Chef::Log.debug("#{new_resource} - nothing to do")
@@ -47,12 +48,12 @@ action :delete do
 end
 
 action :config do
-  was_updated = false
+  @was_updated = false
 
-  was_updated = default_documents(new_resource.default_documents, new_resource.default_documents_enabled) | was_updated
-  was_updated = mime_maps(new_resource.mime_maps) | was_updated
+  @was_updated = default_documents(new_resource.default_documents, new_resource.default_documents_enabled) | @was_updated
+  @was_updated = mime_maps(new_resource.mime_maps) | @was_updated
 
-  if was_updated
+  if @was_updated
     new_resource.updated_by_last_action(true)
   else
     Chef::Log.debug("#{new_resource} - nothing to do")

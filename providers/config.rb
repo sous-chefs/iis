@@ -23,6 +23,7 @@ require 'chef/mixin/shell_out'
 
 include Chef::Mixin::ShellOut
 include Opscode::IIS::Helper
+include Opscode::IIS::Processors
 
 # :config deprecated, use :set instead
 action :config do

@@ -24,6 +24,7 @@ require 'rexml/document'
 include Chef::Mixin::ShellOut
 include REXML
 include Opscode::IIS::Helper
+include Opscode::IIS::Processors
 
 action :lock do
   @current_resource.exists = new_value?(doc.root, 'CONFIG/@overrideMode', 'Deny')
