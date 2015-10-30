@@ -26,11 +26,11 @@ include Opscode::IIS::Helper
 
 # :config deprecated, use :set instead
 action :config do
-  config()
+  config
 end
 
 action :set do
-  config()
+  config
 end
 
 action :clear do
