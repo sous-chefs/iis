@@ -2,6 +2,19 @@ iis Cookbook CHANGELOG
 ======================
 This file is used to list changes made in each version of the iis cookbook.
 
+v4.1.3 (2015-10-30)
+-------------------
+- Resolves Robucop issues
+- Bug Fix for [#217](https://github.com/chef-cookbooks/iis/issues/217)
+
+v4.1.2 (2015-10-21)
+-------------------
+- Bug fixes for application pool provider and site provider
+- Added the ability to detect the IIS Version, allowing for some properties to only exist for specific IIS versions
+- Fixed issue with Win32 being required on linux
+- Added support for mimeTypes and defaultDocuments on iis_sites
+- Added iis config set and clear abilities
+
 v4.1.1 (2015-05-07)
 -------------------
 - Detects changes in the physical path of apps.
