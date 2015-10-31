@@ -31,16 +31,3 @@ Style/ClassAndModuleChildren:
   Enabled: false
 Style/FileName:
   Enabled: false
-
-
-#TODO: Resolve these warnings
-Lint/UselessAssignment:
-  Enabled: false
-Style/AccessorMethodName:
-  Enabled: false
-Style/GuardClause:
-  Enabled: false
-Lint/RequireParentheses:
-  Enabled: false
-Style/MultilineTernaryOperator:
-  Enabled: false
