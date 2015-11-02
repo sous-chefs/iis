@@ -139,9 +139,12 @@ def configure
     is_new_pipeline_mode = new_value?(doc.root, 'APPPOOL/@PipelineMode', new_resource.pipeline_mode)
 
     # add items
+    if iis_version >= '7.0'
+      is_new_auto_start = new_value?(doc.root, 'APPPOOL/add/@autoStart', new_resource.auto_start.to_s)
+    end
+    
     if iis_version > '7.0'
       is_new_start_mode = new_value?(doc.root, 'APPPOOL/add/@startMode', new_resource.start_mode.to_s)
-      is_new_auto_start = new_value?(doc.root, 'APPPOOL/add/@autoStart', new_resource.auto_start.to_s)
     end
 
     is_new_queue_length = new_value?(doc.root, 'APPPOOL/add/@queueLength', new_resource.queue_length.to_s)
@@ -197,9 +200,12 @@ def configure
     @cmd = "#{appcmd(node)} set config /section:applicationPools"
 
     # root items
+    if iis_version >= '7.0'
+      configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")  
+    end
+    
     if iis_version > '7.0'
       configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
-      configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
     end
 
     if new_resource.no_managed_code
