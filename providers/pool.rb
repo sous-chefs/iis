@@ -141,9 +141,9 @@ def configure
     # add items
     if iis_version > '7.0'
       is_new_start_mode = new_value?(doc.root, 'APPPOOL/add/@startMode', new_resource.start_mode.to_s)
+      is_new_auto_start = new_value?(doc.root, 'APPPOOL/add/@autoStart', new_resource.auto_start.to_s)
     end
-    # This isn't currently being used...re-add when needed
-    # is_new_auto_start = new_value?(doc.root, 'APPPOOL/add/@autoStart', new_resource.auto_start.to_s)
+
     is_new_queue_length = new_value?(doc.root, 'APPPOOL/add/@queueLength', new_resource.queue_length.to_s)
     is_new_enable_32_bit_app_on_win_64 = new_value?(doc.root, 'APPPOOL/add/@enable32BitAppOnWin64', new_resource.thirty_two_bit.to_s)
 
@@ -199,6 +199,7 @@ def configure
     # root items
     if iis_version > '7.0'
       configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
+      configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
     end
 
     if new_resource.no_managed_code
