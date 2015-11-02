@@ -2,6 +2,10 @@ iis Cookbook CHANGELOG
 ======================
 This file is used to list changes made in each version of the iis cookbook.
 
+v4.1.4 (2015-11-2)
+-------------------
+- Re-added functionality for iis_pool auto_start, this was a breaking change
+
 v4.1.3 (2015-10-30)
 -------------------
 - Resolves Robucop issues
