@@ -142,7 +142,7 @@ def configure
     if iis_version >= '7.0'
       is_new_auto_start = new_value?(doc.root, 'APPPOOL/add/@autoStart', new_resource.auto_start.to_s)
     end
-    
+
     if iis_version > '7.0'
       is_new_start_mode = new_value?(doc.root, 'APPPOOL/add/@startMode', new_resource.start_mode.to_s)
     end
@@ -201,9 +201,9 @@ def configure
 
     # root items
     if iis_version >= '7.0'
-      configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")  
+      configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
     end
-    
+
     if iis_version > '7.0'
       configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
     end
