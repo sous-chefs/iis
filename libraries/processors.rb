@@ -24,13 +24,13 @@ module Opscode
     # Contains functions that are used throughout this cookbook
     module Processors
       def default_documents(default_document, default_documents_enabled, add = true, remove = true, specifier = '')
-        cmd = get_default_documents_command specifier
+        cmd = shell_out! get_default_documents_command specifier
         return unless cmd.stderr.empty?
         xml = cmd.stdout
-        doc = Document.new xml
+        doc = REXML::Document.new xml
 
         is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', default_documents_enabled.to_s)
-        current_default_documents = XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map(&:value)
+        current_default_documents = REXML::XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map(&:value)
         cmd = default_documents_command specifier
 
         if is_new_default_documents_enabled
@@ -66,10 +66,10 @@ module Opscode
         cmd = shell_out get_mime_map_command specifier
         return unless cmd.stderr.empty?
         xml = cmd.stdout
-        doc = Document.new xml
-        current_mime_maps = XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map { |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
+        doc = REXML::Document.new xml
+        current_mime_maps = REXML::XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map { |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
 
-        cmd = set_mime_map_command specifier
+        cmd = mime_map_command specifier
 
         if add || remove
           new_resource_mime_maps.each do |mime_map|
