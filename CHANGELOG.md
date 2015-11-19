@@ -2,6 +2,10 @@ iis Cookbook CHANGELOG
 ======================
 This file is used to list changes made in each version of the iis cookbook.
 
+v4.1.5 (2015-11-18)
+-------------------
+- Resolves issues with `iis_root` [#222](https://github.com/chef-cookbooks/iis/issues/222)
+
 v4.1.4 (2015-11-2)
 -------------------
 - Re-added functionality for iis_pool auto_start, this was a breaking change
