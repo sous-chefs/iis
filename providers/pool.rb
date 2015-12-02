@@ -163,6 +163,9 @@ def configure
     end
     is_new_manual_group_membership = new_value?(doc.root, 'APPPOOL/add/processModel/@manualGroupMembership', new_resource.manual_group_membership.to_s)
     is_new_idle_timeout = new_value?(doc.root, 'APPPOOL/add/processModel/@idleTimeout', new_resource.idle_timeout.to_s)
+    if iis_version >= '8.5'
+      is_new_idle_timeout_action = new_value?(doc.root, 'APPPOOL/add/processModel/@idleTimeoutAction', new_resource.idle_timeout_action)
+    end
     is_new_shutdown_time_limit = new_value?(doc.root, 'APPPOOL/add/processModel/@shutdownTimeLimit', new_resource.shutdown_time_limit.to_s)
     is_new_startup_time_limit = new_value?(doc.root, 'APPPOOL/add/processModel/@startupTimeLimit', new_resource.startup_time_limit.to_s)
     is_new_pinging_enabled = new_value?(doc.root, 'APPPOOL/add/processModel/@pingingEnabled', new_resource.pinging_enabled.to_s)
@@ -204,7 +207,7 @@ def configure
       configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
     end
 
-    if iis_version > '7.0'
+    if iis_version >= '7.5'
       configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
     end
 
@@ -223,6 +226,9 @@ def configure
     configure_application_pool(is_new_logon_type, "processModel.logonType:#{new_resource.logon_type}")
     configure_application_pool(is_new_manual_group_membership, "processModel.manualGroupMembership:#{new_resource.manual_group_membership}")
     configure_application_pool(is_new_idle_timeout, "processModel.idleTimeout:#{new_resource.idle_timeout}")
+    if iis_version >= '8.5'
+      configure_application_pool(is_new_idle_timeout_action, "processModel.idleTimeoutAction:#{new_resource.idle_timeout_action}")
+    end
     configure_application_pool(is_new_shutdown_time_limit, "processModel.shutdownTimeLimit:#{new_resource.shutdown_time_limit}")
     configure_application_pool(is_new_startup_time_limit, "processModel.startupTimeLimit:#{new_resource.startup_time_limit}")
     configure_application_pool(is_new_pinging_enabled, "processModel.pingingEnabled:#{new_resource.pinging_enabled}")
