@@ -504,6 +504,8 @@ Manages modules globally or on a per site basis.
 
 - `:add` - add a new module
 - `:delete` - delete a module
+- `:install` - install a native module from the filesystem (.dll)
+- `:delete` - uninstall a native module
 
 ### Attribute Parameters
 
@@ -511,6 +513,8 @@ Manages modules globally or on a per site basis.
 - `type` - The type of module
 - `precondition` - precondition for module
 - `application` - The application or site to add the module to
+- `add` - Whether the module you install has to be globally added
+- `image` - Location of the DLL of the module to install
 
 ### Example
 
