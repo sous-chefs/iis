@@ -22,6 +22,7 @@ Contents
   * [Usage](#usage)
     * [default](#default) Default recipe
     * [mod\_\*](#mod_) Recipes for installing individual IIS modules (extensions).
+  * [Alternatives ](#alternatives)
   * [License and Author](#license-and-author)
 
 Requirements
@@ -560,6 +561,11 @@ This cookbook also contains recipes for installing individual IIS modules (exten
 * `mod_tracing` -  installs support for tracing ASP.NET applications and failed requests.
 
 Note: Not every possible IIS module has a corresponding recipe. The foregoing recipes are included for convenience, but users may also place additional IIS modules that are installable as Windows features into the ``node['iis']['components']`` array.
+
+Alternatives
+=====
+* [Powershell based IIS Cookbook (Pre-DSC)](https://github.com/ebsco/iisposh)
+* DSC Based- [CWebAdministration](https://github.com/PowerShellOrg/cWebAdministration) / [XWebadministration](https://github.com/PowerShell/xWebAdministration) Powershell Module(s)
 
 License and Author
 ==================
