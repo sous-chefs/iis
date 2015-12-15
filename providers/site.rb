@@ -24,6 +24,7 @@ require 'rexml/document'
 include Chef::Mixin::ShellOut
 include REXML
 include Opscode::IIS::Helper
+include Opscode::IIS::Processors
 
 action :add do
   if !@current_resource.exists
@@ -128,7 +129,7 @@ end
 private
 
 def configure
-  was_updated = false
+  @was_updated = false
   cmd_current_values = "#{appcmd(node)} list site \"#{new_resource.site_name}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
@@ -145,13 +146,13 @@ def configure
     is_new_application_pool = new_value?(doc.root, 'SITE/site/application/@applicationPool', new_resource.application_pool)
 
     if new_resource.bindings && is_new_bindings
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set site /site.name:\"#{new_resource.site_name}\""
       cmd << " /bindings:\"#{new_resource.bindings}\""
       shell_out!(cmd)
       new_resource.updated_by_last_action(true)
     elsif ((new_resource.port || new_resource.host_header || new_resource.protocol) && is_new_port_host_provided) && !new_resource.bindings
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /bindings:#{new_resource.protocol}/*:#{new_resource.port}:#{new_resource.host_header}"
       Chef::Log.debug(cmd)
@@ -160,14 +161,14 @@ def configure
     end
 
     if new_resource.application_pool && is_new_application_pool
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd, returns: [0, 42])
     end
 
     if new_resource.path && is_new_physical_path
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{new_resource.site_name}/\""
       cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.path)}\""
       Chef::Log.debug(cmd)
@@ -175,6 +176,7 @@ def configure
     end
 
     if new_resource.site_id && is_new_site_id
+      @was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /id:#{new_resource.site_id}"
       Chef::Log.debug(cmd)
@@ -183,6 +185,7 @@ def configure
     end
 
     if new_resource.log_directory && is_new_log_directory
+      @was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.directory:#{windows_cleanpath(new_resource.log_directory)}"
       Chef::Log.debug(cmd)
@@ -191,6 +194,7 @@ def configure
     end
 
     if new_resource.log_period && is_new_log_period
+      @was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.period:#{new_resource.log_period}"
       Chef::Log.debug(cmd)
@@ -199,6 +203,7 @@ def configure
     end
 
     if new_resource.log_truncsize && is_new_log_trunc
+      @was_updated = true
       cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.truncateSize:#{new_resource.log_truncsize}"
       Chef::Log.debug(cmd)
@@ -206,7 +211,7 @@ def configure
       new_resource.updated_by_last_action(true)
     end
 
-    if was_updated
+    if @was_updated
       Chef::Log.info("#{new_resource} configured site '#{new_resource.site_name}'")
     else
       Chef::Log.debug("#{new_resource} site - nothing to do")
@@ -217,5 +222,5 @@ def configure
     end
   end
 
-  was_updated
+  @was_updated
 end

@@ -24,6 +24,7 @@ require 'rexml/document'
 include Chef::Mixin::ShellOut
 include REXML
 include Opscode::IIS::Helper
+include Opscode::IIS::Processors
 
 action :add do
   if !@current_resource.exists
@@ -46,7 +47,7 @@ action :add do
 end
 
 action :config do
-  was_updated = false
+  @was_updated = false
   cmd_current_values = "#{appcmd(node)} list vdir \"#{application_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out!(cmd_current_values)
@@ -60,41 +61,41 @@ action :config do
     is_new_allow_sub_dir_config = new_or_empty_value?(doc.root, 'VDIR/virtualDirectory/@allowSubDirConfig', new_resource.allow_sub_dir_config.to_s)
 
     if new_resource.physical_path && is_new_physical_path
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /physicalPath:\"#{new_resource.physical_path}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if new_resource.username && is_new_user_name
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /userName:\"#{new_resource.username}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if new_resource.password && is_new_password
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /password:\"#{new_resource.password}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if new_resource.logon_method && is_new_logon_method
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /logonMethod:#{new_resource.logon_method}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     if new_resource.allow_sub_dir_config && is_new_allow_sub_dir_config
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /allowSubDirConfig:#{new_resource.allow_sub_dir_config}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
-    if was_updated
+    if @was_updated
       new_resource.updated_by_last_action(true)
       Chef::Log.info("#{new_resource} configured virtual directory to application: '#{new_resource.application_name}'")
     else

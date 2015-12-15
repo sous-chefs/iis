@@ -25,6 +25,7 @@ require 'rexml/document'
 include Chef::Mixin::ShellOut
 include REXML
 include Opscode::IIS::Helper
+include Opscode::IIS::Processors
 
 action :add do
   if !@current_resource.exists
@@ -44,7 +45,7 @@ action :add do
 end
 
 action :config do
-  was_updated = false
+  @was_updated = false
   cmd_current_values = "#{appcmd(node)} list app \"#{site_identifier}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
@@ -72,23 +73,23 @@ action :config do
       Chef::Log.debug("#{new_resource} application - nothing to do")
     else
       shell_out!(cmd)
-      was_updated = true
+      @was_updated = true
     end
 
     if (new_resource.path && is_new_path) ||
        (new_resource.application_pool && is_new_application_pool) ||
        (new_resource.enabled_protocols && is_new_enabled_protocols)
-      was_updated = true
+      @was_updated = true
     end
 
     if new_resource.physical_path && is_new_physical_path
-      was_updated = true
+      @was_updated = true
       cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
       cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
-    if was_updated
+    if @was_updated
       new_resource.updated_by_last_action(true)
       Chef::Log.info("#{new_resource} configured application")
     else
