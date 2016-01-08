@@ -355,6 +355,7 @@ Creates an application in IIS.
 
 - `:add` - add a new application pool
 - `:delete` - delete an existing application pool
+- `:config` - configures an existing application pool
 
 ### Attribute Parameters
 
