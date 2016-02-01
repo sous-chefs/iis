@@ -507,7 +507,7 @@ Manages modules globally or on a per site basis.
 - `:add` - add a new module
 - `:delete` - delete a module
 - `:install` - install a native module from the filesystem (.dll)
-- `:delete` - uninstall a native module
+- `:uninstall` - uninstall a native module
 
 ### Attribute Parameters
 
