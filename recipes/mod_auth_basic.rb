@@ -20,11 +20,11 @@
 
 include_recipe 'iis'
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  feature = 'Web-Basic-Auth'
-else
-  feature = 'IIS-BasicAuthentication'
-end
+feature = if Opscode::IIS::Helper.older_than_windows2008r2?
+            'Web-Basic-Auth'
+          else
+            'IIS-BasicAuthentication'
+          end
 
 windows_feature feature do
   action :install

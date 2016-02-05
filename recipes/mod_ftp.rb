@@ -20,11 +20,11 @@
 
 include_recipe 'iis'
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  features = %w(Web-Ftp-Server Web-Ftp-Service Web-Ftp-Ext)
-else
-  features = %w(IIS-FTPServer IIS-FTPSvc IIS-FTPExtensibility)
-end
+features = if Opscode::IIS::Helper.older_than_windows2008r2?
+             %w(Web-Ftp-Server Web-Ftp-Service Web-Ftp-Ext)
+           else
+             %w(IIS-FTPServer IIS-FTPSvc IIS-FTPExtensibility)
+           end
 
 features.each do |f|
   windows_feature f do

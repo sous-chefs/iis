@@ -34,7 +34,7 @@ action :add do
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
     cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\"" if new_resource.physical_path
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
-    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
+    cmd << ' /commit:\"MACHINE/WEBROOT/APPHOST\"'
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     new_resource.updated_by_last_action(true)
@@ -124,11 +124,7 @@ def load_current_resource
   if cmd.stderr.empty?
     result = cmd.stdout.match(regex)
     Chef::Log.debug("#{new_resource} current_resource match output:#{result}")
-    if result
-      @current_resource.exists = true
-    else
-      @current_resource.exists = false
-    end
+    @current_resource.exists = result
   else
     log "Failed to run iis_app action :load_current_resource, #{cmd_current_values.stderr}" do
       level :warn
