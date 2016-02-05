@@ -1,5 +1,6 @@
 # Use Travis's cointainer based infrastructure
-sudo: false
+sudo: required
+
 addons:
   apt:
     sources:
@@ -10,9 +11,7 @@ addons:
 # Don't `bundle install`
 install: echo "skip bundle install"
 
-branches:
-  only:
-    - master
+services: docker
 
 # Ensure we make ChefDK's Ruby the default
 before_script:
