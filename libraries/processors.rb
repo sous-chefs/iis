@@ -89,7 +89,7 @@ module Opscode
           end
         end
 
-        return unless (cmd != mime_map_command(specifier))
+        return unless cmd != mime_map_command(specifier)
         shell_out! cmd
         Chef::Log.info('mime maps updated')
         @was_updated = true

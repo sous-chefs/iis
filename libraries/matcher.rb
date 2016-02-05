@@ -53,11 +53,11 @@ if defined?(ChefSpec)
                    )
   end
 
-  if Gem.loaded_specs['chefspec'].version < Gem::Version.new('4.1.0')
-    define_method = ChefSpec::Runner.method(:define_runner_method)
-  else
-    define_method = ChefSpec.method(:define_matcher)
-  end
+  define_method = if Gem.loaded_specs['chefspec'].version < Gem::Version.new('4.1.0')
+                    ChefSpec::Runner.method(:define_runner_method)
+                  else
+                    ChefSpec.method(:define_matcher)
+                  end
 
   define_method.call :iis_app
   define_method.call :iis_config

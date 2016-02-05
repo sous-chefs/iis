@@ -32,11 +32,11 @@ action :add do
     cmd = "#{appcmd(node)} add apppool /name:\"#{new_resource.pool_name}\""
     if new_resource.no_managed_code
       cmd << ' /managedRuntimeVersion:'
-    else
-      cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}" if new_resource.runtime_version
+    elsif new_resource.runtime_version
+      cmd << " /managedRuntimeVersion:v#{new_resource.runtime_version}"
     end
     cmd << " /managedPipelineMode:#{new_resource.pipeline_mode.capitalize}" if new_resource.pipeline_mode
-    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
+    cmd << ' /commit:\"MACHINE/WEBROOT/APPHOST\"'
     Chef::Log.debug(cmd)
     shell_out!(cmd)
     configure
@@ -274,7 +274,7 @@ def configure
     configure_application_pool(is_new_smp_processor_affinity_mask, "cpu.smpProcessorAffinityMask:#{new_resource.smp_processor_affinity_mask}")
     configure_application_pool(is_new_smp_processor_affinity_mask_2, "cpu.smpProcessorAffinityMask2:#{new_resource.smp_processor_affinity_mask_2}")
 
-    if (@cmd != "#{appcmd(node)} set config /section:applicationPools")
+    if @cmd != "#{appcmd(node)} set config /section:applicationPools"
       Chef::Log.debug(@cmd)
       shell_out!(@cmd)
     end

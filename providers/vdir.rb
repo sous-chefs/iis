@@ -35,7 +35,7 @@ action :add do
     cmd << " /password:\"#{new_resource.password}\"" if new_resource.password
     cmd << " /logonMethod:#{new_resource.logon_method}" if new_resource.logon_method
     cmd << " /allowSubDirConfig:#{new_resource.allow_sub_dir_config}" if new_resource.allow_sub_dir_config
-    cmd << " /commit:\"MACHINE/WEBROOT/APPHOST\""
+    cmd << ' /commit:\"MACHINE/WEBROOT/APPHOST\"'
 
     Chef::Log.info(cmd)
     shell_out!(cmd, returns: [0, 42, 183])
@@ -130,11 +130,7 @@ def load_current_resource
     # VDIR "Testfu Site/Content/Test"
     result = cmd.stdout.match(/^VDIR\s\"#{Regexp.escape(application_identifier)}\"/)
     Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
-    if result
-      @current_resource.exists = true
-    else
-      @current_resource.exists = false
-    end
+    @current_resource.exists = result
   else
     log "Failed to run iis_vdir action :load_current_resource, #{cmd_current_values.stderr}" do
       level :warn

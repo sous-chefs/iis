@@ -108,19 +108,15 @@ end
 def load_current_resource
   @current_resource = Chef::Resource::IisModule.new(new_resource.name)
   @current_resource.module_name(new_resource.module_name)
-  if new_resource.application
-    cmd = shell_out("#{appcmd(node)} list module /module.name:\"#{new_resource.module_name}\" /app.name:\"#{new_resource.application}\"")
-  else
-    cmd = shell_out("#{appcmd(node)} list module /module.name:\"#{new_resource.module_name}\"")
-  end
+  cmd = if new_resource.application
+          shell_out("#{appcmd(node)} list module /module.name:\"#{new_resource.module_name}\" /app.name:\"#{new_resource.application}\"")
+        else
+          shell_out("#{appcmd(node)} list module /module.name:\"#{new_resource.module_name}\"")
+        end
 
   # 'MODULE "Module Name" ( type:module.type, preCondition:condition )'
   # 'MODULE "Module Name" ( native, preCondition:condition )'
 
   Chef::Log.debug("#{new_resource} list module command output: #{cmd.stdout}")
-  if cmd.stdout.empty?
-    @current_resource.exists = false
-  else
-    @current_resource.exists = true
-  end
+  @current_resource.exists = !cmd.stdout.empty?
 end

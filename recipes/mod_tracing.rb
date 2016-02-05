@@ -20,11 +20,11 @@
 
 include_recipe 'iis'
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  feature = 'Web-Http-Tracing'
-else
-  feature = 'IIS-HTTPTracing'
-end
+feature = if Opscode::IIS::Helper.older_than_windows2008r2?
+            'Web-Http-Tracing'
+          else
+            'IIS-HTTPTracing'
+          end
 
 windows_feature feature do
   action :install

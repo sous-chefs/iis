@@ -20,11 +20,11 @@
 
 include_recipe 'iis'
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  feature = 'Web-Digest-Auth'
-else
-  feature = 'IIS-DigestAuthentication'
-end
+feature = if Opscode::IIS::Helper.older_than_windows2008r2?
+            'Web-Digest-Auth'
+          else
+            'IIS-DigestAuthentication'
+          end
 
 windows_feature feature do
   action :install

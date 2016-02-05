@@ -67,11 +67,11 @@ module Opscode
       end
 
       def windows_cleanpath(path)
-        if !defined?(Chef::Util::PathHelper.cleanpath).nil?
-          path = Chef::Util::PathHelper.cleanpath(path)
-        else
-          path = win_friendly_path(path)
-        end
+        path = if !defined?(Chef::Util::PathHelper.cleanpath).nil?
+                 Chef::Util::PathHelper.cleanpath(path)
+               else
+                 win_friendly_path(path)
+               end
         # Remove any trailing slashes to prevent them from accidentally escaping any quotes.
         path.chomp('/').chomp('\\')
       end

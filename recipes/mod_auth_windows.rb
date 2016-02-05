@@ -20,11 +20,11 @@
 
 include_recipe 'iis'
 
-if Opscode::IIS::Helper.older_than_windows2008r2?
-  feature = 'Web-Windows-Auth'
-else
-  feature = 'IIS-WindowsAuthentication'
-end
+feature = if Opscode::IIS::Helper.older_than_windows2008r2?
+            'Web-Windows-Auth'
+          else
+            'IIS-WindowsAuthentication'
+          end
 
 windows_feature feature do
   action :install
