@@ -312,6 +312,7 @@ Creates an application pool in IIS.
 #### Recycling Items
 - `disallow_rotation_on_config_change` - The DisallowRotationOnConfigChange property specifies whether or not the World Wide Web Publishing Service (WWW Service) should rotate worker processes in an application pool when the configuration has changed. - Default is false - optional
 - `disallow_overlapping_rotation` - Specifies whether the WWW Service should start another worker process to replace the existing worker process while that process
+- `recycle_schedule_clear` - specifies a pool to clear all scheduled recycle times, [true,false] Default is false - optional
 - `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
 - `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
 - `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
