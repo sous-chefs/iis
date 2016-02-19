@@ -140,9 +140,9 @@ def configure
     is_new_physical_path = new_or_empty_value?(doc.root, 'SITE/site/application/virtualDirectory/@physicalPath', new_resource.path.to_s)
     is_new_port_host_provided = !"#{XPath.first(doc.root, 'SITE/@bindings')},".include?("#{new_resource.protocol}/*:#{new_resource.port}:#{new_resource.host_header},")
     is_new_site_id = new_value?(doc.root, 'SITE/site/@id', new_resource.site_id.to_s)
-    is_new_log_directory = new_or_empty_value?(doc.root, 'SITE/logFiles/@directory', new_resource.log_directory.to_s)
-    is_new_log_period = new_or_empty_value?(doc.root, 'SITE/logFile/@period', new_resource.log_period.to_s)
-    is_new_log_trunc = new_or_empty_value?(doc.root, 'SITE/logFiles/@truncateSize', new_resource.log_truncsize.to_s)
+    is_new_log_directory = new_or_empty_value?(doc.root, 'SITE/site/logFile/@directory', new_resource.log_directory.to_s)
+    is_new_log_period = new_or_empty_value?(doc.root, 'SITE/site/logFile/@period', new_resource.log_period.to_s)
+    is_new_log_trunc = new_or_empty_value?(doc.root, 'SITE/site/logFile/@truncateSize', new_resource.log_truncsize.to_s)
     is_new_application_pool = new_value?(doc.root, 'SITE/site/application/@applicationPool', new_resource.application_pool)
 
     if new_resource.bindings && is_new_bindings
