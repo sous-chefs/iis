@@ -79,6 +79,7 @@ action :install do
       cmd = "#{appcmd(node)} install module /name:\"#{new_resource.module_name}\""
       cmd << " /add:\"#{new_resource.add}\"" unless new_resource.add.nil?
       cmd << " /image:\"#{new_resource.image}\"" if new_resource.image
+      cmd << " /preCondition:\"#{new_resource.precondition}\"" if new_resource.precondition
 
       shell_out!(cmd, returns: [0, 42])
 
