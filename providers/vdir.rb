@@ -28,7 +28,7 @@ include Opscode::IIS::Processors
 
 action :add do
   if !@current_resource.exists
-    cmd = "#{appcmd(node)} add vdir /app.name:\"#{new_resource.application_name}\""
+    cmd = "#{appcmd(node)} add vdir /app.name:\"#{new_resource.app_name}\""
     cmd << " /path:\"#{new_resource.path}\""
     cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
     cmd << " /userName:\"#{new_resource.username}\"" if new_resource.username
@@ -40,7 +40,7 @@ action :add do
     Chef::Log.info(cmd)
     shell_out!(cmd, returns: [0, 42, 183])
     new_resource.updated_by_last_action(true)
-    Chef::Log.info("#{new_resource} added new virtual directory to application: '#{new_resource.application_name}'")
+    Chef::Log.info("#{new_resource} added new virtual directory to application: '#{new_resource.app_name}'")
   else
     Chef::Log.debug("#{new_resource} virtual directory already exists - nothing to do")
   end
@@ -97,7 +97,7 @@ action :config do
 
     if @was_updated
       new_resource.updated_by_last_action(true)
-      Chef::Log.info("#{new_resource} configured virtual directory to application: '#{new_resource.application_name}'")
+      Chef::Log.info("#{new_resource} configured virtual directory to application: '#{new_resource.app_name}'")
     else
       Chef::Log.debug("#{new_resource} virtual directory - nothing to do")
     end
@@ -119,8 +119,8 @@ action :delete do
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::IisVdir.new(new_resource.name)
-  @current_resource.application_name(application_name_check)
+  @current_resource = Chef::Resource::IisVdir.new(new_resource.app_name)
+  @current_resource.app_name(application_name_check)
   @current_resource.path(new_resource.path)
   @current_resource.physical_path(new_resource.physical_path)
   cmd = shell_out("#{appcmd(node)} list vdir \"#{application_identifier}\"")
@@ -141,13 +141,13 @@ end
 private
 
 def application_identifier
-  new_resource.application_name.chomp('/') + new_resource.path
+  new_resource.app_name.chomp('/') + new_resource.path
 end
 
 def application_name_check
-  if !new_resource.application_name.include?('/') && !new_resource.application_name.end_with?('/')
-    new_resource.application_name("#{new_resource.application_name}/")
-  elsif new_resource.application_name.chomp('/').include?('/') && new_resource.application_name.end_with?('/')
-    new_resource.application_name(new_resource.application_name.chomp('/'))
+  if !new_resource.app_name.include?('/') && !new_resource.app_name.end_with?('/')
+    new_resource.app_name("#{new_resource.app_name}/")
+  elsif new_resource.app_name.chomp('/').include?('/') && new_resource.app_name.end_with?('/')
+    new_resource.app_name(new_resource.app_name.chomp('/'))
   end
 end
