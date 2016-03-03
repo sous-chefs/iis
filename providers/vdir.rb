@@ -149,5 +149,7 @@ def application_name_check
     new_resource.application_name("#{new_resource.application_name}/")
   elsif new_resource.application_name.chomp('/').include?('/') && new_resource.application_name.end_with?('/')
     new_resource.application_name(new_resource.application_name.chomp('/'))
+  else
+    new_resource.application_name
   end
 end
