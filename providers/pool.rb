@@ -196,8 +196,8 @@ def configure
     is_new_cpu_limit = new_value?(doc.root, 'APPPOOL/add/cpu/@limit', new_resource.cpu_limit.to_s)
     is_new_cpu_smp_affinitized = new_value?(doc.root, 'APPPOOL/add/cpu/@smpAffinitized', new_resource.cpu_smp_affinitized.to_s)
     is_new_cpu_reset_interval = new_value?(doc.root, 'APPPOOL/add/cpu/@resetInterval', new_resource.cpu_reset_interval.to_s)
-    is_new_smp_processor_affinity_mask = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask', new_resource.smp_processor_affinity_mask.floor.to_s)
-    is_new_smp_processor_affinity_mask_2 = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask2', new_resource.smp_processor_affinity_mask_2.floor.to_s)
+    is_new_smp_processor_affinity_mask = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask', new_resource.smp_processor_affinity_mask.floor)
+    is_new_smp_processor_affinity_mask_2 = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask2', new_resource.smp_processor_affinity_mask_2.floor)
 
     # Application Pool Config
     @cmd = "#{appcmd(node)} set config /section:applicationPools"
