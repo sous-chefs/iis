@@ -196,8 +196,8 @@ def configure
     is_new_cpu_limit = new_value?(doc.root, 'APPPOOL/add/cpu/@limit', new_resource.cpu_limit.to_s)
     is_new_cpu_smp_affinitized = new_value?(doc.root, 'APPPOOL/add/cpu/@smpAffinitized', new_resource.cpu_smp_affinitized.to_s)
     is_new_cpu_reset_interval = new_value?(doc.root, 'APPPOOL/add/cpu/@resetInterval', new_resource.cpu_reset_interval.to_s)
-    is_new_smp_processor_affinity_mask = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask', new_resource.smp_processor_affinity_mask.to_s)
-    is_new_smp_processor_affinity_mask_2 = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask2', new_resource.smp_processor_affinity_mask_2.to_s)
+    is_new_smp_processor_affinity_mask = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask', new_resource.smp_processor_affinity_mask.floor.to_s)
+    is_new_smp_processor_affinity_mask_2 = new_value?(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask2', new_resource.smp_processor_affinity_mask_2.floor.to_s)
 
     # Application Pool Config
     @cmd = "#{appcmd(node)} set config /section:applicationPools"
@@ -271,8 +271,8 @@ def configure
     configure_application_pool(is_new_cpu_limit, "cpu.limit:#{new_resource.cpu_limit}")
     configure_application_pool(is_new_cpu_reset_interval, "cpu.resetInterval:#{new_resource.cpu_reset_interval}")
     configure_application_pool(is_new_cpu_smp_affinitized, "cpu.smpAffinitized:#{new_resource.cpu_smp_affinitized}")
-    configure_application_pool(is_new_smp_processor_affinity_mask, "cpu.smpProcessorAffinityMask:#{new_resource.smp_processor_affinity_mask}")
-    configure_application_pool(is_new_smp_processor_affinity_mask_2, "cpu.smpProcessorAffinityMask2:#{new_resource.smp_processor_affinity_mask_2}")
+    configure_application_pool(is_new_smp_processor_affinity_mask, "cpu.smpProcessorAffinityMask:#{new_resource.smp_processor_affinity_mask.floor}")
+    configure_application_pool(is_new_smp_processor_affinity_mask_2, "cpu.smpProcessorAffinityMask2:#{new_resource.smp_processor_affinity_mask_2.floor}")
 
     if @cmd != "#{appcmd(node)} set config /section:applicationPools"
       Chef::Log.debug(@cmd)
