@@ -1,6 +1,14 @@
 # iis Cookbook CHANGELOG
 This file is used to list changes made in each version of the iis cookbook.
 
+## v4.1.7 (2016-03-25)
+- Resolves [smp_processor_affinity_mask is wrong value type](https://github.com/chef-cookbooks/iis/issues/266)
+- Resolves [Not a valid unsigned integer](https://github.com/chef-cookbooks/iis/issues/261)
+- Resolves [Deprecated features used](https://github.com/chef-cookbooks/iis/issues/259)
+- Resolves [Deprecated feature used, fix before chef 13](https://github.com/chef-cookbooks/iis/issues/253)
+- Resolves [iis_site :config action not idempotent (Windows 2012 R2/IIS 8.5)](https://github.com/chef-cookbooks/iis/issues/249)
+- Resolves [Can't set recycle_at_time to default](https://github.com/chef-cookbooks/iis/issues/247)
+
 ## v4.1.6 (2016-02-01)
 - Resolves issues with [Unable to set app pool to be "No Managed Code"](https://github.com/chef-cookbooks/iis/issues/240)
 - Resolves [Add_mime_maps is throwing compile error](https://github.com/chef-cookbooks/iis/issues/238)
