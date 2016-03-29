@@ -27,7 +27,7 @@ describe 'iis::remove_default_site' do
     it 'stops default site' do
       expect(chef_run).to stop_iis_site('Default Web Site')
     end
-    
+
     it 'deletes default site' do
       expect(chef_run).to delete_iis_site('Default Web Site')
     end
@@ -39,6 +39,5 @@ describe 'iis::remove_default_site' do
     it 'deletes default app pool ' do
       expect(chef_run).to delete_iis_pool('DefaultAppPool')
     end
-
   end
 end

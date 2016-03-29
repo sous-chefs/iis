@@ -19,7 +19,6 @@
 require 'spec_helper'
 
 describe 'iis::default' do
-
   context 'when iis components provided, on an unspecified platform' do
     let(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
@@ -36,7 +35,6 @@ describe 'iis::default' do
       chef_run.converge(described_recipe)
       expect(chef_run).to install_windows_feature('foobar').with(source: 'somesource')
     end
-
   end
 
   context 'When all attributes are default, on an unspecified platform' do
@@ -51,11 +49,9 @@ describe 'iis::default' do
     it 'enables iis service with name W3WVC' do
       expect(chef_run).to enable_service('iis').with(service_name: 'W3SVC')
     end
-    
+
     it 'starts iis service with name W3WVC' do
       expect(chef_run).to start_service('iis').with(service_name: 'W3SVC')
     end
-
   end
-
 end
