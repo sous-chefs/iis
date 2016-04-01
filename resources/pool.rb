@@ -74,7 +74,7 @@ attribute :cpu_action, kind_of: Symbol, equal_to: [:NoAction, :KillW3wp, :Thrott
 attribute :cpu_limit, kind_of: Integer, default: 0
 attribute :cpu_reset_interval, kind_of: String, default: '00:05:00'
 attribute :cpu_smp_affinitized, kind_of: [TrueClass, FalseClass], default: false
-attribute :smp_processor_affinity_mask, kind_of: Bignum, default: 4_294_967_295.0
-attribute :smp_processor_affinity_mask_2, kind_of: Bignum, default: 4_294_967_295.0
+attribute :smp_processor_affinity_mask, kind_of: Float, default: 4_294_967_295.0
+attribute :smp_processor_affinity_mask_2, kind_of: Float, default: 4_294_967_295.0
 
 attr_accessor :exists, :running
