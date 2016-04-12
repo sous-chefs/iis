@@ -28,3 +28,14 @@ group :kitchen_cloud do
   gem 'kitchen-digitalocean'
   gem 'kitchen-ec2'
 end
+
+group :development do
+  # gem 'ruby_gntp' # https://github.com/nistude/guard-knife/issues/7#issuecomment-150777289
+  gem 'growl'
+  gem 'rb-fsevent'
+  gem 'guard', '~> 2.13'
+  gem 'guard-kitchen'
+  gem 'guard-foodcritic', '~> 2.0'
+  gem 'guard-rspec'
+  gem 'guard-rubocop'
+end
