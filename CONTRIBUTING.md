@@ -2,7 +2,7 @@
 
 A guard file is provided to assist in development. Any changes to a 'watched' file will trigger foodcritic and/or chefspec
 
-    bundle install
+    bundle install --with development
     bundle exec guard
 
 # Contributing Guidelines
