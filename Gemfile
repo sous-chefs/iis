@@ -17,6 +17,7 @@ end
 
 group :kitchen_common do
   gem 'test-kitchen', '~> 1.7'
+  gem 'chef-zero-scheduled-task', '~> 0.1.0'
 end
 
 group :kitchen_vagrant do
