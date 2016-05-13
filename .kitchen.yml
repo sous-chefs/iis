@@ -5,7 +5,7 @@ driver:
     memory: 4096
 
 provisioner:
-  name: chef_zero
+  name: chef_zero_scheduled_task
 
 platforms:
   #- name: win2012r2-chef11
@@ -32,4 +32,4 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[iis::default]
+      - recipe[iis_test::default]
