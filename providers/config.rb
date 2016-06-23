@@ -1,47 +1,104 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com)
-# Contributor:: David Dvorak (david.dvorak@webtrends.com)
+# Author:: Justin Schuhmann (jmschu02@gmail.com)
 # Cookbook Name:: iis
 # Resource:: config
 #
-# Copyright:: 2011, Webtrends Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 require 'chef/mixin/shell_out'
+require 'rexml/document'
 
 include Chef::Mixin::ShellOut
+include REXML
 include Opscode::IIS::Helper
 include Opscode::IIS::Processors
 
-# :config deprecated, use :set instead
-action :config do
-  new_resource.updated_by_last_action(true) if config
-end
-
 action :set do
-  new_resource.updated_by_last_action(true) if config
+  if @current_resource.is_new
+    config
+  else
+    Chef::Log.debug("#{new_resource} config value is the same - nothing to do")
+  end
 end
 
 action :clear do
-  new_resource.updated_by_last_action(true) if config(:clear)
+  if @current_resource.is_new
+    config(:clear)
+  else
+    Chef::Log.debug("#{new_resource} config value is already empty - nothing to do")
+  end
 end
 
 def config(action = :set)
-  cmd = "#{appcmd(node)} #{action} config #{new_resource.cfg_cmd}"
+  cmd = "#{appcmd(node)} #{action} config"
+  cmd << " \"#{new_resource.zone}\"" if new_resource.zone
+  cmd << " /commit:\"#{new_resource.commit}\"" if new_resource.commit
+  cmd << " /section:\"#{new_resource.section}\"" if new_resource.section
+  if action == :set
+    new_resource.property.each do |key, value|
+      cmd << " /\"#{key}\":\"#{value}\"" if key && value
+    end
+  end 
   Chef::Log.debug(cmd)
   shell_out!(cmd, returns: new_resource.returns)
-  Chef::Log.info('IIS Config command run')
   new_resource.updated_by_last_action(true)
+end
+
+def load_current_resource
+  @current_resource = Chef::Resource::IisConfig.new(new_resource.name)
+  @current_resource.section(new_resource.section)
+  @current_resource.commit(new_resource.commit)
+  @current_resource.property(new_resource.property)
+  @current_resource.is_new = false
+
+  cmd = "#{appcmd(node)} list config"
+  cmd << " \"#{new_resource.zone}\"" if new_resource.zone
+  cmd << " /commit:\"#{new_resource.commit}\"" if new_resource.commit
+  cmd << " /section:\"#{new_resource.section}\"" if new_resource.section
+  Chef::Log.debug(cmd)
+  cmd = shell_out(cmd)
+  if cmd.stderr.empty?
+    xml = cmd.stdout
+    Chef::Log.debug(xml)
+    doc = Document.new(xml)
+    if new_resource.action.include? :set
+      new_resource.property.each do |key, value|
+        Chef::Log.debug("key, value: #{key}, #{value}")
+        if key.include? '.'
+          key_xpath = key.split('.').join('/').insert(key.rindex('.') + 1, '@')
+        else
+          key_xpath = "@#{key}"
+        end
+        if new_resource.section.include? "/"
+          xpath = new_resource.section.split('/')
+          xpath.shift
+          if !xpath.is_a?(String)
+            xpath = xpath.join('/')
+          end
+          xpath = "#{xpath}/#{key_xpath}"
+        else
+          xpath = "#{new_resource.section}/#{key_xpath}" 
+        end
+        Chef::Log.debug("xpath: #{xpath}")
+        @current_resource.is_new = @current_resource.is_new | new_value?(doc.root, xpath, value)
+        if @current_resource.is_new
+          break
+        end
+      end
+    elsif new_resource.action.include? :clear
+      xpath = new_resource.section
+      if xpath.include? "/"
+        xpath = new_resource.section.split('/')
+        xpath.shift
+        if !xpath.is_a?(String)
+          xpath = xpath.join('/')
+        end
+      end
+      xpath = "#{xpath}/@*"
+      @current_resource.is_new = XPath.match(doc.root, xpath).length != 0
+    end
+  else
+    log "Failed to run iis_config action :load_current_resource, #{cmd.stderr}" do
+      level :warn
+    end
+  end
 end

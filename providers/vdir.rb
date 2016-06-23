@@ -54,7 +54,7 @@ action :config do
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    is_new_physical_path = new_or_empty_value?(doc.root, 'VDIR/@physicalPath', new_resource.physical_path.to_s)
+    is_new_physical_path = new_or_empty_value?(doc.root, 'VDIR/@physicalPath', windows_cleanpath(new_resource.physical_path).to_s)
     is_new_user_name = new_or_empty_value?(doc.root, 'VDIR/virtualDirectory/@userName', new_resource.username.to_s)
     is_new_password = new_or_empty_value?(doc.root, 'VDIR/virtualDirectory/@password', new_resource.password.to_s)
     is_new_logon_method = new_or_empty_value?(doc.root, 'VDIR/virtualDirectory/@logonMethod', new_resource.logon_method.to_s)
@@ -62,7 +62,7 @@ action :config do
 
     if new_resource.physical_path && is_new_physical_path
       @was_updated = true
-      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /physicalPath:\"#{new_resource.physical_path}\""
+      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\" /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end

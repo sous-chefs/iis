@@ -209,66 +209,86 @@ Runs a config command on your IIS instance.
 
 - `:set` - Edit configuration section (appcmd set config)
 - `:clear` - Clear the section configuration (appcmd clear config)
-- `:config` - [ DEPRECATED ] use `:set` instead
 
 #### Properties
 
-- `cfg_cmd` - name attribute. What ever command you would pass in after "appcmd.exe set config"
+- `section` - name attribute. This is the section the config change would happen in.  Example `appcmd.exe set config /section:"THIS_GOES_HERE"`
+- `commit` - This is the commit the config change would happen in.  Example `appcmd.exe set config /commit:"THIS_GOES_HERE"`
+- `property` - This is the property the config change would edit stored in a Hash.  Example `appcmd.exe set config /commit:"some_commit" /section:"some_section"` /"THIS_GOES_HERE":"THIS_GOES_HERE_VALUE" /"ANOTHER":"ANOTHER_VALUE"` becomes `property "THIS_GOES_HERE" => "THIS_GOES_HERE_VALUE", "ANOTHER" => "ANOTHER_VALUE"
 
 #### Example
 
 ```ruby
 # Sets up logging
-iis_config "/section:system.applicationHost/sites /siteDefaults.logfile.directory:\"D:\\logs\"" do
-    action :set
+iis_config "Sets up logging" do
+  section "system.applicationHost/sites"
+  property "siteDefaults.logFile.directory" => "C:\\inetpub\\logs"
+  action :set
 end
 ```
 
 ```ruby
 # Increase file upload size for 'MySite'
-iis_config "\"MySite\" /section:requestfiltering /requestlimits.maxallowedcontentlength:50000000" do
+iis_config "Increase file upload size for 'MySite'" do
+  zone "poal_Testwebsite"
+  section "system.webServer/security/requestFiltering"
+  property "requestLimits.maxAllowedContentLength" => "50000000"
   action :set
 end
 ```
 
 ```ruby
 # Set IUSR username and password authentication
-iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"IUSR_foobar\" /password:\"p@assword\" /commit:apphost" do
+iis_config "Set IUSR username and password authentication" do
+  zone "poal_Testwebsite"
+  commit "apphost"
+  section "system.webServer/security/authentication/anonymousAuthentication"
+  property "enabled" => "true", "userName" => "IIS_IUSRS", "password" => "p@assword"
   action :set
 end
 ```
 
 ```ruby
 # Authenticate with application pool
-iis_config "\"MyWebsite/aSite\" -section:system.webServer/security/authentication/anonymousAuthentication /enabled:\"True\" /userName:\"\" /commit:apphost" do
-   action :set
-end
-```
-
-```ruby
-# Loads an array of commands from the node
-cfg_cmds = node['iis']['cfg_cmd']
-cfg_cmds.each do |cmd|
-    iis_config "#{cmd}" do
-        action :set
-    end
+iis_config "Authenticate with application pool" do
+  zone "Testfu Site"
+  commit "apphost"
+  section "system.webServer/security/authentication/anonymousAuthentication"
+  property "enabled" => "true", "userName" => ""
+  action :set
 end
 ```
 
 ```ruby
 # Add static machine key at site level
-iis_config "MySite /commit:site /section:machineKey /validation:AES /validationKey:AAAAAA /decryptionKey:ZZZZZ" do
+iis_config "Add static machine key at site level" do
+  zone "poal_Testwebsite"
+  commit "site"
+  section "machineKey"
+  property "validation" => "AES", "validationKey" => "AAAAAA", "decryptionKey" => "ZZZZZ"
   action :set
 end
 ```
 
 ```ruby
 # Remove machine key
-iis_config "MySite /commit:site /section:machineKey"
+iis_config "Remove machine key" do
+  zone "poal_Testwebsite"
+  commit "site"
+  section "machineKey"
   action :clear
 end
 ```
 
+```ruby
+# Enable httpOnlyCookies
+iis_config "Enable httpOnlyCookies" do
+  commit "WEBROOT"
+  section "system.web/httpCookies"
+  property "httpOnlyCookies" => "true"
+  action :set
+end
+```
 ### iis_pool
 
 Creates an application pool in IIS.

@@ -137,7 +137,7 @@ def configure
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
     is_new_bindings = new_value?(doc.root, 'SITE/@bindings', new_resource.bindings.to_s)
-    is_new_physical_path = new_or_empty_value?(doc.root, 'SITE/site/application/virtualDirectory/@physicalPath', new_resource.path.to_s)
+    is_new_physical_path = new_or_empty_value?(doc.root, 'SITE/site/application/virtualDirectory/@physicalPath', windows_cleanpath(new_resource.path).to_s)
     is_new_port_host_provided = !"#{XPath.first(doc.root, 'SITE/@bindings')},".include?("#{new_resource.protocol}/*:#{new_resource.port}:#{new_resource.host_header},")
     is_new_site_id = new_value?(doc.root, 'SITE/site/@id', new_resource.site_id.to_s)
     is_new_log_directory = new_or_empty_value?(doc.root, 'SITE/site/logFile/@directory', new_resource.log_directory.to_s)

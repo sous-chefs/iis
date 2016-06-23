@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## v4.2 (2016-06-23)
+
+- Resolves [iis_config resource not being idempotent](https://github.com/chef-cookbooks/iis/issues/276)
+- Fixed issues with path in `iis_site`, `iis_app`, `iis_vdir` for physical path and path on windows
+- Resolves [iis_pool is not idempotent when recycle_at_time is specified and is not changed](https://github.com/chef-cookbooks/iis/issues/279)
+
 ## v4.1.8 (2016-04-15)
 
 - Fixed smp_processor_affinity_mask throwing deprecation warnings

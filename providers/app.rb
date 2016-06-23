@@ -52,10 +52,10 @@ action :config do
   if cmd_current_values.stderr.empty?
     xml = cmd_current_values.stdout
     doc = Document.new(xml)
-    is_new_path = new_or_empty_value?(doc.root, 'APP/application/@path', new_resource.path.to_s)
+    is_new_path = new_or_empty_value?(doc.root, 'APP/application/@path', windows_cleanpath(new_resource.path).to_s)
     is_new_application_pool = new_or_empty_value?(doc.root, 'APP/application/@applicationPool', new_resource.application_pool.to_s)
     is_new_enabled_protocols = new_or_empty_value?(doc.root, 'APP/application/@enabledProtocols', new_resource.enabled_protocols.to_s)
-    is_new_physical_path = new_or_empty_value?(doc.root, 'APP/application/virtualDirectory/@physicalPath', new_resource.physical_path.to_s)
+    is_new_physical_path = new_or_empty_value?(doc.root, 'APP/application/virtualDirectory/@physicalPath', windows_cleanpath(new_resource.physical_path).to_s)
 
     # only get the beginning of the command if there is something that changeds
     cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if (new_resource.path && is_new_path) ||
@@ -115,7 +115,7 @@ end
 def load_current_resource
   @current_resource = Chef::Resource::IisApp.new(new_resource.name)
   @current_resource.site_name(new_resource.site_name)
-  @current_resource.path(new_resource.path)
+  @current_resource.path(windows_cleanpath(new_resource.path))
   @current_resource.application_pool(new_resource.application_pool)
   cmd = shell_out("#{appcmd(node)} list app")
   Chef::Log.debug("#{new_resource} list app command output: #{cmd.stdout}")
@@ -135,7 +135,7 @@ end
 private
 
 def site_identifier
-  "#{new_resource.site_name}#{new_resource.path}"
+  "#{new_resource.site_name}#{windows_cleanpath(new_resource.path)}"
 end
 
 # Ensure VDIR identifier has a trailing slash
