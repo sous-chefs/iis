@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## v4.1.9 (2016-06-26)
+
+- Resolves [Add deprecation warnings for iis_config in 4.2](https://github.com/chef-cookbooks/iis/issues/284)
+- Resolves [iis_pool is not idempotent when recycle_at_time is specified and is not changed](https://github.com/chef-cookbooks/iis/issues/279)
+
 ## v4.1.8 (2016-04-15)
 
 - Fixed smp_processor_affinity_mask throwing deprecation warnings
