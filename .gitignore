@@ -46,3 +46,8 @@ vendor/
 .vagrant/
 .vagrant.d/
 .kitchen/
+
+#github
+.bundle/
+.github/
+bin/

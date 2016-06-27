@@ -236,7 +236,7 @@ def configure
     configure_application_pool(is_new_ping_response_time, "processModel.pingResponseTime:#{new_resource.ping_response_time}")
 
     node_array = XPath.match(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add')
-    should_clear_apppool_schedules = ((new_resource.recycle_at_time && is_new_recycle_at_time) || !node_array.empty?) || (new_resource.recycle_schedule_clear && !node_array.empty?)
+    should_clear_apppool_schedules = ((new_resource.recycle_at_time && is_new_recycle_at_time) && !node_array.empty?) || (new_resource.recycle_schedule_clear && !node_array.empty?)
 
     # recycling items
     ## Special case this collection removal for now.

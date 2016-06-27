@@ -27,6 +27,10 @@ include Opscode::IIS::Processors
 
 # :config deprecated, use :set instead
 action :config do
+  Chef::Log.warn <<-eos
+    Use of action `:config` in resource `iis_config` is now deprecated and will be removed in a future release (v4.2.0).
+    `:set` should be used instead.
+    eos
   new_resource.updated_by_last_action(true) if config
 end
 
