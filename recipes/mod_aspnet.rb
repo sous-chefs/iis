@@ -30,5 +30,6 @@ features = if Opscode::IIS::Helper.older_than_windows2008r2?
 features.each do |feature|
   windows_feature feature do
     action :install
+    all true
   end
 end
