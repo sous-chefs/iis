@@ -46,3 +46,4 @@ vendor/
 .vagrant/
 .vagrant.d/
 .kitchen/
+bin
