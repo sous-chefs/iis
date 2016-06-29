@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## v4.1.10 (2016-06-29)
+
+- Resolves [Issue with error 50 when installing mod_aspnet](https://github.com/chef-cookbooks/iis/issues/285)
+
 ## v4.1.9 (2016-06-26)
 
 - Resolves [Add deprecation warnings for iis_config in 4.2](https://github.com/chef-cookbooks/iis/issues/284)
