@@ -324,6 +324,7 @@ Creates an application pool in IIS.
 - `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
 - `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
 - `private_mem` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
+- `virtual_mem` - specifies the amount of virtual memory (in kilobytes) after which you want the pool to recycle
 
 #### Failure Items
 
