@@ -57,6 +57,7 @@ attribute :recycle_schedule_clear, kind_of: [TrueClass, FalseClass], default: fa
 attribute :recycle_after_time, kind_of: String
 attribute :recycle_at_time, kind_of: String
 attribute :private_mem, kind_of: Integer
+attribute :virtual_mem, kind_of: Integer
 
 # failure items
 attribute :load_balancer_capabilities, kind_of: Symbol, equal_to: [:HttpLevel, :TcpLevel], default: :HttpLevel
