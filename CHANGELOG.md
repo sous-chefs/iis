@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 4.2.0 (2016-08-09)
+- Feature pool recycle virtual memory (#288)
+
 ## v4.1.10 (2016-06-29)
 
 - Resolves [Issue with error 50 when installing mod_aspnet](https://github.com/chef-cookbooks/iis/issues/285)
