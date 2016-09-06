@@ -22,7 +22,7 @@ describe 'iis::default' do
   context 'when iis components provided, on an unspecified platform' do
     let(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['iis']['components'] = ['foobar']
+        node.normal['iis']['components'] = ['foobar']
       end.converge(described_recipe)
     end
 
@@ -31,7 +31,7 @@ describe 'iis::default' do
     end
 
     it 'installs windows feature foobar with source' do
-      chef_run.node.set['iis']['source'] = 'somesource'
+      chef_run.node.normal['iis']['source'] = 'somesource'
       chef_run.converge(described_recipe)
       expect(chef_run).to install_windows_feature('foobar').with(source: 'somesource')
     end
