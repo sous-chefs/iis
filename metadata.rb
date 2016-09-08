@@ -10,4 +10,4 @@ depends 'windows', '>= 1.34.6'
 source_url 'https://github.com/chef-cookbooks/iis'
 issues_url 'https://github.com/chef-cookbooks/iis/issues'
 
-chef_version '>= 12'
+chef_version '>= 12.1'
