@@ -264,7 +264,7 @@ end
 
 ```ruby
 # Remove machine key
-iis_config "MySite /commit:site /section:machineKey"
+iis_config "MySite /commit:site /section:machineKey" do
   action :clear
 end
 ```
