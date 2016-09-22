@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 5.0.1 (2016-09-21)
+- Fix mod_management to include dependencies (#293)
+
 ## 5.0.0 (2016-09-06)
 - Adding 2k12 version flag to the windows_feature resource (#291)
 - Testing updates
