@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 5.0.2 (2016-10-07)
+- [Minor over oversight in IIS::mod_aspnet 5.0.1](#296)
+- [IIS Pool resource thirty_two_bit false doesn't](#292)
+
 ## 5.0.1 (2016-09-21)
 - Fix mod_management to include dependencies (#293)
 
