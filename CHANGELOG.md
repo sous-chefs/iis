@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 5.0.3 (2016-10-10)
+- Log event on recycle - This allows you to specify which events you want to log on recycle. This also changes this so that it defaults to the standard nothing, which means you will need to add this attribute if you are depending on it.
+
 ## 5.0.2 (2016-10-07)
 - [Minor over oversight in IIS::mod_aspnet 5.0.1](#296)
 - [IIS Pool resource thirty_two_bit false doesn't](#292)
