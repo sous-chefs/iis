@@ -54,6 +54,7 @@ attribute :ping_response_time, kind_of: String, default: '00:01:30'
 attribute :disallow_rotation_on_config_change, kind_of: [TrueClass, FalseClass], default: false
 attribute :disallow_overlapping_rotation, kind_of: [TrueClass, FalseClass], default: false
 attribute :recycle_schedule_clear, kind_of: [TrueClass, FalseClass], default: false
+attribute :log_event_on_recycle, kind_of: String, default: node['iis']['recycle']['log_events']
 attribute :recycle_after_time, kind_of: String
 attribute :recycle_at_time, kind_of: String
 attribute :private_mem, kind_of: Integer

@@ -190,7 +190,7 @@ def configure
     is_new_recycle_at_time = new_or_empty_value?(doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add[@value='#{new_resource.recycle_at_time}']/@value", new_resource.recycle_at_time.to_s)
     is_new_private_memory = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/periodicRestart/@privateMemory', new_resource.private_mem.to_s)
     is_new_virtual_memory = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/periodicRestart/@memory', new_resource.virtual_mem.to_s)
-    is_new_log_event_on_recycle = new_value?(doc.root, 'APPPOOL/add/recycling/@logEventOnRecycle', 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory')
+    is_new_log_event_on_recycle = new_or_empty_value?(doc.root, 'APPPOOL/add/recycling/@logEventOnRecycle', new_resource.log_event_on_recycle.to_s)
 
     # cpu items
     is_new_cpu_action = new_value?(doc.root, 'APPPOOL/add/cpu/@action', new_resource.cpu_action.to_s)
@@ -251,7 +251,7 @@ def configure
 
     configure_application_pool(new_resource.recycle_after_time && is_new_recycle_after_time, "recycling.periodicRestart.time:#{new_resource.recycle_after_time}")
     configure_application_pool(new_resource.recycle_at_time && is_new_recycle_at_time, "recycling.periodicRestart.schedule.[value='#{new_resource.recycle_at_time}']", '+')
-    configure_application_pool(is_new_log_event_on_recycle, 'recycling.logEventOnRecycle:PrivateMemory,Memory,Schedule,Requests,Time,ConfigChange,OnDemand,IsapiUnhealthy')
+    configure_application_pool(new_resource.log_event_on_recycle && is_new_log_event_on_recycle, "recycling.logEventOnRecycle:#{new_resource.log_event_on_recycle}")
     configure_application_pool(new_resource.private_mem && is_new_private_memory, "recycling.periodicRestart.privateMemory:#{new_resource.private_mem}")
     configure_application_pool(new_resource.virtual_mem && is_new_virtual_memory, "recycling.periodicRestart.memory:#{new_resource.virtual_mem}")
     configure_application_pool(is_new_disallow_rotation_on_config_change, "recycling.disallowRotationOnConfigChange:#{new_resource.disallow_rotation_on_config_change}")
