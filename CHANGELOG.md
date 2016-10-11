@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 5.0.4 (2016-10-11)
+- fixed adding an app pool to a site - This fixes a bug where adding an app pool to a site causes an error. This was using the 'add app' where we are working with a site and the syntax is slightly different according to this [documentation](https://technet.microsoft.com/en-us/library/cc732992%28v=ws.10%29.aspx).
+
 ## 5.0.3 (2016-10-10)
 - Log event on recycle - This allows you to specify which events you want to log on recycle. This also changes this so that it defaults to the standard nothing, which means you will need to add this attribute if you are depending on it.
 
