@@ -46,7 +46,7 @@ action :add do
     configure
 
     if new_resource.application_pool
-      shell_out!("#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
+      shell_out!("#{appcmd(node)} set site /site.name:\"#{new_resource.site_name}\" /[path='/'].applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
     end
     new_resource.updated_by_last_action(true)
     Chef::Log.info("#{new_resource} added new site '#{new_resource.site_name}'")
