@@ -135,7 +135,12 @@ def configure
     doc = Document.new(xml)
 
     # root items
-    is_new_managed_runtime_version = new_value?(doc.root, 'APPPOOL/@RuntimeVersion', "v#{new_resource.runtime_version}")
+    is_new_managed_runtime_version =
+      if new_resource.no_managed_code
+        new_value?(doc.root, 'APPPOOL/@RuntimeVersion', '')
+      else
+        new_value?(doc.root, 'APPPOOL/@RuntimeVersion', "v#{new_resource.runtime_version}")
+      end
     is_new_pipeline_mode = new_value?(doc.root, 'APPPOOL/@PipelineMode', new_resource.pipeline_mode)
 
     # add items
