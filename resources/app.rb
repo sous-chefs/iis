@@ -28,5 +28,7 @@ attribute :physical_path, kind_of: String
 attribute :enabled_protocols, kind_of: String
 attribute :default_documents, kind_of: Array, default: []
 attribute :mime_maps, kind_of: Array, default: []
+attribute :app_username, kind_of: String
+attribute :app_password, kind_of: String
 
 attr_accessor :exists, :running

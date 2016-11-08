@@ -34,6 +34,8 @@ action :add do
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
     cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\"" if new_resource.physical_path
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
+    cmd << " /virtualDirectoryDefaults.userName:\"#{new_resource.app_username}\"" if new_resource.app_username
+    cmd << " /virtualDirectoryDefaults.password:\"#{new_resource.app_password}\"" if new_resource.app_password
     cmd << ' /commit:\"MACHINE/WEBROOT/APPHOST\"'
     Chef::Log.debug(cmd)
     shell_out!(cmd)
@@ -56,17 +58,25 @@ action :config do
     is_new_application_pool = new_or_empty_value?(doc.root, 'APP/application/@applicationPool', new_resource.application_pool.to_s)
     is_new_enabled_protocols = new_or_empty_value?(doc.root, 'APP/application/@enabledProtocols', new_resource.enabled_protocols.to_s)
     is_new_physical_path = new_or_empty_value?(doc.root, 'APP/application/virtualDirectory/@physicalPath', new_resource.physical_path.to_s)
+    is_new_app_username = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.userName', new_resource.app_username.to_s)
+    is_new_app_password = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.password', new_resource.app_password.to_s)
 
     # only get the beginning of the command if there is something that changeds
     cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if (new_resource.path && is_new_path) ||
                                                               (new_resource.application_pool && is_new_application_pool) ||
-                                                              (new_resource.enabled_protocols && is_new_enabled_protocols)
+                                                              (new_resource.enabled_protocols && is_new_enabled_protocols) ||
+                                                              (new_resource.app_username && is_new_app_username) ||
+                                                              (new_resource.app_password && is_new_app_password)
     # adds path to the cmd
     cmd << " /path:\"#{new_resource.path}\"" if new_resource.path && is_new_path
     # adds applicationPool to the cmd
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool && is_new_application_pool
     # adds enabledProtocols to the cmd
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols && is_new_enabled_protocols
+    # adds virtualDirectoryDefaults.userName to the cmd
+    cmd << " /virtualDirectoryDefaults.userName:\"#{new_resource.app_username}\"" if new_resource.app_username && is_new_app_username
+    # adds virtualDirectoryDefaults.password to the cmd
+    cmd << " /virtualDirectoryDefaults.password:\"#{new_resource.app_password}\"" if new_resource.app_password && is_new_app_password
     Chef::Log.debug(cmd)
 
     if cmd.nil?
@@ -78,7 +88,9 @@ action :config do
 
     if (new_resource.path && is_new_path) ||
        (new_resource.application_pool && is_new_application_pool) ||
-       (new_resource.enabled_protocols && is_new_enabled_protocols)
+       (new_resource.enabled_protocols && is_new_enabled_protocols) ||
+       (new_resource.app_username && is_new_app_username) ||
+       (new_resource.app_password && is_new_app_password)
       @was_updated = true
     end
 
