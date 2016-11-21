@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 5.0.5 (2016-11-21)
+- [Fixed no_managed_code idempotency](#301)
+
 ## 5.0.4 (2016-10-11)
 - fixed adding an app pool to a site - This fixes a bug where adding an app pool to a site causes an error. This was using the 'add app' where we are working with a site and the syntax is slightly different according to this [documentation](https://technet.microsoft.com/en-us/library/cc732992%28v=ws.10%29.aspx).
 
