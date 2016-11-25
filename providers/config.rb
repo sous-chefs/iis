@@ -1,10 +1,10 @@
 #
 # Author:: Kendrick Martin (kendrick.martin@webtrends.com)
 # Contributor:: David Dvorak (david.dvorak@webtrends.com)
-# Cookbook Name:: iis
+# Cookbook:: iis
 # Resource:: config
 #
-# Copyright:: 2011, Webtrends Inc.
+# Copyright:: 2011-2016, Webtrends Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

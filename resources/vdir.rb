@@ -1,9 +1,9 @@
 #
 # Author:: Justin Schuhmann (<jmschu02@gmail.com>)
-# Cookbook Name:: iis
+# Cookbook:: iis
 # Resource:: site
 #
-# Copyright:: Justin Schuhmann
+# Copyright:: 2016, Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

@@ -1,9 +1,9 @@
 #
 # Author:: Kevin Rivers (<kevin@kevinrivers.com>)
-# Cookbook Name:: iis
+# Cookbook:: iis
 # Recipe:: mod_ftp
 #
-# Copyright 2014, Kevin Rivers
+# Copyright:: 2014-2016, Kevin Rivers
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

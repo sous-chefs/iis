@@ -1,9 +1,9 @@
 #
 # Author:: Jon DeCamp (<jon.decamp@nordstrom.com>)
-# Cookbook Name:: iis
+# Cookbook:: iis
 # Provider:: site
 #
-# Copyright:: 2013, Nordstrom, Inc.
+# Copyright:: 2013-2016, Nordstrom, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
