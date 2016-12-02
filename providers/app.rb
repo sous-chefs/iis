@@ -34,6 +34,16 @@ action :add do
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
     cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\"" if new_resource.physical_path
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
+    # default virtual directory settings
+    # https://www.iis.net/configreference/system.applicationhost/sites/site/application/virtualdirectorydefaults
+    cmd << " /virtualDirectoryDefaults.userName:\"#{new_resource.default_vdir_username}\"" if new_resource.default_vdir_username
+    cmd << " /virtualDirectoryDefaults.password:\"#{new_resource.default_vdir_password}\"" if new_resource.default_vdir_password
+    cmd << " /virtualDirectoryDefaults.allowSubDirConfig:\"#{new_resource.default_vdir_allow_sub_dir_config}\"" if new_resource.default_vdir_allow_sub_dir_config
+    cmd << " /virtualDirectoryDefaults.logonMethod:\"#{new_resource.default_vdir_logon_method}\"" if new_resource.default_vdir_logon_method
+    cmd << " /virtualDirectoryDefaults.path:\"#{new_resource.default_vdir_path}\"" if new_resource.default_vdir_path
+    cmd << " /virtualDirectoryDefaults.physicalPath:\"#{new_resource.default_vdir_physical_path}\"" if new_resource.default_vdir_physical_path
+
+    # commit the changes to the APPHOST file
     cmd << ' /commit:\"MACHINE/WEBROOT/APPHOST\"'
     Chef::Log.debug(cmd)
     shell_out!(cmd)
@@ -57,6 +67,15 @@ action :config do
     is_new_enabled_protocols = new_or_empty_value?(doc.root, 'APP/application/@enabledProtocols', new_resource.enabled_protocols.to_s)
     is_new_physical_path = new_or_empty_value?(doc.root, 'APP/application/virtualDirectory/@physicalPath', new_resource.physical_path.to_s)
 
+    # default virtual directory settings
+    # https://www.iis.net/configreference/system.applicationhost/sites/site/application/virtualdirectorydefaults
+    is_new_default_vdir_username = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.userName', new_resource.default_vdir_username.to_s)
+    is_new_default_vdir_password = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.password', new_resource.default_vdir_password.to_s)
+    is_new_default_vdir_allow_sub_dir_config = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.allowSubDirConfig', new_resource.default_vdir_allow_sub_dir_config.to_s)
+    is_new_default_vdir_logon_method = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.logonMethod', new_resource.default_vdir_logon_method.to_s)
+    is_new_default_vdir_path = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.path', new_resource.default_vdir_path.to_s)
+    is_new_default_vdir_physical_path = new_or_empty_value?(doc.root, 'APP/application/@virtualDirectoryDefaults.physicalPath', new_resource.default_vdir_physical_path.to_s)
+
     # only get the beginning of the command if there is something that changeds
     cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if (new_resource.path && is_new_path) ||
                                                               (new_resource.application_pool && is_new_application_pool) ||
@@ -67,6 +86,15 @@ action :config do
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool && is_new_application_pool
     # adds enabledProtocols to the cmd
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols && is_new_enabled_protocols
+
+    # default virtual directory settings
+    # https://www.iis.net/configreference/system.applicationhost/sites/site/application/virtualdirectorydefaults
+    cmd << " /virtualDirectoryDefaults.userName:\"#{new_resource.default_vdir_username}\"" if new_resource.default_vdir_username && is_new_default_vdir_username
+    cmd << " /virtualDirectoryDefaults.password:\"#{new_resource.default_vdir_password}\"" if new_resource.default_vdir_password && is_new_default_vdir_password
+    cmd << " /virtualDirectoryDefaults.allowSubDirConfig:\"#{new_resource.default_vdir_allow_sub_dir_config}\"" if new_resource.default_vdir_allow_sub_dir_config && is_new_default_vdir_allow_sub_dir_config
+    cmd << " /virtualDirectoryDefaults.logonMethod:\"#{new_resource.default_vdir_logon_method}\"" if new_resource.default_vdir_logon_method && is_new_default_vdir_logon_method
+    cmd << " /virtualDirectoryDefaults.path:\"#{new_resource.default_vdir_path}\"" if new_resource.default_vdir_path && is_new_default_vdir_path
+    cmd << " /virtualDirectoryDefaults.physicalPath:\"#{new_resource.default_vdir_physical_path}\"" if new_resource.default_vdir_physical_path && is_new_default_vdir_physical_path
     Chef::Log.debug(cmd)
 
     if cmd.nil?
@@ -78,7 +106,13 @@ action :config do
 
     if (new_resource.path && is_new_path) ||
        (new_resource.application_pool && is_new_application_pool) ||
-       (new_resource.enabled_protocols && is_new_enabled_protocols)
+       (new_resource.enabled_protocols && is_new_enabled_protocols) ||
+       (new_resource.default_vdir_username && is_new_default_vdir_username) ||
+       (new_resource.default_vdir_password && is_new_default_vdir_password) ||
+       (new_resource.default_vdir_allow_sub_dir_config && is_new_default_vdir_allow_sub_dir_config) ||
+       (new_resource.default_vdir_logon_method && is_new_default_vdir_logon_method) ||
+       (new_resource.default_vdir_path && is_new_default_vdir_path) ||
+       (new_resource.default_vdir_physical_path && is_new_default_vdir_physical_path)
       @was_updated = true
     end
 

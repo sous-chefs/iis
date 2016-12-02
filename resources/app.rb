@@ -29,4 +29,12 @@ attribute :enabled_protocols, kind_of: String
 attribute :default_documents, kind_of: Array, default: []
 attribute :mime_maps, kind_of: Array, default: []
 
+# default virtual directory settings
+attribute :default_vdir_path, kind_of: String
+attribute :default_vdir_physical_path, kind_of: String
+attribute :default_vdir_username, kind_of: String, default: nil
+attribute :default_vdir_password, kind_of: String, default: nil
+attribute :default_vdir_logon_method, kind_of: Symbol, default: :ClearText, equal_to: [:Interactive, :Batch, :Network, :ClearText]
+attribute :default_vdir_allow_sub_dir_config, kind_of: [TrueClass, FalseClass], default: true
+
 attr_accessor :exists, :running
