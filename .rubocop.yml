@@ -1,0 +1,4 @@
+# Configuration parameters: MinBodyLength.
+Style/GuardClause:
+  Exclude:
+    - 'libraries/helper.rb'

@@ -107,7 +107,7 @@ def load_current_resource
     Chef::Log.debug("#{new_resource} current_resource match output: #{result}")
     if result
       @current_resource.exists = true
-      @current_resource.running = (result[4] =~ /Started/) ? true : false
+      @current_resource.running = result[4] =~ /Started/ ? true : false
     else
       @current_resource.exists = false
       @current_resource.running = false
