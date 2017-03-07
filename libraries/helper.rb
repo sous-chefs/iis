@@ -96,7 +96,7 @@ module Opscode
           version_string.slice! 'Version '
           @iis_version = version_string
         end
-        @iis_version
+        @iis_version.to_f
       end
     end
   end

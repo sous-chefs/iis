@@ -144,11 +144,11 @@ def configure
     is_new_pipeline_mode = new_value?(doc.root, 'APPPOOL/@PipelineMode', new_resource.pipeline_mode)
 
     # add items
-    if iis_version >= '7.0'
+    if iis_version >= 7.0
       is_new_auto_start = new_value?(doc.root, 'APPPOOL/add/@autoStart', new_resource.auto_start.to_s)
     end
 
-    if iis_version > '7.0'
+    if iis_version > 7.0
       is_new_start_mode = new_value?(doc.root, 'APPPOOL/add/@startMode', new_resource.start_mode.to_s)
     end
 
@@ -158,17 +158,17 @@ def configure
     # processModel items
     is_new_max_processes = new_or_empty_value?(doc.root, 'APPPOOL/add/processModel/@maxProcesses', new_resource.max_proc.to_s)
     is_new_load_user_profile = new_value?(doc.root, 'APPPOOL/add/processModel/@loadUserProfile', new_resource.load_user_profile.to_s)
-    if iis_version > '7.0'
+    if iis_version > 7.0
       is_new_identity_type = new_value?(doc.root, 'APPPOOL/add/processModel/@identityType', new_resource.pool_identity.to_s)
     end
     is_new_user_name = new_or_empty_value?(doc.root, 'APPPOOL/add/processModel/@userName', new_resource.pool_username.to_s)
     is_new_password = new_or_empty_value?(doc.root, 'APPPOOL/add/processModel/@password', new_resource.pool_password.to_s)
-    if iis_version > '7.0'
+    if iis_version > 7.0
       is_new_logon_type = new_value?(doc.root, 'APPPOOL/add/processModel/@logonType', new_resource.logon_type.to_s)
     end
     is_new_manual_group_membership = new_value?(doc.root, 'APPPOOL/add/processModel/@manualGroupMembership', new_resource.manual_group_membership.to_s)
     is_new_idle_timeout = new_value?(doc.root, 'APPPOOL/add/processModel/@idleTimeout', new_resource.idle_timeout.to_s)
-    if iis_version >= '8.5'
+    if iis_version >= 8.5
       is_new_idle_timeout_action = new_value?(doc.root, 'APPPOOL/add/processModel/@idleTimeoutAction', new_resource.idle_timeout_action)
     end
     is_new_shutdown_time_limit = new_value?(doc.root, 'APPPOOL/add/processModel/@shutdownTimeLimit', new_resource.shutdown_time_limit.to_s)
@@ -209,11 +209,11 @@ def configure
     @cmd = "#{appcmd(node)} set config /section:applicationPools"
 
     # root items
-    if iis_version >= '7.0'
+    if iis_version >= 7.0
       configure_application_pool(is_new_auto_start, "autoStart:#{new_resource.auto_start}")
     end
 
-    if iis_version >= '7.5'
+    if iis_version >= 7.5
       configure_application_pool(is_new_start_mode, "startMode:#{new_resource.start_mode}")
     end
 
@@ -232,7 +232,7 @@ def configure
     configure_application_pool(is_new_logon_type, "processModel.logonType:#{new_resource.logon_type}")
     configure_application_pool(is_new_manual_group_membership, "processModel.manualGroupMembership:#{new_resource.manual_group_membership}")
     configure_application_pool(is_new_idle_timeout, "processModel.idleTimeout:#{new_resource.idle_timeout}")
-    if iis_version >= '8.5'
+    if iis_version >= 8.5
       configure_application_pool(is_new_idle_timeout_action, "processModel.idleTimeoutAction:#{new_resource.idle_timeout_action}")
     end
     configure_application_pool(is_new_shutdown_time_limit, "processModel.shutdownTimeLimit:#{new_resource.shutdown_time_limit}")
