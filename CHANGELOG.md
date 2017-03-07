@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 5.0.7 (2017-03-07)
+- [iis-root default_documents deleted every chef run](#306)
+
 ## 5.0.6 (2017-02-24)
 - [iis_version is not evaluated properly on if statement](#308)
 
