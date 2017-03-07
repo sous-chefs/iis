@@ -37,21 +37,14 @@ module Opscode
           cmd << " /enabled:#{default_documents_enabled}"
         end
 
-        if add || remove
-          default_document.each do |document|
-            if !current_default_documents.include?(document) && add
-              cmd << " /+files.[value='#{document}']"
-            elsif current_default_documents.include?(document) && remove
-              cmd << " /-files.[value='#{document}']"
-            end
+        if add
+          (current_default_documents - default_document).each do |document|
+            cmd << " /+files.[value='#{document}']"
           end
         end
-
-        if add && remove
-          current_default_documents.each do |document|
-            unless default_document.include? document
-              cmd << " /-files.[value='#{document}']"
-            end
+        if remove
+          (default_document - current_default_documents).each do |document|
+            cmd << " /-files.[value='#{document}']"
           end
         end
 
@@ -68,24 +61,16 @@ module Opscode
         xml = cmd.stdout
         doc = REXML::Document.new xml
         current_mime_maps = REXML::XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map { |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
-
         cmd = mime_map_command specifier
 
-        if add || remove
-          new_resource_mime_maps.each do |mime_map|
-            if !current_mime_maps.include?(mime_map) && add
-              cmd << " /+\"[#{mime_map}]\""
-            elsif current_mime_maps.include?(mime_map) && remove
-              cmd << " /-\"[#{mime_map}]\""
-            end
+        if add
+          (current_mime_maps - new_resource_mime_maps).each do |mime_map|
+            cmd << " /+\"[#{mime_map}]\""
           end
         end
-
-        if add && remove
-          current_mime_maps.each do |mime_map|
-            unless new_resource_mime_maps.include? mime_map
-              cmd << " /-\"[#{mime_map}]\""
-            end
+        if remove
+          (new_resource_mime_maps - current_mime_maps).each do |mime_map|
+            cmd << " /-\"[#{mime_map}]\""
           end
         end
 
