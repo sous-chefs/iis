@@ -37,6 +37,11 @@ module Opscode
           cmd << " /enabled:#{default_documents_enabled}"
         end
 
+        if add
+          (default_document - current_default_documents).each do |document|
+            cmd << " /+files.[value='#{document}']"
+          end
+        end
         if remove && !add
           (default_document - current_default_documents).each do |document|
             cmd << " /-files.[value='#{document}']"
@@ -45,11 +50,6 @@ module Opscode
         if remove && add
           (current_default_documents - default_document).each do |document|
             cmd << " /-files.[value='#{document}']"
-          end
-        end
-        if add
-          (default_document - current_default_documents).each do |document|
-            cmd << " /+files.[value='#{document}']"
           end
         end
 
@@ -68,6 +68,11 @@ module Opscode
         current_mime_maps = REXML::XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map { |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
         cmd = mime_map_command specifier
 
+        if add
+          (new_resource_mime_maps - current_mime_maps).each do |mime_map|
+            cmd << " /+\"[#{mime_map}]\""
+          end
+        end
         if remove && !add
           (new_resource_mime_maps - current_mime_maps).each do |mime_map|
             cmd << " /-\"[#{mime_map}]\""
@@ -76,11 +81,6 @@ module Opscode
         if remove && add
           (current_mime_maps - new_resource_mime_maps).each do |mime_map|
             cmd << " /-\"[#{mime_map}]\""
-          end
-        end
-        if add
-          (new_resource_mime_maps - current_mime_maps).each do |mime_map|
-            cmd << " /+\"[#{mime_map}]\""
           end
         end
 
