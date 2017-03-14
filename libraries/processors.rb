@@ -38,12 +38,17 @@ module Opscode
         end
 
         if add
-          (current_default_documents - default_document).each do |document|
+          (default_document - current_default_documents).each do |document|
             cmd << " /+files.[value='#{document}']"
           end
         end
-        if remove
+        if remove && !add
           (default_document - current_default_documents).each do |document|
+            cmd << " /-files.[value='#{document}']"
+          end
+        end
+        if remove && add
+          (current_default_documents - default_document).each do |document|
             cmd << " /-files.[value='#{document}']"
           end
         end
@@ -64,12 +69,17 @@ module Opscode
         cmd = mime_map_command specifier
 
         if add
-          (current_mime_maps - new_resource_mime_maps).each do |mime_map|
+          (new_resource_mime_maps - current_mime_maps).each do |mime_map|
             cmd << " /+\"[#{mime_map}]\""
           end
         end
-        if remove
+        if remove && !add
           (new_resource_mime_maps - current_mime_maps).each do |mime_map|
+            cmd << " /-\"[#{mime_map}]\""
+          end
+        end
+        if remove && add
+          (current_mime_maps - new_resource_mime_maps).each do |mime_map|
             cmd << " /-\"[#{mime_map}]\""
           end
         end
