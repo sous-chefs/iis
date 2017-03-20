@@ -1,6 +1,6 @@
 # iis Cookbook
 
-[![Build Status](https://travis-ci.org/chef-cookbooks/iis.svg?branch=master)](https://travis-ci.org/chef-cookbooks/iis) [![Cookbook Version](https://img.shields.io/cookbook/v/iis.svg)](https://supermarket.chef.io/cookbooks/iis)
+[![Build status](https://ci.appveyor.com/api/projects/status/f4gnv54b97rw1pbg/branch/master?svg=true)](https://ci.appveyor.com/project/ChefWindowsCookbooks/iis/branch/master) [![Cookbook Version](https://img.shields.io/cookbook/v/iis.svg)](https://supermarket.chef.io/cookbooks/iis)
 
 Installs and configures Microsoft Internet Information Services (IIS) 7.0 and later
 
@@ -320,7 +320,7 @@ Creates an application pool in IIS.
 
 - `disallow_rotation_on_config_change` - The DisallowRotationOnConfigChange property specifies whether or not the World Wide Web Publishing Service (WWW Service) should rotate worker processes in an application pool when the configuration has changed. - Default is false - optional
 - `disallow_overlapping_rotation` - Specifies whether the WWW Service should start another worker process to replace the existing worker process while that process
-- `log_event_on_recycle` - configure IIS to log an event when one or more of the following configured events cause an application pool to recycle (for additional information about [logging events] (https://technet.microsoft.com/en-us/library/cc771318%28v=ws.10%29.aspx). - default is 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory' - optional
+- `log_event_on_recycle` - configure IIS to log an event when one or more of the following configured events cause an application pool to recycle (for additional information about [logging events] (<https://technet.microsoft.com/en-us/library/cc771318%28v=ws.10%29.aspx>). - default is 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory' - optional
 - `recycle_schedule_clear` - specifies a pool to clear all scheduled recycle times, [true,false] Default is false - optional
 - `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
 - `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
