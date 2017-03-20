@@ -2,38 +2,55 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 5.1.0 (2017-03-20)
+
+- Require at least windows 2.0 cookbook
+- Run integration testing in Appveyer
+- Switched testing to Inspec from pester/ServerSpec combo
+- Removed the empty iis_test cookbook
+
 ## 5.0.8 (2017-03-13)
+
 - [iis-root default_documents broke from last fix](#306)
 
 ## 5.0.7 (2017-03-07)
+
 - [iis-root default_documents deleted every chef run](#306)
 
 ## 5.0.6 (2017-02-24)
+
 - [iis_version is not evaluated properly on if statement](#308)
 
 ## 5.0.5 (2016-11-21)
+
 - [Fixed no_managed_code idempotency](#301)
 
 ## 5.0.4 (2016-10-11)
+
 - fixed adding an app pool to a site - This fixes a bug where adding an app pool to a site causes an error. This was using the 'add app' where we are working with a site and the syntax is slightly different according to this [documentation](https://technet.microsoft.com/en-us/library/cc732992%28v=ws.10%29.aspx).
 
 ## 5.0.3 (2016-10-10)
+
 - Log event on recycle - This allows you to specify which events you want to log on recycle. This also changes this so that it defaults to the standard nothing, which means you will need to add this attribute if you are depending on it.
 
 ## 5.0.2 (2016-10-07)
+
 - [Minor over oversight in IIS::mod_aspnet 5.0.1](#296)
 - [IIS Pool resource thirty_two_bit false doesn't](#292)
 
 ## 5.0.1 (2016-09-21)
+
 - Fix mod_management to include dependencies (#293)
 
 ## 5.0.0 (2016-09-06)
+
 - Adding 2k12 version flag to the windows_feature resource (#291)
 - Testing updates
 - Avoid deprecation warnings in the specs
 - Require Chef 12+
 
 ## 4.2.0 (2016-08-09)
+
 - Feature pool recycle virtual memory (#288)
 
 ## v4.1.10 (2016-06-29)
@@ -115,13 +132,9 @@ This file is used to list changes made in each version of the iis cookbook.
   - moved to better method for XML checking of previous settings to detect changes (changed all check to use xml searching with appcmd instead of the previous method [none]).
 
 - Improved pool resource with many more apppool properties that can be set.
-
 - Fixed bug with default attribute inheritance.
-
 - New recipe to enable ASP.NET 4.5.
-
 - Skeleton serverspec+test-kitchen framework.
-
 - Added Berksfile, Gemfile and .kitchen.yml to assist developers.
 - Fixed issue [#107] function is_new_or_empty was returning reverse results.
 - Removed dependency on "chef-client", ">= 3.7.0".
