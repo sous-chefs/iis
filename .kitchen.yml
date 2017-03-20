@@ -4,8 +4,13 @@ driver:
     cpus: 2
     memory: 4096
 
+transport:
+  name: winrm
+  elevated: true
+
 provisioner:
   name: chef_zero
+  deprecations_as_errors: true
 
 platforms:
   #- name: win2012r2-chef11
