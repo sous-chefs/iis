@@ -7,6 +7,9 @@ driver:
   username: <%= ENV["machine_user"] %>
   password: <%= ENV["machine_pass"] %>
 
+verifier:
+  name: inspec
+
 provisioner:
   name: chef_zero
   deprecations_as_errors: true

@@ -16,14 +16,16 @@
 # limitations under the License.
 #
 
-require 'spec_helper'
+describe service('W3SVC') do
+  it { should be_installed }
+  it { should be_running }
+end
 
-describe 'iis::remove_default_site' do
-  describe iis_website('Default Website') do
-    it { should_not exist }
-  end
-
-  describe iis_app_pool('Default App Pool') do
-    it { should_not exist }
-  end
+# Unless we are on a 'polluted' machine, the default website should
+# be present if the IIS Role was freshly installed.  All our vagrant
+# configurations install with the system drive at C:\
+describe iis_site('Default Web Site') do
+  it { should exist }
+  it { should be_running }
+  it { should have_app_pool('DefaultAppPool') }
 end

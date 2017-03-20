@@ -12,6 +12,9 @@ provisioner:
   name: chef_zero
   deprecations_as_errors: true
 
+verifier:
+  name: inspec
+
 platforms:
   - name: win2012r2
     driver_config:
