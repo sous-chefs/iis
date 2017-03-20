@@ -19,6 +19,7 @@
 describe service('W3SVC') do
   it { should be_installed }
   it { should be_running }
+  its ('startmode') { should be 'Auto'}
 end
 
 # Unless we are on a 'polluted' machine, the default website should
