@@ -57,43 +57,48 @@ action :config do
     is_new_enabled_protocols = new_or_empty_value?(doc.root, 'APP/application/@enabledProtocols', new_resource.enabled_protocols.to_s)
     is_new_physical_path = new_or_empty_value?(doc.root, 'APP/application/virtualDirectory/@physicalPath', new_resource.physical_path.to_s)
 
-    # only get the beginning of the command if there is something that changeds
-    cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if (new_resource.path && is_new_path) ||
-                                                              (new_resource.application_pool && is_new_application_pool) ||
-                                                              (new_resource.enabled_protocols && is_new_enabled_protocols)
-    # adds path to the cmd
+    #only get the beginning of the command if there is something that changed
+    cmd = "#{appcmd(node)} set app \"#{site_identifier}\"" if ((new_resource.path && is_new_path) or
+                                                        (new_resource.application_pool && is_new_application_pool) or
+                                                        (new_resource.enabled_protocols && is_new_enabled_protocols) or
+                                                        (new_resource.physical_path && is_new_physical_path))
+    #adds path to the cmd
     cmd << " /path:\"#{new_resource.path}\"" if new_resource.path && is_new_path
     # adds applicationPool to the cmd
     cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool && is_new_application_pool
     # adds enabledProtocols to the cmd
     cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols && is_new_enabled_protocols
+
     Chef::Log.debug(cmd)
 
     if cmd.nil?
       Chef::Log.debug("#{new_resource} application - nothing to do")
     else
-      shell_out!(cmd)
-      @was_updated = true
-    end
+      #if the path, application_pool, or enabled_protocols have been changed, run the cmd
+      shell_out!(cmd) if ((new_resource.path && is_new_path) or
+                        (new_resource.application_pool && is_new_application_pool) or
+                        (new_resource.enabled_protocols && is_new_enabled_protocols))
+      
+      if ((new_resource.path && is_new_path) or
+        (new_resource.application_pool && is_new_application_pool) or
+        (new_resource.enabled_protocols && is_new_enabled_protocols))
+        was_updated = true
+      end
 
-    if (new_resource.path && is_new_path) ||
-       (new_resource.application_pool && is_new_application_pool) ||
-       (new_resource.enabled_protocols && is_new_enabled_protocols)
-      @was_updated = true
-    end
-
-    if new_resource.physical_path && is_new_physical_path
-      @was_updated = true
-      cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
-      cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-    end
-    if @was_updated
-      new_resource.updated_by_last_action(true)
-      Chef::Log.info("#{new_resource} configured application")
-    else
-      Chef::Log.debug("#{new_resource} application - nothing to do")
+      if new_resource.physical_path && is_new_physical_path
+        was_updated = true
+        #if the physical_path has been changed, run the below cmd
+        cmd = "#{appcmd(node)} set site \"#{site_identifier}\""
+        cmd << " /application[path='#{new_resource.path}'].virtualDirectory[path='/'].physicalPath:#{new_resource.physical_path}"
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
+      if was_updated
+        new_resource.updated_by_last_action(true)
+        Chef::Log.info("#{new_resource} configured application")
+      else
+        Chef::Log.debug("#{new_resource} application - nothing to do")
+      end
     end
   else
     log "Failed to run iis_app action :config, #{cmd_current_values.stderr}" do
