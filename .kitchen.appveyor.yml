@@ -21,3 +21,6 @@ suites:
   - name: default
     run_list:
       - recipe[iis::default]
+  - name: app
+    run_list:
+      - recipe[test]

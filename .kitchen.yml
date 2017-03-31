@@ -4,10 +4,6 @@ driver:
     cpus: 2
     memory: 4096
 
-transport:
-  name: winrm
-  elevated: true
-
 provisioner:
   name: chef_zero
   deprecations_as_errors: true
@@ -16,12 +12,12 @@ verifier:
   name: inspec
 
 platforms:
-  - name: win2012r2
+  - name: windows-2008r2
     driver_config:
-      box: opentable/win-2012r2-standard-amd64-nocm
-  - name: win2008r2
+      box: chef/windows-server-2008r2-standard
+  - name: windows-2012r2
     driver_config:
-      box: opentable/win-2008r2-standard-amd64-nocm
+      box: chef/windows-server-2012r2-standard
 
 suites:
   - name: default
