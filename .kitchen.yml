@@ -6,6 +6,8 @@ driver:
 
 provisioner:
   name: chef_zero
+  require_chef_omnibus: true
+  chef_omnibus_url: https://www.chef.io/chef/install.sh
   deprecations_as_errors: true
 
 verifier:
@@ -23,3 +25,8 @@ suites:
   - name: default
     run_list:
       - recipe[iis::default]
+    attributes: { "iis": {
+      "pubroot": "C:/wwwroot/",
+      "docroot": "C:/wwwroot/",
+      "log_dir": "C:/logs/"
+    }}

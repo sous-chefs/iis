@@ -42,6 +42,7 @@ Windows 2003R2 is _not_ supported because it lacks Add/Remove Features.
 ### Chef
 
 - Chef 12.1+
+- Chef 13+
 
 ### Cookbooks
 

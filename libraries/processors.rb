@@ -2,9 +2,7 @@
 # Cookbook:: iis
 # Library:: helper
 #
-# Author:: Justin Schuhmann <jmschu02@gmail.com>
-#
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,11 +26,9 @@ module Opscode
         return unless cmd.stderr.empty?
         xml = cmd.stdout
         doc = REXML::Document.new xml
-
         is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', default_documents_enabled.to_s)
         current_default_documents = REXML::XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map(&:value)
         cmd = default_documents_command specifier
-
         if is_new_default_documents_enabled
           cmd << " /enabled:#{default_documents_enabled}"
         end
@@ -54,6 +50,7 @@ module Opscode
         end
 
         return unless cmd != default_documents_command(specifier)
+        Chef::Log.debug(cmd)
         shell_out! cmd
         Chef::Log.info('Default Documents updated')
         @was_updated = true

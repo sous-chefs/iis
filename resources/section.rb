@@ -1,9 +1,8 @@
 #
-# Author:: Justin Schuhmann
 # Cookbook:: iis
-# Resource:: lock
+# Resource:: section
 #
-# Copyright:: 2016, Justin Schuhmann
+# Copyright:: 2016-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +17,60 @@
 # limitations under the License.
 #
 
-actions :lock, :unlock
-default_action :lock
+require 'chef/mixin/shell_out'
+require 'rexml/document'
 
-attribute :section, kind_of: String
-attribute :returns, kind_of: [Integer, Array], default: 0
+include Chef::Mixin::ShellOut
+include REXML
+include Opscode::IIS::Helper
+include Opscode::IIS::Processors
 
-attr_accessor :exists
+property    :section,   String,              name_attribute: true
+property    :returns,   [Integer, Array],    default: 0
+property    :exists,    [true, false],       desired_state: true
+
+load_current_value do |desired|
+  section desired.section
+end
+
+action :lock do
+  current_resource.exists = new_value?(doc.root, 'CONFIG/@overrideMode', 'Deny')
+
+  if current_resource.exists
+    cmd = "#{appcmd(node)} lock config -section:\"#{new_resource.section}\" -commit:apphost"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd, returns: new_resource.returns)
+    new_resource.updated_by_last_action(true)
+    Chef::Log.info('IIS Config command run')
+  else
+    Chef::Log.debug("#{new_resource.section} already locked - nothing to do")
+  end
+end
+
+action :unlock do
+  current_resource.exists = new_value?(doc.root, 'CONFIG/@overrideMode', 'Allow')
+
+  if current_resource.exists
+    cmd = "#{appcmd(node)} unlock config -section:\"#{new_resource.section}\" -commit:apphost"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd, returns: new_resource.returns)
+    new_resource.updated_by_last_action(true)
+    Chef::Log.info('IIS Config command run')
+  else
+    Chef::Log.debug("#{new_resource.section} already unlocked - nothing to do")
+  end
+end
+
+action_class do
+  def doc
+    cmd_current_values = "#{appcmd(node)} list config -section:#{new_resource.section} /config:* /xml"
+    Chef::Log.debug(cmd_current_values)
+    cmd_current_values = shell_out(cmd_current_values)
+    if cmd_current_values.stderr.empty?
+      xml = cmd_current_values.stdout
+      return Document.new(xml)
+    end
+  
+    cmd_current_values.error!
+  end
+end
