@@ -18,6 +18,6 @@ platforms:
   - name: windows-2012R2
 
 suites:
-  - name: default
+  - name: app
     run_list:
-      - recipe[iis::default]
+      - recipe[test]
