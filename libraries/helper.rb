@@ -76,6 +76,10 @@ module Opscode
         path.chomp('/').chomp('\\')
       end
 
+      def value(document, xpath)
+        XPath.first(document, xpath).to_s
+      end
+
       def new_value?(document, xpath, value_to_check)
         XPath.first(document, xpath).to_s != value_to_check.to_s
       end

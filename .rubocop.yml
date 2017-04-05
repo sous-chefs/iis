@@ -2,6 +2,10 @@ Lint/ParenthesesAsGroupedExpression:
   Exclude:
     - 'test/integration/**/*'
 
+Style/PredicateName:
+  Exclude:
+    - 'test/integration/app/libraries/*'
+
 Style/GuardClause:
   Exclude:
     - 'libraries/helper.rb'
