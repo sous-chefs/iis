@@ -1,9 +1,8 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com)
 # Cookbook:: iis
 # Resource:: config
 #
-# Copyright:: 2011-2016, Webtrends Inc.
+# Copyright:: 2011-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +17,38 @@
 # limitations under the License.
 #
 
-actions :config, :clear, :set
-default_action :set
+require 'chef/mixin/shell_out'
 
-attribute :cfg_cmd, kind_of: String, name_attribute: true
-attribute :returns, kind_of: [Integer, Array], default: 0
+include Chef::Mixin::ShellOut
+include Opscode::IIS::Helper
+include Opscode::IIS::Processors
+
+property    :cfg_cmd,   String,             name_attribute: true
+property    :returns,   [Integer, Array],   default: 0
+
+action :set do
+  new_resource.updated_by_last_action(true) if config
+end
+
+# :config deprecated, use :set instead
+action :config do
+  Chef::Log.warn <<-eos
+    Use of action `:config` in resource `iis_config` is now deprecated and will be removed in a future release (v4.2.0).
+    `:set` should be used instead.
+    eos
+  new_resource.updated_by_last_action(true) if config
+end
+
+action :clear do
+  new_resource.updated_by_last_action(true) if config(:clear)
+end
+
+action_class do
+  def config(action = :set)
+    cmd = "#{appcmd(node)} #{action} config #{new_resource.cfg_cmd}"
+    Chef::Log.debug(cmd)
+    shell_out!(cmd, returns: new_resource.returns)
+    Chef::Log.info('IIS Config command run')
+    new_resource.updated_by_last_action(true)
+  end
+end
