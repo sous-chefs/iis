@@ -18,10 +18,14 @@
 
 include_recipe 'iis'
 
-iis_app 'myApp' do
+directory "#{node['iis']['docroot']}\\v1_1" do
+  recursive true
+end
+
+iis_app 'Default Web Site' do
   path '/v1_1'
-  application_pool 'myAppPool_v1_1'
-  physical_path "#{node['iis']['docroot']}/testfu/v1_1"
+  application_pool 'DefaultAppPool'
+  physical_path "#{node['iis']['docroot']}/v1_1"
   enabled_protocols 'http,net.pipe'
   action :add
 end

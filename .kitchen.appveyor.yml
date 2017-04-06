@@ -20,4 +20,4 @@ platforms:
 suites:
   - name: app
     run_list:
-      - recipe[test]
+      - recipe[test::app]

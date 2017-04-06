@@ -1,0 +1,6 @@
+name: app
+title: iis_app InSpec Profile
+copyright: 2017, Chef Software, Inc.
+license: All Rights Reserved
+summary: An InSpec Compliance Profile for iis_app
+version: 0.1.0
