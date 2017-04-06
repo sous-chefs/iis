@@ -1,9 +1,8 @@
 #
-# Author:: Kendrick Martin (kendrick.martin@webtrends.com)
 # Cookbook:: iis
 # Resource:: config
 #
-# Copyright:: 2011-2016, Webtrends Inc.
+# Copyright:: 2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +17,28 @@
 # limitations under the License.
 #
 
-actions :config, :clear, :set
+include Opscode::IIS::Helper
+include Opscode::IIS::Processors
+
+property    :cfg_cmd,   String,             name_attribute: true
+property    :returns,   [Integer, Array],   default: 0
+
 default_action :set
 
-attribute :cfg_cmd, kind_of: String, name_attribute: true
-attribute :returns, kind_of: [Integer, Array], default: 0
+action :set do
+  config
+end
+
+action :clear do
+  config(:clear)
+end
+
+action_class.class_eval do
+  def config(action = :set)
+    converge_by "Executing IIS Config #{action}" do
+      cmd = "#{appcmd(node)} #{action} config #{new_resource.cfg_cmd}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd, returns: new_resource.returns)
+    end
+  end
+end

@@ -205,7 +205,6 @@ Runs a config command on your IIS instance.
 
 - `:set` - Edit configuration section (appcmd set config)
 - `:clear` - Clear the section configuration (appcmd clear config)
-- `:config` - [ DEPRECATED ] use `:set` instead
 
 #### Properties
 
