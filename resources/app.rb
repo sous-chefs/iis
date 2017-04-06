@@ -120,7 +120,7 @@ action :delete do
   end
 end
 
-action_class do
+action_class.class_eval do
   def cmd_set_app
     "#{appcmd(node)} set app \"#{site_identifier}\""
   end

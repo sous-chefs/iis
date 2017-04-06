@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.0.0 (2017-04-06)
+
+- Rewrite of iis_app resource to use custom resources.
+- Addition of testing for iis_app resource.
+
 ## 5.1.0 (2017-03-20)
 
 - Require at least windows 2.0 cookbook
