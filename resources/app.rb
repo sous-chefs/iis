@@ -40,7 +40,7 @@ load_current_value do |desired|
     result = cmd.stdout.match(regex)
     Chef::Log.debug("#{desired} current_resource match output: #{result}")
     if !result.nil?
-      cmd_current_values = "#{appcmd(node)} list app \"#{site_identifier}\" /config:* /xml"
+      cmd_current_values = "#{appcmd(node)} list app \"#{desired.site_name}#{desired.path}\" /config:* /xml"
       Chef::Log.debug(cmd_current_values)
       cmd_current_values = shell_out(cmd_current_values)
       if cmd_current_values.stderr.empty?
