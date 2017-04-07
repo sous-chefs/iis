@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.0.1 (2017-04-07)
+
+- Fix undefined method `site_identifier` with iis_app resource.
+
 ## 6.0.0 (2017-04-06)
 
 - Rewrite of iis_app resource to use custom resources.
