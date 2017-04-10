@@ -20,5 +20,5 @@ describe iis_app('/v1_1', 'Default Web Site') do
   it { should exist }
   it { should have_application_pool('DefaultAppPool') }
   it { should have_physical_path('C:\\inetpub\\wwwroot\\v1_1') }
-  it { should have_protocols('http') }
+  it { should have_protocol('http') }
 end

@@ -1,6 +1,6 @@
 # encoding: utf-8
 # frozen_string_literal: true
-# check for site in IIS
+# check for web applications in IIS
 # Usage:
 # describe iis_app('/myapp', 'Website') do
 #   it { should exist }
@@ -78,8 +78,8 @@ class IisApp < Inspec.resource(1)
     iis_app[:physical_path] == physical_path
   end
 
-  def has_protocols?(protocols)
-    (iis_app[:protocols].include? protocols)
+  def has_protocol?(protocol)
+    (iis_app[:protocols].include? protocol)
   end
 
   def to_s
