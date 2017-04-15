@@ -1,8 +1,5 @@
 #
-# Cookbook:: test
-# Recipe:: site
-#
-# copyright: 2017, Chef Software, Inc.
+# Copyright:: 2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,16 +12,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-include_recipe 'iis'
-
-directory "#{node['iis']['docroot']}\\test" do
-  recursive true
+describe service('W3SVC') do
+  it { should be_installed }
+  it { should be_running }
+  its ('startmode') { should eq 'Auto' }
 end
 
-iis_site 'test' do
-  application_pool 'DefaultAppPool'
-  path "#{node['iis']['docroot']}/test"
-  host_header 'localhost'
-  action [:add, :start]
+# Unless we are on a 'polluted' machine, the default website should
+# be present if the IIS Role was freshly installed.  All our vagrant
+# configurations install with the system drive at C:\
+describe iis_site('test') do
+  it { should exist }
+  it { should be_running }
+  it { should have_app_pool('DefaultAppPool') }
 end

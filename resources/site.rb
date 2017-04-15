@@ -2,7 +2,7 @@
 # Cookbook:: iis
 # Resource:: site
 #
-# Copyright:: 2011-2016, Chef Software, Inc.
+# Copyright:: 2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,19 +23,21 @@ include REXML
 include Opscode::IIS::Helper
 include Opscode::IIS::Processors
 
-property    :site_name,            String,              name_attribute: true
-property    :site_id,              Integer
-property    :port,                 Integer,             default: 80
-property    :path,                 String
-property    :protocol,             Symbol,              equal_to: [:http, :https], default: :http
-property    :host_header,          String
-property    :bindings,             String
-property    :application_pool,     String
-property    :options,              String,              default: ''
-property    :log_directory,        String,              default: node['iis']['log_dir']
-property    :log_period,           Symbol,              default: :Daily, equal_to: [:Daily, :Hourly, :MaxSize, :Monthly, :Weekly]
-property    :log_truncsize,        Integer,             default: 1_048_576
-property    :running,              [true, false],       desired_state: true
+property    :site_name, String, name_property: true
+property    :site_id, Integer
+property    :port, Integer, default: 80, coerce: proc { |v| v.to_i }
+property    :path, String
+property    :protocol, [Symbol, String], equal_to: [:http, :https], default: :http, coerce: proc { |v| v.to_sym }
+property    :host_header, String
+property    :bindings, String
+property    :application_pool, String
+property    :options, String, default: ''
+property    :log_directory, String, default: node['iis']['log_dir']
+property    :log_period, [Symbol, String], equal_to: [:Daily, :Hourly, :MaxSize, :Monthly, :Weekly], default: :Daily, coerce: proc { |v| v.to_sym }
+property    :log_truncsize, Integer, default: 1_048_576
+property    :running, [true, false], desired_state: true
+
+default_action :add
 
 load_current_value do |desired|
   site_name desired.site_name
@@ -51,6 +53,12 @@ load_current_value do |desired|
       site_id result[:site_id].to_i
       bindings result[:bindings]
       running result[:state] =~ /Started/ ? true : false
+    else
+      running false
+    end
+
+    if site_id
+      values = "#{bindings},".match(%r{(?<protocol>[^\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),})
       # get current values
       cmd = "#{appcmd(node)} list site \"#{site_name}\" /config:* /xml"
       Chef::Log.debug(cmd)
@@ -59,19 +67,25 @@ load_current_value do |desired|
         xml = cmd.stdout
         doc = Document.new(xml)
         path value doc.root, 'SITE/site/application/virtualDirectory/@physicalPath'
-        result = "#{bindings},".match(/(?<protocol>[^\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),/)
-        if result
-          protocol result[:protocol]
-          port result[:port]
-          host_header result[:host_header]
-        end
         log_directory value doc.root, 'SITE/site/logFile/@directory'
-        log_period value doc.root, 'SITE/site/logFile/@period'
-        log_trunc value doc.root, 'SITE/site/logFile/@truncateSize'
+        log_period value(doc.root, 'SITE/site/logFile/@period').to_sym
+        log_truncsize value(doc.root, 'SITE/site/logFile/@truncateSize').to_i
         application_pool value doc.root, 'SITE/site/application/@applicationPool'
+      end
+
+      if values
+        protocol values[:protocol].to_sym
+        port values[:port].to_i
+        host_header values[:host_header]
       end
     else
       running false
+    end
+
+    if values
+      protocol values[:protocol]
+      port values[:port].to_i
+      host_header values[:host_header]
     end
   else
     log "Failed to run iis_site action :config, #{cmd.stderr}" do
@@ -82,7 +96,7 @@ end
 
 action :add do
   if !current_resource.site_id
-    converge_by "Creating the Site - \"#{new_resource}\"" do
+    converge_by "Created the Site - \"#{new_resource}\"" do
       cmd = "#{appcmd(node)} add site /name:\"#{new_resource.site_name}\""
       cmd << " /id:#{new_resource.site_id}" if new_resource.site_id
       cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.path)}\"" if new_resource.path
@@ -103,7 +117,6 @@ action :add do
       if new_resource.application_pool
         shell_out!("#{appcmd(node)} set site /site.name:\"#{new_resource.site_name}\" /[path='/'].applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
       end
-      new_resource.updated_by_last_action(true)
       Chef::Log.info("#{new_resource} added new site '#{new_resource.site_name}'")
     end
   else
@@ -117,10 +130,10 @@ end
 
 action :delete do
   if current_resource.site_id
-    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-    shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
-    new_resource.updated_by_last_action(true)
-    Chef::Log.info("#{new_resource} deleted")
+    converge_by "Deleted the Site - \"#{new_resource}\"" do
+      Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
+      shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+    end
   else
     Chef::Log.debug("#{new_resource} site does not exist - nothing to do")
   end
@@ -128,9 +141,9 @@ end
 
 action :start do
   if !current_resource.running
-    shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
-    new_resource.updated_by_last_action(true)
-    Chef::Log.info("#{new_resource} started")
+    converge_by "Started the Site - \"#{new_resource}\"" do
+      shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+    end
   else
     Chef::Log.debug("#{new_resource} already running - nothing to do")
   end
@@ -138,21 +151,21 @@ end
 
 action :stop do
   if current_resource.running
-    Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
-    new_resource.updated_by_last_action(true)
-    Chef::Log.info("#{new_resource} stopped")
+    converge_by "Stopped the Site - \"#{new_resource}\"" do
+      Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
+      shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+    end
   else
     Chef::Log.debug("#{new_resource} already stopped - nothing to do")
   end
 end
 
 action :restart do
-  shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42]) if running
-  sleep 2
-  shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
-  new_resource.updated_by_last_action(true)
-  Chef::Log.info("#{new_resource} restarted")
+  converge_by "Restarted the Site - \"#{new_resource}\"" do
+    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42]) if running
+    sleep 2
+    shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+  end
 end
 
 action_class.class_eval do
