@@ -1,0 +1,6 @@
+name: section
+title: iis_section InSpec Profile
+copyright: 2017, Chef Software, Inc.
+license: All Rights Reserved
+summary: An InSpec Compliance Profile for iis_section
+version: 0.1.0

@@ -466,7 +466,10 @@ This is valuable to allow the `web.config` of an individual application/website 
 #### Attribute Parameters
 
 - `section`: The name of the section to lock.
+- `site`: The name of the site you want to lock or unlock a section for.
+- `application_path`: The path to the application you want to lock or unlock a section for.
 - `returns`: The result of the `shell_out` command.
+- 
 
 #### Examples
 
@@ -499,6 +502,25 @@ end
 iis_section 'unlocked web.config globally for Basic auth' do
   action :unlock
   section 'system.webServer/security/authentication/basicAuthentication'
+end
+```
+
+```ruby
+# Sets the static content section for default web site and root to unlocked
+iis_section 'unlock staticContent of default web site' do
+  section 'system.webServer/staticContent'
+  site 'Default Web Site'
+  action :unlock
+end
+```
+
+```ruby
+# Sets the static content section for test_app under default website and root to be unlocked
+iis_section 'unlock staticContent of default web site' do
+  section 'system.webServer/staticContent'
+  site 'Default Web Site'
+  application_path '/test_app'
+  action :unlock
 end
 ```
 
