@@ -32,7 +32,7 @@ default_action :add
 
 load_current_value do |desired|
   site_name desired.site_name
-  cmd = shell_out("#{appcmd(node)} list app")
+  cmd = shell_out("#{appcmd(node)} list app \"#{desired.site_name}#{desired.path}\"")
   Chef::Log.debug("#{appcmd(node)} list app command output: #{cmd.stdout}")
   if cmd.stderr.empty?
     Chef::Log.debug('Running regex')
