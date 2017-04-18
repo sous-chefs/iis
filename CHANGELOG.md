@@ -2,9 +2,13 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.2.0 (2017-04-18)
+
+- Convert `iis_site` to a custom resource
+
 ## 6.1.0 (2017-04-14)
 
-- Convert iis_config to a custom resource
+- Convert `iis_config` to a custom resource
 
 ## 6.0.1 (2017-04-07)
 
@@ -12,8 +16,8 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## 6.0.0 (2017-04-06)
 
-- Rewrite of iis_app resource to use custom resources.
-- Addition of testing for iis_app resource.
+- Rewrite of `iis_app` resource to use custom resources.
+- Addition of testing for `iis_app` resource.
 
 ## 5.1.0 (2017-03-20)
 
