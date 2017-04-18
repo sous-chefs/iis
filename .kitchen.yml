@@ -26,3 +26,6 @@ suites:
   - name: app
     run_list:
       - recipe[test::app]
+  - name: site
+    run_list:
+      - recipe[test::site]
