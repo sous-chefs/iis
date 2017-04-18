@@ -80,6 +80,10 @@ module Opscode
         XPath.first(document, xpath).to_s
       end
 
+      def bool(value)
+        value == 'true'
+      end
+
       def new_value?(document, xpath, value_to_check)
         XPath.first(document, xpath).to_s != value_to_check.to_s
       end
