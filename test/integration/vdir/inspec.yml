@@ -1,0 +1,6 @@
+name: vdir
+title: iis_vdir InSpec Profile
+copyright: 2017, Chef Software, Inc.
+license: All Rights Reserved
+summary: An InSpec Compliance Profile for iis_vdir
+version: 0.1.0

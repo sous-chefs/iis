@@ -101,7 +101,7 @@ class AppProvider
 
   # want to populate everything using one powershell command here and spit it out as json
   def iis_app(path, site_name)
-    command = "Get-WebApplication -Name '#{path}' -Site '#{site_name}' | Select-Object * | ConvertTo-Json"
+    command = "Import-Module WebAdministration; Get-WebApplication -Name '#{path}' -Site '#{site_name}' | Select-Object * | ConvertTo-Json"
     cmd = @inspec.command(command)
 
     begin

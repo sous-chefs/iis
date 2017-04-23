@@ -27,3 +27,6 @@ suites:
   - name: pool
     run_list:
       - recipe[test::pool]
+  - name: vdir
+    run_list:
+      - recipe[test::vdir]
