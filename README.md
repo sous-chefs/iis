@@ -282,7 +282,7 @@ Creates an application pool in IIS.
 
 ##### Root Items
 
-- `pool_name` - name attribute. Specifies the name of the pool to create.
+- `name` - name attribute. Specifies the name of the pool to create.
 - `runtime_version` - specifies what .NET version of the runtime to use.
 - `pipeline_mode` - specifies what pipeline mode to create the pool with, valid values are :Integrated or :Classic, the default is :Integrated
 - `no_managed_code` - allow Unmanaged Code in setting up IIS app pools is shutting down. - default is true - optional
@@ -296,11 +296,11 @@ Creates an application pool in IIS.
 
 ##### Process Model Items
 
-- `max_proc` - specifies the number of worker processes associated with the pool.
+- `max_processes` - specifies the number of worker processes associated with the pool.
 - `load_user_profile` - This property is used only when a service starts in a named user account. - Default is false - optional
-- `pool_identity` - the account identity that they app pool will run as, valid values are :SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity
-- `pool_username` - username for the identity for the application pool
-- `pool_password` password for the identity for the application pool is started. Default is true - optional
+- `identity_type` - the account identity that they app pool will run as, valid values are :SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity
+- `username` - username for the identity for the application pool
+- `password` password for the identity for the application pool is started. Default is true - optional
 - `logon_type` - Specifies the logon type for the process identity. (For additional information about [logon types](http://msdn.microsoft.com/en-us/library/aa378184%28VS.85%29.aspx), see the LogonUser Function topic on Microsoft's MSDN Web site.) - Available [:LogonBatch, :LogonService] - default is :LogonBatch - optional
 - `manual_group_membership` - Specifies whether the IIS_IUSRS group Security Identifier (SID) is added to the worker process token. When false, IIS automatically uses an application pool identity as though it were a member of the built-in IIS_IUSRS group, which has access to necessary file and system resources. When true, an application pool identity must be explicitly added to all resources that a worker process requires at runtime. - default is false - optional
 - `idle_timeout` - Specifies how long (in minutes) a worker process should run idle if no new requests are received and the worker process is not processing requests. After the allocated time passes, the worker process should request that it be shut down by the WWW service. - default is '00:20:00' - optional

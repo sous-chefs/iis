@@ -5,6 +5,7 @@ Lint/ParenthesesAsGroupedExpression:
 Style/PredicateName:
   Exclude:
     - 'test/integration/app/libraries/*'
+    - 'test/integration/pool/libraries/*'
 
 Style/GuardClause:
   Exclude:

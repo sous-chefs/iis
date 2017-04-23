@@ -29,3 +29,6 @@ suites:
   - name: site
     run_list:
       - recipe[test::site]
+  - name: pool
+    run_list:
+      - recipe[test::pool]
