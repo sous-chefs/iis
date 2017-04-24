@@ -76,6 +76,16 @@ module Opscode
         path.chomp('/').chomp('\\')
       end
 
+      def application_cleanname(application_name)
+        if !application_name.include?('/') && !application_name.end_with?('/')
+          "#{application_name}/"
+        elsif application_name.chomp('/').include?('/') && application_name.end_with?('/')
+          application_name.chomp('/')
+        else
+          application_name
+        end
+      end
+
       def value(document, xpath)
         XPath.first(document, xpath).to_s
       end
