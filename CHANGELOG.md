@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.3.0 (2017-04-24)
+
+- Convert `iis_pool` to a custom resource
+- Convert `iis_vdir` to a custom resource
+- Bug fix for `log` function change to `Chef::Log`
+
 ## 6.2.0 (2017-04-18)
 
 - Convert `iis_site` to a custom resource
