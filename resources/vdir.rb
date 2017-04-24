@@ -56,9 +56,7 @@ load_current_value do |desired|
       end
     end
   else
-    log "Failed to run iis_vdir action :load_current_resource, #{cmd.stderr}" do
-      level :warn
-    end
+    Chef::Log.warn "Failed to run iis_vdir action :load_current_resource, #{cmd.stderr}"
   end
 end
 

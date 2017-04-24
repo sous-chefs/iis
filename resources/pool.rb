@@ -90,9 +90,7 @@ load_current_value do |desired|
   # APPPOOL "DefaultAppPool" (MgdVersion:v2.0,MgdMode:Integrated,state:Started)
   Chef::Log.debug("#{desired} list apppool command output: #{cmd.stdout}")
   unless cmd.stderr.empty?
-    log "Failed to run iis_pool action :load_current_resource, #{cmd.stderr}" do
-      level :warn
-    end
+    Chef::Log.warn "Failed to run iis_pool action :load_current_resource, #{cmd.stderr}"
     return
   end
 
