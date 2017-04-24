@@ -88,9 +88,7 @@ load_current_value do |desired|
       host_header values[:host_header]
     end
   else
-    log "Failed to run iis_site action :config, #{cmd.stderr}" do
-      level :warn
-    end
+    Chef::Log.warn "Failed to run iis_site action :config, #{cmd.stderr}"
   end
 end
 

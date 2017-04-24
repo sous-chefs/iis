@@ -55,9 +55,7 @@ load_current_value do |desired|
       path ''
     end
   else
-    log "Failed to run iis_app action :load_current_resource, #{cmd_current_values.stderr}" do
-      level :warn
-    end
+    Chef::Log.warn "Failed to run iis_app action :load_current_resource, #{cmd_current_values.stderr}"
   end
 end
 
