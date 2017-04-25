@@ -111,7 +111,7 @@ load_current_value do |desired|
     doc = Document.new(xml)
 
     # root items
-    runtime_version value doc.root, 'APPPOOL/@RuntimeVersion'
+    runtime_version value(doc.root, 'APPPOOL/@RuntimeVersion').gsub(/^v/, '')
     pipeline_mode value(doc.root, 'APPPOOL/@PipelineMode').to_sym
 
     # add items
@@ -125,6 +125,9 @@ load_current_value do |desired|
     load_user_profile bool(value(doc.root, 'APPPOOL/add/processModel/@loadUserProfile'))
     identity_type value(doc.root, 'APPPOOL/add/processModel/@identityType').to_sym if iis_version > 7.0
     username value doc.root, 'APPPOOL/add/processModel/@userName'
+    unless username.nil? || desired.username.nil?
+      Chef::Log.info('username: ' + username + ' -> ' + desired.username)
+    end
     password value doc.root, 'APPPOOL/add/processModel/@password'
     logon_type value(doc.root, 'APPPOOL/add/processModel/@logonType').to_sym if iis_version > 7.0
     manual_group_membership bool(value(doc.root, 'APPPOOL/add/processModel/@manualGroupMembership'))
@@ -189,15 +192,13 @@ action :add do
 end
 
 action :config do
-  converge_by "Configured Application Pool \"#{new_resource}\"" do
-    configure
-  end
+  configure
 end
 
 action :delete do
   if current_resource.runtime_version
     converge_by "Deleted Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} delete apppool \"#{site_identifier}\"")
+      shell_out!("#{appcmd(node)} delete apppool \"#{new_resource.name}\"")
     end
   else
     Chef::Log.debug("#{new_resource} pool does not exist - nothing to do")
@@ -207,7 +208,7 @@ end
 action :start do
   if !current_resource.runtime_version
     converge_by "Started Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} start apppool \"#{site_identifier}\"") unless new_resource.running
+      shell_out!("#{appcmd(node)} start apppool \"#{new_resource.name}\"") unless new_resource.running
     end
   else
     Chef::Log.debug("#{new_resource} already running - nothing to do")
@@ -217,7 +218,7 @@ end
 action :stop do
   if current_resource.runtime_version
     converge_by "Stopped Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} stop apppool \"#{site_identifier}\"")
+      shell_out!("#{appcmd(node)} stop apppool \"#{new_resource.name}\"")
     end
   else
     Chef::Log.debug("#{new_resource} already stopped - nothing to do")
@@ -225,37 +226,39 @@ action :stop do
 end
 
 action :restart do
-  converge_by "Restarted Application Pool \"#{new_resource}\"" do
-    shell_out!("#{appcmd(node)} stop APPPOOL \"#{site_identifier}\"") if running
-    sleep 2
-    shell_out!("#{appcmd(node)} start APPPOOL \"#{site_identifier}\"")
+  if current_resource.runtime_version
+    converge_by "Restarted Application Pool \"#{new_resource}\"" do
+      shell_out!("#{appcmd(node)} stop APPPOOL \"#{new_resource.name}\"") if running
+      sleep 2
+      shell_out!("#{appcmd(node)} start APPPOOL \"#{new_resource.name}\"")
+    end
   end
 end
 
 action :recycle do
-  converge_by "Recycled Application Pool \"#{new_resource}\"" do
-    shell_out!("#{appcmd(node)} recycle APPPOOL \"#{site_identifier}\"")
+  if current_resource.runtime_version
+    converge_by "Recycled Application Pool \"#{new_resource}\"" do
+      shell_out!("#{appcmd(node)} recycle APPPOOL \"#{new_resource.name}\"")
+    end
   end
 end
 
 action_class.class_eval do
-  def site_identifier
-    new_resource.name
-  end
-
   def configure
     # Application Pool Config
     cmd = "#{appcmd(node)} set config /section:applicationPools"
 
     # root items
-    converge_if_changed :auto_start do
-      cmd << configure_application_pool("autoStart:#{new_resource.auto_start}")
-      only_if { iis_version >= 7.0 }
+    if iis_version >= 7.0
+      converge_if_changed :auto_start do
+        cmd << configure_application_pool("autoStart:#{new_resource.auto_start}")
+      end
     end
 
-    converge_if_changed :start_mode do
-      cmd << configure_application_pool("startMode:#{new_resource.start_mode}")
-      only_if { iis_version >= 7.5 }
+    if iis_version >= 7.5
+      converge_if_changed :start_mode do
+        cmd << configure_application_pool("startMode:#{new_resource.start_mode}")
+      end
     end
 
     if new_resource.no_managed_code
@@ -294,9 +297,10 @@ action_class.class_eval do
     converge_if_changed :idle_timeout do
       cmd << configure_application_pool("processModel.idleTimeout:#{new_resource.idle_timeout}")
     end
-    converge_if_changed :idle_timeout_action do
-      cmd << configure_application_pool("processModel.idleTimeoutAction:#{new_resource.idle_timeout_action}")
-      only_if { iis_version >= 8.5 }
+    if iis_version >= 8.5
+      converge_if_changed :idle_timeout_action do
+        cmd << configure_application_pool("processModel.idleTimeoutAction:#{new_resource.idle_timeout_action}")
+      end
     end
     converge_if_changed :shutdown_time_limit do
       cmd << configure_application_pool("processModel.shutdownTimeLimit:#{new_resource.shutdown_time_limit}")
@@ -314,17 +318,18 @@ action_class.class_eval do
       cmd << configure_application_pool("processModel.pingResponseTime:#{new_resource.ping_response_time}")
     end
 
-    should_clear_apppool_schedules = ((new_resource.recycle_at_time != current_resource.recycle_at_time) && !@node_array.empty?) || (new_resource.recycle_schedule_clear && !@node_array.empty?)
+    should_clear_apppool_schedules = ((new_resource.recycle_at_time != current_resource.recycle_at_time) && !@node_array.nil? && !@node_array.empty?) || (new_resource.recycle_schedule_clear && !@node_array.nil? && !@node_array.empty?)
 
     # recycling items
     ## Special case this collection removal for now.
     # TODO: test if this is needed
     # is_new_recycle_at_time = true
-    converge_by "Cleared Periodic Restart Schedule #{new_resource}" do
-      clear_pool_schedule_cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{new_resource.name}'].recycling.periodicRestart.schedule\""
-      Chef::Log.debug(clear_pool_schedule_cmd)
-      shell_out!(clear_pool_schedule_cmd)
-      only_if { should_clear_apppool_schedules }
+    if should_clear_apppool_schedules
+      converge_by "Cleared Periodic Restart Schedule #{new_resource} - #{should_clear_apppool_schedules}" do
+        clear_pool_schedule_cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{new_resource.name}'].recycling.periodicRestart.schedule\""
+        Chef::Log.debug(clear_pool_schedule_cmd)
+        shell_out!(clear_pool_schedule_cmd)
+      end
     end
 
     converge_if_changed :recycle_after_time do
@@ -398,25 +403,23 @@ action_class.class_eval do
       cmd << configure_application_pool("cpu.smpProcessorAffinityMask2:#{new_resource.smp_processor_affinity_mask_2.floor}")
     end
 
-    converge_by "Configured Application Pool settings \"#{new_resource}\"" do
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
-      not_if { cmd == "#{appcmd(node)} set config /section:applicationPools" }
+    unless cmd == "#{appcmd(node)} set config /section:applicationPools"
+      converge_by "Configured Application Pool \"#{new_resource}\"" do
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
     end
 
     # Application Pool Identity Settings
     if new_resource.username && new_resource.username != ''
-      cmd_default = "#{appcmd(node)} set config /section:applicationPools"
-      cmd_default << " \"/[name='#{new_resource.name}'].processModel.identityType:SpecificUser\""
-
-      cmd = cmd_default
+      cmd = default_app_pool_user
       converge_if_changed :username do
         cmd << " \"/[name='#{new_resource.name}'].processModel.userName:#{new_resource.username}\""
       end
       converge_if_changed :password do
         cmd << " \"/[name='#{new_resource.name}'].processModel.password:#{new_resource.password}\""
       end
-      if cmd != cmd_default
+      if cmd != default_app_pool_user
         Chef::Log.debug(cmd)
         shell_out!(cmd)
       end
@@ -430,6 +433,11 @@ action_class.class_eval do
         shell_out!(cmd)
       end
     end
+  end
+
+  def default_app_pool_user
+    cmd_default = "#{appcmd(node)} set config /section:applicationPools"
+    cmd_default << " \"/[name='#{new_resource.name}'].processModel.identityType:SpecificUser\""
   end
 
   def configure_application_pool(config, add_remove = '')

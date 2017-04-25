@@ -85,6 +85,18 @@ class IisPool < Inspec.resource(1)
     iis_pool[:worker_processes]
   end
 
+  def identity_type
+    iis_pool[:process_model][:identity_type]
+  end
+
+  def username
+    iis_pool[:process_model][:username]
+  end
+
+  def password
+    iis_pool[:process_model][:password]
+  end
+
   def exists?
     !iis_pool.nil? && !iis_pool[:name].nil?
   end
@@ -121,7 +133,7 @@ class PoolProvider
 
   # want to populate everything using one powershell command here and spit it out as json
   def iis_pool(pool_name)
-    command = "Import-Module WebAdministration; Get-Item IIS:\\AppPools\\#{pool_name} | Select-Object name, queueLength, autoStart, enable32BitAppOnWin64, managedRuntimeVersion, managedRuntimeLoader, enableConfigurationOverride,﻿managedPipelineMode, passAnonymousToken, startMode, state, ItemXPath | ConvertTo-Json"
+    command = "Import-Module WebAdministration; Get-Item IIS:\\AppPools\\#{pool_name} | Select-Object name, queueLength, autoStart, enable32BitAppOnWin64, managedRuntimeVersion, managedRuntimeLoader, enableConfigurationOverride, managedPipelineMode, passAnonymousToken, startMode, state, ItemXPath | ConvertTo-Json"
     cmd = @inspec.command(command)
     command_process_model = "(Get-Item IIS:\\AppPools\\#{pool_name}).processModel | Select-Object identityType, userName, password, loadUserProfile, setProfileEnvironment, logonType, manualGroupMembership, idleTimeout, idleTimeoutAction, maxProcesses, shutdownTimeLimit, startupTimeLimit, pingingEnabled, pingInterval, pingResponseTime, logEventOnProcessModel | ConvertTo-Json"
     cmd_process_model = @inspec.command(command_process_model)

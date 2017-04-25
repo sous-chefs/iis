@@ -26,5 +26,16 @@ end
 iis_pool 'myAppPool_v1_1' do
   runtime_version '2.0'
   pipeline_mode :Classic
-  action :add
+  action [:add, :config]
+end
+
+iis_pool 'testapppool' do
+  thirty_two_bit false
+  runtime_version '4.0'
+  pipeline_mode :Integrated
+  start_mode :OnDemand
+  identity_type :SpecificUser
+  username "#{node['hostname']}\\vagrant"
+  password 'vagrant'
+  action [:add, :config]
 end
