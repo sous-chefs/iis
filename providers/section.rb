@@ -55,7 +55,7 @@ action :unlock do
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::IisSection.new(new_resource.section)
+  @current_resource = new_resource.class.new(new_resource.section)
   @current_resource.section(new_resource.section)
 end
 

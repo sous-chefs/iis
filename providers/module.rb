@@ -107,7 +107,7 @@ action :uninstall do
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::IisModule.new(new_resource.name)
+  @current_resource = new_resource.class.new(new_resource.name)
   @current_resource.module_name(new_resource.module_name)
   cmd = if new_resource.application
           shell_out("#{appcmd(node)} list module /module.name:\"#{new_resource.module_name}\" /app.name:\"#{new_resource.application}\"")
