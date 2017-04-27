@@ -112,9 +112,7 @@ class VdirProvider
   # want to populate everything using one powershell command here and spit it out as json
   def iis_vdir(name, path)
     command = "Import-Module WebAdministration; Get-WebVirtualDirectory -Site \"#{name}\" -Name \"#{path}\" | Select-Object path, physicalPath, userName, password, logonMethod, allowSubDirConfig, PSPath, ItemXPath | ConvertTo-Json"
-    Log.info(command)
     cmd = @inspec.command(command)
-    Log.info(cmd.stdout)
 
     begin
       vdir = JSON.parse(cmd.stdout)
