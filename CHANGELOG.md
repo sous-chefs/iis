@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.4.0 (2017-04-26)
+
+- [Fix multiple issues with ~FC023](https://github.com/chef-cookbooks/iis/pull/341)
+
 ## 6.3.0 (2017-04-24)
 
 - Convert `iis_pool` to a custom resource
