@@ -1,8 +1,8 @@
 #
 # Cookbook:: iis
-# Library:: helper
+# Library:: section-helper
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ module Opscode
       require 'rexml/document'
       include REXML
 
-      def lock(node, section, location, returns)
+      def lock(node, section, location = '', returns = [0])
         cmd_list_section node, :lock, section, location, returns
       end
 
-      def unlock(node, section, location, returns)
+      def unlock(node, section, location = '', returns = [0])
         cmd_list_section node, :unlock, section, location, returns
       end
 

@@ -1,0 +1,6 @@
+name: root
+title: iis_root InSpec Profile
+copyright: 2017, Chef Software, Inc.
+license: All Rights Reserved
+summary: An InSpec Compliance Profile for iis_root
+version: 0.1.0

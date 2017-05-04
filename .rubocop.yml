@@ -6,6 +6,7 @@ Style/PredicateName:
   Exclude:
     - 'test/integration/app/libraries/*'
     - 'test/integration/pool/libraries/*'
+    - 'test/integration/root/libraries/*'
     - 'test/integration/section/libraries/*'
     - 'test/integration/vdir/libraries/*'
 
