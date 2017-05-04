@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.4.0 (2017-05-04)
+- Convert `iis_section` to a custom resource
+- Resolve issue with `iis_pool`
 
 ## 6.3.1 (2017-04-26)
 
