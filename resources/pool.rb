@@ -206,9 +206,9 @@ action :delete do
 end
 
 action :start do
-  if !current_resource.runtime_version
+  if !current_resource.runtime_version && !running
     converge_by "Started Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} start apppool \"#{new_resource.name}\"") unless new_resource.running
+      shell_out!("#{appcmd(node)} start apppool \"#{new_resource.name}\"")
     end
   else
     Chef::Log.debug("#{new_resource} already running - nothing to do")
@@ -216,7 +216,7 @@ action :start do
 end
 
 action :stop do
-  if current_resource.runtime_version
+  if current_resource.runtime_version && running
     converge_by "Stopped Application Pool \"#{new_resource}\"" do
       shell_out!("#{appcmd(node)} stop apppool \"#{new_resource.name}\"")
     end
@@ -238,7 +238,7 @@ end
 action :recycle do
   if current_resource.runtime_version
     converge_by "Recycled Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} recycle APPPOOL \"#{new_resource.name}\"")
+      shell_out!("#{appcmd(node)} recycle APPPOOL \"#{new_resource.name}\"") if running
     end
   end
 end

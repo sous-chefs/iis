@@ -110,7 +110,6 @@ class IisPool < Inspec.resource(1)
   end
 
   def has_queue_length?(queue_length)
-    Log.info(iis_pool)
     iis_pool.nil? ? false : iis_pool[:queue_length] == queue_length
   end
 
@@ -160,7 +159,6 @@ class PoolProvider
       pool_cpu = JSON.parse(cmd_cpu.stdout)
       pool_worker_processes = JSON.parse(cmd_worker_processes.stdout)
     rescue JSON::ParserError => _e
-      Log.info(cmd.stderr)
       return {}
     end
 
