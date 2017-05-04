@@ -12,7 +12,7 @@ end
 
 describe iis_pool('myAppPool_v1_1') do
   it { should exist }
-  it { should be_running }
+  its('state') { should eq 'Stopped' }
   its('managed_runtime_version') { should eq 'v2.0' }
   it { should have_name('myAppPool_v1_1') }
   it { should have_queue_length(1000) }

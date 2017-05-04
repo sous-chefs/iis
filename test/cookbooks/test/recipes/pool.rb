@@ -26,7 +26,7 @@ end
 iis_pool 'myAppPool_v1_1' do
   runtime_version '2.0'
   pipeline_mode :Classic
-  action [:add, :config]
+  action [:add, :config, :stop]
 end
 
 iis_pool 'testapppool' do
