@@ -12,7 +12,7 @@ end
 
 describe iis_pool('myAppPool_v1_1') do
   it { should exist }
-  its('state') { should eq 'Stopped' }
+  it { should_not be_running }
   its('managed_runtime_version') { should eq 'v2.0' }
   it { should have_name('myAppPool_v1_1') }
   it { should have_queue_length(1000) }
@@ -28,4 +28,11 @@ describe iis_pool('testapppool') do
   its('identity_type') { should eq 'SpecificUser' }
   its('username') { should contain '\\vagrant' }
   its('password') { should eq 'vagrant' }
+end
+
+describe iis_pool('test_start') do
+  it { should exist }
+  it { should be_running }
+  its('managed_pipeline_mode') { should eq 'Classic' }
+  it { should have_name('test_start') }
 end

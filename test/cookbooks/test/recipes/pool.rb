@@ -29,6 +29,11 @@ iis_pool 'myAppPool_v1_1' do
   action [:add, :config, :stop]
 end
 
+iis_pool 'test_start' do
+  pipeline_mode :Classic
+  action [:add, :config, :stop]
+end
+
 iis_pool 'testapppool' do
   thirty_two_bit false
   runtime_version '4.0'
@@ -38,4 +43,8 @@ iis_pool 'testapppool' do
   username "#{node['hostname']}\\vagrant"
   password 'vagrant'
   action [:add, :config]
+end
+
+iis_pool 'test_start' do
+  action [:start]
 end
