@@ -80,6 +80,7 @@ property :cpu_smp_affinitized, [true, false], default: false
 property :smp_processor_affinity_mask, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 
+# internally used for the state of the pool [Starting, Started, Stopping, Stopped, Unknown, Undefined value]
 property :running, [true, false], desired_state: true
 
 default_action :add
@@ -192,7 +193,7 @@ action :add do
 end
 
 action :config do
-  configure
+  configure if current_resource.runtime_version
 end
 
 action :delete do
@@ -206,7 +207,7 @@ action :delete do
 end
 
 action :start do
-  if !current_resource.runtime_version && !running
+  if current_resource.runtime_version && !current_resource.running
     converge_by "Started Application Pool \"#{new_resource}\"" do
       shell_out!("#{appcmd(node)} start apppool \"#{new_resource.name}\"")
     end
@@ -216,7 +217,7 @@ action :start do
 end
 
 action :stop do
-  if current_resource.runtime_version && running
+  if current_resource.runtime_version && current_resource.running
     converge_by "Stopped Application Pool \"#{new_resource}\"" do
       shell_out!("#{appcmd(node)} stop apppool \"#{new_resource.name}\"")
     end
@@ -228,7 +229,7 @@ end
 action :restart do
   if current_resource.runtime_version
     converge_by "Restarted Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} stop APPPOOL \"#{new_resource.name}\"") if running
+      shell_out!("#{appcmd(node)} stop APPPOOL \"#{new_resource.name}\"") if current_resource.running
       sleep 2
       shell_out!("#{appcmd(node)} start APPPOOL \"#{new_resource.name}\"")
     end
@@ -238,7 +239,7 @@ end
 action :recycle do
   if current_resource.runtime_version
     converge_by "Recycled Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} recycle APPPOOL \"#{new_resource.name}\"") if running
+      shell_out!("#{appcmd(node)} recycle APPPOOL \"#{new_resource.name}\"") if current_resource.running
     end
   end
 end
@@ -324,7 +325,7 @@ action_class.class_eval do
     ## Special case this collection removal for now.
     # TODO: test if this is needed
     # is_new_recycle_at_time = true
-    if should_clear_apppool_schedules
+    if !current_resource.runtime_version && should_clear_apppool_schedules
       converge_by "Cleared Periodic Restart Schedule #{new_resource} - #{should_clear_apppool_schedules}" do
         clear_pool_schedule_cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{new_resource.name}'].recycling.periodicRestart.schedule\""
         Chef::Log.debug(clear_pool_schedule_cmd)
@@ -403,7 +404,7 @@ action_class.class_eval do
       cmd << configure_application_pool("cpu.smpProcessorAffinityMask2:#{new_resource.smp_processor_affinity_mask_2.floor}")
     end
 
-    unless cmd == "#{appcmd(node)} set config /section:applicationPools"
+    unless current_resource.runtime_version && cmd == "#{appcmd(node)} set config /section:applicationPools"
       converge_by "Configured Application Pool \"#{new_resource}\"" do
         Chef::Log.debug(cmd)
         shell_out!(cmd)
