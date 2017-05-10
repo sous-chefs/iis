@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.5.0 (2017-05-10)
+- Convert `iis_root` to a custom resource
+- [uninitialized constant Chef::Resource::IisRoot](https://github.com/chef-cookbooks/iis/issues/333)
+- [mime types are not deleted](https://github.com/chef-cookbooks/iis/issues/321)
+- [iis_root errors on 'duplicate collection entry of type 'mimeMap'](https://github.com/chef-cookbooks/iis/issues/199)
+
 ## 6.4.1 (2017-05-05)
 - [fix bug with start having ! in front](https://github.com/chef-cookbooks/iis/pull/349)
  
