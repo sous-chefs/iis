@@ -1,10 +1,8 @@
 #
 # Cookbook:: iis
-# Library:: helper
+# Library:: processors
 #
-# Author:: Justin Schuhmann <jmschu02@gmail.com>
-#
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,71 +21,81 @@ module Opscode
   module IIS
     # Contains functions that are used throughout this cookbook
     module Processors
-      def default_documents(default_document, default_documents_enabled, add = true, remove = true, specifier = '')
+      def current_default_documents_config(specifier = '')
         cmd = shell_out! get_default_documents_command specifier
         return unless cmd.stderr.empty?
         xml = cmd.stdout
         doc = REXML::Document.new xml
 
-        is_new_default_documents_enabled = new_value?(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled', default_documents_enabled.to_s)
-        current_default_documents = REXML::XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map(&:value)
+        {
+          default_documents_enabled: value(doc.root, 'CONFIG/system.webServer-defaultDocument/@enabled'),
+          default_documents: REXML::XPath.match(doc.root, 'CONFIG/system.webServer-defaultDocument/files/add/@value').map(&:value),
+        }
+      end
+
+      def current_mime_maps_config(specifier = '')
+        # handles mime maps
+        cmd = shell_out! get_mime_map_command specifier
+        return unless cmd.stderr.empty?
+        xml = cmd.stdout
+        doc = REXML::Document.new xml
+
+        REXML::XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map { |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
+      end
+
+      def set_default_documents_enabled(value, specifier = '')
         cmd = default_documents_command specifier
+        cmd << " /enabled:#{value}"
+        shell_out! cmd
+      end
 
-        if is_new_default_documents_enabled
-          cmd << " /enabled:#{default_documents_enabled}"
-        end
-
+      def set_default_documents(desired_default_documents, current_default_documents, add = true, remove = true, specifier = '')
+        cmd = default_documents_command specifier
+        Chef::Log.warn("new #{desired_default_documents} --- old #{current_default_documents}")
         if add
-          (default_document - current_default_documents).each do |document|
+          (desired_default_documents - current_default_documents).each do |document|
             cmd << " /+files.[value='#{document}']"
           end
         end
         if remove && !add
-          (default_document - current_default_documents).each do |document|
+          (desired_default_documents - current_default_documents).each do |document|
             cmd << " /-files.[value='#{document}']"
           end
         end
         if remove && add
-          (current_default_documents - default_document).each do |document|
+          (current_default_documents - desired_default_documents).each do |document|
             cmd << " /-files.[value='#{document}']"
           end
         end
 
+        Chef::Log.warn("before cmd -- #{cmd}")
+
         return unless cmd != default_documents_command(specifier)
+        Chef::Log.warn("after cmd -- #{cmd}")
         shell_out! cmd
-        Chef::Log.info('Default Documents updated')
-        @was_updated = true
       end
 
-      def mime_maps(new_resource_mime_maps, add = true, remove = true, specifier = '')
-        # handles mime maps
-        cmd = shell_out get_mime_map_command specifier
-        return unless cmd.stderr.empty?
-        xml = cmd.stdout
-        doc = REXML::Document.new xml
-        current_mime_maps = REXML::XPath.match(doc.root, 'CONFIG/system.webServer-staticContent/mimeMap').map { |x| "fileExtension='#{x.attribute 'fileExtension'}',mimeType='#{x.attribute 'mimeType'}'" }
+      def set_mime_maps(desired_mime_maps, current_mime_maps, add = true, remove = true, specifier = '')
         cmd = mime_map_command specifier
 
         if add
-          (new_resource_mime_maps - current_mime_maps).each do |mime_map|
+          (desired_mime_maps - current_mime_maps).each do |mime_map|
             cmd << " /+\"[#{mime_map}]\""
           end
         end
         if remove && !add
-          (new_resource_mime_maps - current_mime_maps).each do |mime_map|
+          (desired_mime_maps - current_mime_maps).each do |mime_map|
             cmd << " /-\"[#{mime_map}]\""
           end
         end
         if remove && add
-          (current_mime_maps - new_resource_mime_maps).each do |mime_map|
+          (current_mime_maps - desired_mime_maps).each do |mime_map|
             cmd << " /-\"[#{mime_map}]\""
           end
         end
 
         return unless cmd != mime_map_command(specifier)
         shell_out! cmd
-        Chef::Log.info('mime maps updated')
-        @was_updated = true
       end
 
       private
