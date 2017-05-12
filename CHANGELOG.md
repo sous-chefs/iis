@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.5.1 (2017-05-12)
+- [iis_pool is not Idempotent](https://github.com/chef-cookbooks/iis/issues/354)
+- Fix whitespace in `iis_pool` name
+
 ## 6.5.0 (2017-05-10)
 - Convert `iis_root` to a custom resource
 - [uninitialized constant Chef::Resource::IisRoot](https://github.com/chef-cookbooks/iis/issues/333)
