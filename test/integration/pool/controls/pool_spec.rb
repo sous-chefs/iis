@@ -26,7 +26,7 @@ describe iis_pool('testapppool') do
   it { should have_name('testapppool') }
   its('start_mode') { should eq 'OnDemand' }
   its('identity_type') { should eq 'SpecificUser' }
-  its('username') { should contain '\\vagrant' }
+  its('username') { should include('\\vagrant') }
   its('password') { should eq 'vagrant' }
 end
 
@@ -35,4 +35,13 @@ describe iis_pool('test_start') do
   it { should be_running }
   its('managed_pipeline_mode') { should eq 'Classic' }
   it { should have_name('test_start') }
+end
+
+describe iis_pool('My App Pool') do
+  it { should exist }
+  it { should be_running }
+  it { should be_enable_32bit_app_on_win64 }
+  its('managed_runtime_version') { should eq 'v4.0.30319' }
+  its('managed_pipeline_mode') { should eq 'Integrated' }
+  it { should have_name('My App Pool') }
 end

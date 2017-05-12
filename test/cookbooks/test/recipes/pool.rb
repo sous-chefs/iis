@@ -48,3 +48,10 @@ end
 iis_pool 'test_start' do
   action [:start]
 end
+
+iis_pool 'My App Pool' do
+  runtime_version '4.0.30319'
+  thirty_two_bit true
+  pipeline_mode :Integrated
+  action [:add, :config, :start]
+end
