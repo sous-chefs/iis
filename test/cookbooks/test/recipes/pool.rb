@@ -29,7 +29,7 @@ iis_pool 'myAppPool_v1_1' do
   action [:add, :config, :stop]
 end
 
-iis_pool 'testapppool' do
+iis_pool 'test apppool' do
   thirty_two_bit false
   runtime_version '4.0'
   pipeline_mode :Integrated
