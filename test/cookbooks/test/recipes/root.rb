@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: pool
+# Recipe:: root
 #
 # copyright: 2017, Chef Software, Inc.
 #
@@ -18,33 +18,13 @@
 
 include_recipe 'iis'
 
-directory "#{node['iis']['docroot']}\\test" do
-  recursive true
+iis_root 'adding test html' do
+  add_default_documents ['test.html']
+  add_mime_maps ['fileExtension=\'.dmg\',mimeType=\'application/octet-stream\'']
+  action :add
 end
 
-# creates a new app pool
-iis_pool 'myAppPool_v1_1' do
-  runtime_version '2.0'
-  pipeline_mode :Classic
-  action [:add, :config, :stop]
-end
-
-iis_pool 'test_start' do
-  pipeline_mode :Classic
-  action [:add, :config, :stop]
-end
-
-iis_pool 'test apppool' do
-  thirty_two_bit false
-  runtime_version '4.0'
-  pipeline_mode :Integrated
-  start_mode :OnDemand
-  identity_type :SpecificUser
-  username "#{node['hostname']}\\vagrant"
-  password 'vagrant'
-  action [:add, :config]
-end
-
-iis_pool 'test_start' do
-  action [:start]
+iis_root 'remove mime types' do
+  delete_mime_maps ['fileExtension=\'.rpm\',mimeType=\'audio/x-pn-realaudio-plugin\'', 'fileExtension=\'.msi\',mimeType=\'application/octet-stream\'']
+  action :delete
 end
