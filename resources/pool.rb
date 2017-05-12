@@ -86,7 +86,7 @@ default_action :add
 
 load_current_value do |desired|
   name desired.name
-  cmd = shell_out("#{appcmd(node)} list apppool #{desired.name}")
+  cmd = shell_out("#{appcmd(node)} list apppool \"#{desired.name}\"")
   # APPPOOL "DefaultAppPool" (MgdVersion:v2.0,MgdMode:Integrated,state:Started)
   Chef::Log.debug("#{desired} list apppool command output: #{cmd.stdout}")
   unless cmd.stderr.empty?
