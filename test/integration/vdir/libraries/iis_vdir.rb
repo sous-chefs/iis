@@ -106,7 +106,7 @@ class IisVdir < Inspec.resource(1)
 
   def iis_vdir
     return @cache unless @cache.nil?
-    @cache = @vdir_provider.iis_vdir(@site_name, @path) unless @vdir_provider.nil?
+    @cache = @vdir_provider.iis_vdir(@path, @site_name) unless @vdir_provider.nil?
   end
 end
 
