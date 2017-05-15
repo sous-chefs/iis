@@ -132,21 +132,21 @@ class PoolProvider
 
   # want to populate everything using one powershell command here and spit it out as json
   def iis_pool(pool_name)
-    command = "Import-Module WebAdministration; Get-Item IIS:\\AppPools\\#{pool_name} | Select-Object name, queueLength, autoStart, enable32BitAppOnWin64, managedRuntimeVersion, managedRuntimeLoader, enableConfigurationOverride, managedPipelineMode, passAnonymousToken, startMode, state, ItemXPath | ConvertTo-Json"
+    command = "Import-Module WebAdministration; Get-Item \"IIS:\\AppPools\\#{pool_name}\" | Select-Object name, queueLength, autoStart, enable32BitAppOnWin64, managedRuntimeVersion, managedRuntimeLoader, enableConfigurationOverride, managedPipelineMode, passAnonymousToken, startMode, state, ItemXPath | ConvertTo-Json"
     cmd = @inspec.command(command)
-    command_process_model = "(Get-Item IIS:\\AppPools\\#{pool_name}).processModel | Select-Object identityType, userName, password, loadUserProfile, setProfileEnvironment, logonType, manualGroupMembership, idleTimeout, idleTimeoutAction, maxProcesses, shutdownTimeLimit, startupTimeLimit, pingingEnabled, pingInterval, pingResponseTime, logEventOnProcessModel | ConvertTo-Json"
+    command_process_model = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").processModel | Select-Object identityType, userName, password, loadUserProfile, setProfileEnvironment, logonType, manualGroupMembership, idleTimeout, idleTimeoutAction, maxProcesses, shutdownTimeLimit, startupTimeLimit, pingingEnabled, pingInterval, pingResponseTime, logEventOnProcessModel | ConvertTo-Json"
     cmd_process_model = @inspec.command(command_process_model)
-    command_recycling = "(Get-Item IIS:\\AppPools\\#{pool_name}).recycling | Select-Object disallowOverlappingRotation, disallowRotationOnConfigChange, logEventOnRecycle | ConvertTo-Json"
+    command_recycling = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").recycling | Select-Object disallowOverlappingRotation, disallowRotationOnConfigChange, logEventOnRecycle | ConvertTo-Json"
     cmd_recycling = @inspec.command(command_recycling)
-    command_recycling_periodic_restart = "(Get-Item IIS:\\AppPools\\#{pool_name}).recycling.periodicRestart | Select-Object memory, privateMemory, requests, time | ConvertTo-Json"
+    command_recycling_periodic_restart = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").recycling.periodicRestart | Select-Object memory, privateMemory, requests, time | ConvertTo-Json"
     cmd_recycling_periodic_restart = @inspec.command(command_recycling_periodic_restart)
-    command_recycling_period_restart_schedule = "(Get-Item IIS:\\AppPools\\#{pool_name}).recycling.periodicRestart.schedule | Select-Object Collection | ConvertTo-Json"
+    command_recycling_period_restart_schedule = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").recycling.periodicRestart.schedule | Select-Object Collection | ConvertTo-Json"
     cmd_recycling_period_restart_schedule = @inspec.command(command_recycling_period_restart_schedule)
-    command_failing = "(Get-Item IIS:\\AppPools\\#{pool_name}).failure | Select-Object loadBalancerCapabilities, orphanWorkerProcess, orphanActionExe, orphanActionParams, rapidFailProtection, rapidFailProtectionInterval, rapidFailProtectionMaxCrashes, autoShudownExe, autoShutdownParams | ConvertTo-Json"
+    command_failing = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").failure | Select-Object loadBalancerCapabilities, orphanWorkerProcess, orphanActionExe, orphanActionParams, rapidFailProtection, rapidFailProtectionInterval, rapidFailProtectionMaxCrashes, autoShudownExe, autoShutdownParams | ConvertTo-Json"
     cmd_failing = @inspec.command(command_failing)
-    command_cpu = "(Get-Item IIS:\\AppPools\\#{pool_name}).cpu | Select-Object limit, action, resetInterval, smpAffinitized, smpProcessorAffinityMask, smpProcessorAffinityMask2, processorGroup, numaNodeAssignment, numaNodeAffinityMode | ConvertTo-Json"
+    command_cpu = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").cpu | Select-Object limit, action, resetInterval, smpAffinitized, smpProcessorAffinityMask, smpProcessorAffinityMask2, processorGroup, numaNodeAssignment, numaNodeAffinityMode | ConvertTo-Json"
     cmd_cpu = @inspec.command(command_cpu)
-    command_worker_processes = "(Get-Item IIS:\\AppPools\\#{pool_name}).workerProcesses | Select-Object Collection | ConvertTo-Json"
+    command_worker_processes = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").workerProcesses | Select-Object Collection | ConvertTo-Json"
     cmd_worker_processes = @inspec.command(command_worker_processes)
 
     begin
