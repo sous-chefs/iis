@@ -132,7 +132,7 @@ class VdirProvider
     # map our values to a hash table
     {
       site_name: site_name,
-      path: vdir['path'],
+      path: path,
       physical_path: vdir['physicalPath'],
       username: vdir['userName'],
       password: vdir['password'],

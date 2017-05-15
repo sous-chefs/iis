@@ -51,14 +51,3 @@ iis_vdir 'Default Web Site/' do
   allow_sub_dir_config false
   action [:add, :config]
 end
-
-iis_vdir 'vdir_test2' do
-  site_name 'Default Web Site/'
-  path '/vdir_test2'
-  physical_path "#{node['iis']['docroot']}\\vdir_test2"
-  username 'vagrant'
-  password 'vagrant'
-  logon_method :ClearText
-  allow_sub_dir_config false
-  action [:add, :config]
-end
