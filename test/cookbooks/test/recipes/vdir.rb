@@ -26,6 +26,10 @@ directory "#{node['iis']['docroot']}\\vdir_test" do
   recursive true
 end
 
+directory "#{node['iis']['docroot']}\\vdir_test2" do
+  recursive true
+end
+
 iis_pool 'DefaultAppPool' do
   pipeline_mode :Classic
   action :add
@@ -41,6 +45,17 @@ end
 iis_vdir 'Default Web Site/' do
   path '/vdir_test'
   physical_path "#{node['iis']['docroot']}\\vdir_test"
+  username 'vagrant'
+  password 'vagrant'
+  logon_method :ClearText
+  allow_sub_dir_config false
+  action [:add, :config]
+end
+
+iis_vdir 'vdir_test2' do
+  site_name 'Default Web Site/'
+  path '/vdir_test2'
+  physical_path "#{node['iis']['docroot']}\\vdir_test2"
   username 'vagrant'
   password 'vagrant'
   logon_method :ClearText

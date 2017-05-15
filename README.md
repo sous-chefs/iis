@@ -397,7 +397,7 @@ Allows easy management of IIS virtual directories (i.e. vdirs).
 
 #### Attribute Parameters
 
-- `name`: name attribute. Specifies the value of the name attribute. This is the name of the website or site + application you are adding it to.
+- `site_name`: name attribute. This is the name of the website or site + application you are adding it to.
 - `path`: The virtual directory path on the site.
 - `physical_path`: The physical path of the virtual directory on the disk.
 - `username`: (optional) The username required to logon to the physical_path. If set to "" will clear username and password.
