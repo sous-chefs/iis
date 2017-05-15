@@ -26,10 +26,6 @@ directory "#{node['iis']['docroot']}\\vdir_test" do
   recursive true
 end
 
-directory "#{node['iis']['docroot']}\\vdir_test2" do
-  recursive true
-end
-
 iis_pool 'DefaultAppPool' do
   pipeline_mode :Classic
   action :add
