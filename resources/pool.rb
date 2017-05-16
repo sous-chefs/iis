@@ -411,6 +411,7 @@ action_class.class_eval do
       end
     end
 
+    Chef::Log.warn("username: #{new_resource.username} password: #{new_resource.password} identity_type: #{new_resource.identity_type}")
     # Application Pool Identity Settings
     if new_resource.username && new_resource.username != ''
       cmd = default_app_pool_user
@@ -424,12 +425,10 @@ action_class.class_eval do
         Chef::Log.debug(cmd)
         shell_out!(cmd)
       end
-    elsif (new_resource.username || new_resource.username == '') &&
-          (new_resource.password || new_resource.username == '') &&
-          (new_resource.identity_type != 'SpecificUser')
+    elsif new_resource.identity_type != 'SpecificUser'
       converge_if_changed :identity_type do
         cmd = "#{appcmd(node)} set config /section:applicationPools"
-        cmd << " \"/[name='#{new_resource.name}'].processModel.identityType:#{new_resource.identity}\""
+        cmd << " \"/[name='#{new_resource.name}'].processModel.identityType:#{new_resource.identity_type}\""
         Chef::Log.debug(cmd)
         shell_out!(cmd)
       end
