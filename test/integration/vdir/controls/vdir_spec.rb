@@ -20,7 +20,7 @@ describe iis_vdir('/vdir_test', 'Default Web Site') do
   it { should have_allow_sub_dir_config(false) }
 end
 
-describe iis_vdir('Default Web Site', '/foo') do
+describe iis_vdir('/foo', 'Default Web Site') do
   it { should exist }
   it { should have_path('/foo') }
   it { should have_physical_path('C:\\inetpub\\wwwroot\\foo') }
