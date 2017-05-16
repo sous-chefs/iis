@@ -55,3 +55,8 @@ iis_pool 'My App Pool' do
   pipeline_mode :Integrated
   action [:add, :config, :start]
 end
+
+iis_pool 'test_identity_type' do
+  identity_type :NetworkService
+  action [:add, :config, :start]
+end
