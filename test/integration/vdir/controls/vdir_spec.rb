@@ -19,3 +19,9 @@ describe iis_vdir('Default Web Site', '/vdir_test') do
   it { should have_logon_method('ClearText') }
   it { should have_allow_sub_dir_config(false) }
 end
+
+describe iis_vdir('Default Web Site', '/foo') do
+  it { should exist }
+  it { should have_path('/foo') }
+  it { should have_physical_path('C:\\inetpub\\wwwroot\\foo') }
+end

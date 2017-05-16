@@ -34,7 +34,7 @@ property :allow_sub_dir_config, [true, false], default: true
 default_action :add
 
 load_current_value do |desired|
-  name application_cleanname(desired.name)
+  name application_cleanname(desired.name).end_with?('/') ? application_cleanname(desired.name) : application_cleanname(desired.name) + '/'
   path desired.path
   cmd = shell_out("#{appcmd(node)} list vdir \"#{name.chomp('/') + path}\"")
   Chef::Log.debug("#{desired} list vdir command output: #{cmd.stdout}")
@@ -63,7 +63,7 @@ end
 action :add do
   if !@current_resource.physical_path
     converge_by "Created the VDIR - \"#{new_resource}\"" do
-      cmd = "#{appcmd(node)} add vdir /app.name:\"#{new_resource.name}\""
+      cmd = "#{appcmd(node)} add vdir /app.name:\"#{vdir_identifier}\""
       cmd << " /path:\"#{new_resource.path}\""
       cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
       cmd << " /userName:\"#{new_resource.username}\"" if new_resource.username
@@ -125,6 +125,10 @@ end
 
 action_class.class_eval do
   def application_identifier
-    new_resource.name.chomp('/') + new_resource.path
+    vdir_identifier.chomp('/') + new_resource.path
+  end
+
+  def vdir_identifier
+    new_resource.name.end_with?('/') ? new_resource.name : new_resource.name + '/'
   end
 end
