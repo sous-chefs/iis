@@ -29,9 +29,9 @@ class IisVdir < Inspec.resource(1)
     end
   "
 
-  def initialize(path, site_name)
+  def initialize(path, application_name)
     @path = path
-    @site_name = site_name
+    @application_name = application_name
     @cache = nil
 
     @vdir_provider = VdirProvider.new(inspec)
@@ -40,8 +40,8 @@ class IisVdir < Inspec.resource(1)
     skip_resource 'The `iis_vdir` resource is not supported on your OS.' unless inspec.os.windows?
   end
 
-  def site_name
-    iis_vdir[:site_name]
+  def application_name
+    iis_vdir[:application_name]
   end
 
   def path
@@ -72,8 +72,8 @@ class IisVdir < Inspec.resource(1)
     !iis_vdir[:path].empty?
   end
 
-  def has_site_name?(site_name)
-    iis_vdir[:site_name] == site_name
+  def has_application_name?(application_name)
+    iis_vdir[:application_name] == application_name
   end
 
   def has_path?(path)
@@ -101,12 +101,12 @@ class IisVdir < Inspec.resource(1)
   end
 
   def to_s
-    "iis_vdir '#{@site_name}#{@path}'"
+    "iis_vdir '#{@application_name}#{@path}'"
   end
 
   def iis_vdir
     return @cache unless @cache.nil?
-    @cache = @vdir_provider.iis_vdir(@path, @site_name) unless @vdir_provider.nil?
+    @cache = @vdir_provider.iis_vdir(@path, @application_name) unless @vdir_provider.nil?
   end
 end
 
@@ -118,8 +118,8 @@ class VdirProvider
   end
 
   # want to populate everything using one powershell command here and spit it out as json
-  def iis_vdir(path, site_name)
-    command = "Import-Module WebAdministration; Get-WebVirtualDirectory -Site \"#{site_name}\" -Name \"#{path}\" | Select-Object path, physicalPath, userName, password, logonMethod, allowSubDirConfig, PSPath, ItemXPath | ConvertTo-Json"
+  def iis_vdir(path, application_name)
+    command = "Import-Module WebAdministration; Get-WebVirtualDirectory -Site \"#{application_name}\" -Name \"#{path}\" | Select-Object path, physicalPath, userName, password, logonMethod, allowSubDirConfig, PSPath, ItemXPath | ConvertTo-Json"
     cmd = @inspec.command(command)
 
     begin
@@ -131,7 +131,7 @@ class VdirProvider
 
     # map our values to a hash table
     {
-      site_name: site_name,
+      application_name: application_name,
       path: path,
       physical_path: vdir['physicalPath'],
       username: vdir['userName'],
