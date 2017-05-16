@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.5.2 (2017-05-15)
+- [Update iis_vdir name to not require a trailing /](https://github.com/chef-cookbooks/iis/pull/363)
+- [Fix iis_pool identity_type issue](https://github.com/chef-cookbooks/iis/pull/362)
+
 ## 6.5.1 (2017-05-12)
 - [iis_pool is not Idempotent](https://github.com/chef-cookbooks/iis/issues/354)
 - Fix whitespace in `iis_pool` name

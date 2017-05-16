@@ -45,3 +45,9 @@ describe iis_pool('My App Pool') do
   its('managed_pipeline_mode') { should eq 'Integrated' }
   it { should have_name('My App Pool') }
 end
+
+describe iis_pool('test_identity_type') do
+  it { should exist }
+  it { should be_running }
+  its('identity_type') { should eq 'NetworkService' }
+end
