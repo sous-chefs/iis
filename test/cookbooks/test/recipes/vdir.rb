@@ -53,7 +53,7 @@ iis_vdir 'Default Web Site/' do
 end
 
 iis_vdir 'Creating vDir /foo for Sitename' do
-  name 'Default Web Site'
+  application_name 'Default Web Site'
   path '/foo'
   physical_path "#{node['iis']['docroot']}\\foo"
   action [:add, :config]
