@@ -70,7 +70,7 @@ module Opscode
                  Chef::Util::PathHelper.cleanpath(path)
                end
         # Remove any trailing slashes to prevent them from accidentally escaping any quotes.
-        path.chomp('/').chomp('\\')
+        path.tr('/', '\\')
       end
 
       def application_cleanname(application_name)

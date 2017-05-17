@@ -36,6 +36,8 @@ default_action :add
 load_current_value do |desired|
   application_name application_cleanname(desired.application_name).end_with?('/') ? application_cleanname(desired.application_name) : application_cleanname(desired.application_name) + '/'
   path desired.path
+  Chef::Log.warn("application name: #{application_name}")
+  Chef::Log.warn("application name chomp: #{application_name.chomp('/')}")
   cmd = shell_out("#{appcmd(node)} list vdir \"#{application_name.chomp('/') + path}\"")
   Chef::Log.debug("#{desired} list vdir command output: #{cmd.stdout}")
 
@@ -48,7 +50,7 @@ load_current_value do |desired|
       if cmd.stderr.empty?
         xml = cmd.stdout
         doc = Document.new(xml)
-        physical_path value doc.root, 'VDIR/@physicalPath'
+        physical_path windows_cleanpath(value(doc.root, 'VDIR/@physicalPath'))
         username value doc.root, 'VDIR/virtualDirectory/@userName'
         password value doc.root, 'VDIR/virtualDirectory/@password'
         logon_method value(doc.root, 'VDIR/virtualDirectory/@logonMethod').to_sym
@@ -85,7 +87,7 @@ action :config do
     converge_by "Configured the VDIR - \"#{new_resource}\"" do
       cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\""
       converge_if_changed :physical_path do
-        cmd << " /physicalPath:\"#{new_resource.physical_path}\""
+        cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
       end
 
       converge_if_changed :username do
@@ -125,10 +127,10 @@ end
 
 action_class.class_eval do
   def application_identifier
-    vdir_identifier.chomp('/') + new_resource.path
+    new_resource.path.start_with?('/') ? vdir_identifier.chomp('/') + new_resource.path : vdir_identifier + new_resource.path
   end
 
   def vdir_identifier
-    new_resource.application_name.end_with?('/') ? new_resource.application_name : new_resource.application_name + '/'
+    new_resource.application_name.include?('/') ? new_resource.application_name : new_resource.application_name + '/'
   end
 end

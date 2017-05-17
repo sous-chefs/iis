@@ -27,5 +27,5 @@ iis_app 'Default Web Site' do
   application_pool 'DefaultAppPool'
   physical_path "#{node['iis']['docroot']}/v1_1"
   enabled_protocols 'http,net.pipe'
-  action :add
+  action [:add, :config]
 end
