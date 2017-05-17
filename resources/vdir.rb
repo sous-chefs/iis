@@ -23,7 +23,7 @@ include REXML
 include Opscode::IIS::Helper
 include Opscode::IIS::Processors
 
-property :name, String, name_property: true
+property :application_name, String, name_property: true
 property :path, String
 property :physical_path, String
 property :username, String
@@ -34,17 +34,17 @@ property :allow_sub_dir_config, [true, false], default: true
 default_action :add
 
 load_current_value do |desired|
-  name application_cleanname(desired.name).end_with?('/') ? application_cleanname(desired.name) : application_cleanname(desired.name) + '/'
+  application_name application_cleanname(desired.application_name).end_with?('/') ? application_cleanname(desired.application_name) : application_cleanname(desired.application_name) + '/'
   path desired.path
-  cmd = shell_out("#{appcmd(node)} list vdir \"#{name.chomp('/') + path}\"")
+  cmd = shell_out("#{appcmd(node)} list vdir \"#{application_name.chomp('/') + path}\"")
   Chef::Log.debug("#{desired} list vdir command output: #{cmd.stdout}")
 
   if cmd.stderr.empty?
     # VDIR "Testfu Site/Content/Test"
-    result = cmd.stdout.match(/^VDIR\s\"#{Regexp.escape(name.chomp('/') + path)}\"/)
+    result = cmd.stdout.match(/^VDIR\s\"#{Regexp.escape(application_name.chomp('/') + path)}\"/)
     Chef::Log.debug("#{desired} current_resource match output: #{result}")
     unless result.nil?
-      cmd = shell_out("#{appcmd(node)} list vdir \"#{name.chomp('/') + path}\" /config:* /xml")
+      cmd = shell_out("#{appcmd(node)} list vdir \"#{application_name.chomp('/') + path}\" /config:* /xml")
       if cmd.stderr.empty?
         xml = cmd.stdout
         doc = Document.new(xml)
@@ -129,6 +129,6 @@ action_class.class_eval do
   end
 
   def vdir_identifier
-    new_resource.name.end_with?('/') ? new_resource.name : new_resource.name + '/'
+    new_resource.application_name.end_with?('/') ? new_resource.application_name : new_resource.application_name + '/'
   end
 end

@@ -10,7 +10,7 @@ describe service('W3SVC') do
   its ('startmode') { should eq 'Auto' }
 end
 
-describe iis_vdir('Default Web Site', '/vdir_test') do
+describe iis_vdir('/vdir_test', 'Default Web Site') do
   it { should exist }
   it { should have_path('/vdir_test') }
   it { should have_physical_path('C:\\inetpub\\wwwroot\\vdir_test') }
@@ -20,7 +20,7 @@ describe iis_vdir('Default Web Site', '/vdir_test') do
   it { should have_allow_sub_dir_config(false) }
 end
 
-describe iis_vdir('Default Web Site', '/foo') do
+describe iis_vdir('/foo', 'Default Web Site') do
   it { should exist }
   it { should have_path('/foo') }
   it { should have_physical_path('C:\\inetpub\\wwwroot\\foo') }
