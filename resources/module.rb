@@ -19,6 +19,7 @@
 
 include Opscode::IIS::Helper
 include Opscode::IIS::Processors
+include Opscode::IIS::SectionHelper
 
 property :module_name, String, name_property: true
 property :type, String
@@ -26,6 +27,7 @@ property :add, [true, false], default: false
 property :image, String
 property :precondition, String
 property :application, String
+property :previous_lock, String
 
 default_action :add
 
@@ -40,7 +42,8 @@ load_current_value do |desired|
   # 'MODULE "Module Name" ( native, preCondition:condition )'
 
   Chef::Log.debug("#{desired.name} list module command output: #{cmd_result.stdout}")
-  if !cmd_result.stdout.empty?
+  unless cmd_result.stdout.empty?
+    previous_lock get_current_lock(node, 'system.webServer/modules', desired.application)
     cmd = "#{appcmd(node)} list module /module.name:\"#{desired.module_name}\""
     cmd << " /app.name:\"#{desired.application}\"" if desired.application
     cmd << ' /config:* /xml'
@@ -59,21 +62,14 @@ end
 action :add do
   if !current_resource.type
     converge_by("add IIS module #{new_resource.module_name}") do
+      unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} add module /module.name:\"#{new_resource.module_name}\""
-
-      if new_resource.application
-        cmd << " /app.name:\"#{new_resource.application}\""
-      end
-
+      cmd << " /app.name:\"#{new_resource.application}\"" if new_resource.application
       cmd << " /type:\"#{new_resource.type}\"" if new_resource.type
-
-      if new_resource.precondition
-        cmd << " /preCondition:\"#{new_resource.precondition}\""
-      end
+      cmd << " /preCondition:\"#{new_resource.precondition}\"" if new_resource.precondition
 
       shell_out!(cmd, returns: [0, 42])
-
-      Chef::Log.info("#{new_resource} added module '#{new_resource.module_name}'")
+      override_mode(node, current_resource.previous_lock, 'system.webServer/modules', new_resource.application)
     end
   else
     Chef::Log.debug("#{new_resource} module already exists - nothing to do")
@@ -83,15 +79,13 @@ end
 action :delete do
   if current_resource.type
     converge_by("delete IIS module #{new_resource.module_name}") do
+      unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} delete module /module.name:\"#{new_resource.module_name}\""
-      if new_resource.application
-        cmd << " /app.name:\"#{new_resource.application}\""
-      end
+      cmd << " /app.name:\"#{new_resource.application}\"" if new_resource.application
 
       shell_out!(cmd, returns: [0, 42])
+      override_mode(node, current_resource.previous_lock, 'system.webServer/modules', new_resource.application)
     end
-
-    Chef::Log.info("#{new_resource} deleted")
   else
     Chef::Log.debug("#{new_resource} module does not exist - nothing to do")
   end
@@ -102,14 +96,14 @@ end
 action :install do
   if !current_resource.type
     converge_by("install IIS module #{new_resource.module_name}") do
+      unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} install module /name:\"#{new_resource.module_name}\""
       cmd << " /add:\"#{new_resource.add}\"" unless new_resource.add.nil?
       cmd << " /image:\"#{new_resource.image}\"" if new_resource.image
       cmd << " /preCondition:\"#{new_resource.precondition}\"" if new_resource.precondition
 
       shell_out!(cmd, returns: [0, 42])
-
-      Chef::Log.info("#{new_resource} installed module '#{new_resource.module_name}'")
+      override_mode(node, current_resource.previous_lock, 'system.webServer/modules', new_resource.application)
     end
   else
     Chef::Log.debug("#{new_resource} module already exists - nothing to do")
@@ -121,12 +115,12 @@ end
 action :uninstall do
   if current_resource.type
     converge_by("uninstall IIS module #{new_resource.module_name}") do
+      unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} uninstall module \"#{new_resource.module_name}\""
 
       shell_out!(cmd, returns: [0, 42])
+      override_mode(node, current_resource.previous_lock, 'system.webServer/modules', new_resource.application)
     end
-
-    Chef::Log.info("#{new_resource} uninstalled module '#{new_resource.module_name}'")
   else
     Chef::Log.debug("#{new_resource} module does not exists - nothing to do")
   end

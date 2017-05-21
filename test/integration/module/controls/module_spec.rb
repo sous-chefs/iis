@@ -10,16 +10,9 @@ describe service('W3SVC') do
   its ('startmode') { should eq 'Auto' }
 end
 
-describe iis_site('Default Web Site') do
+describe iis_module('example module', 'Default Web Site/v1_1') do
   it { should exist }
-  it { should be_running }
-  it { should have_app_pool('DefaultAppPool') }
+  it { should have_name('example module') }
+  it { should have_pre_condition('managedHandler') }
+  it { should have_type('System.Web.Handlers.ScriptModule, System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35') }
 end
-
-describe iis_app('/v1_1', 'Default Web Site') do
-  it { should exist }
-  it { should have_application_pool('DefaultAppPool') }
-  it { should have_physical_path('C:\\inetpub\\wwwroot\\v1_1') }
-  it { should have_protocol('http') }
-end
-

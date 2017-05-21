@@ -31,16 +31,8 @@ iis_app 'Default Web Site' do
 end
 
 iis_module 'example module' do
-  site 'Default Web Site'
-  application_path '/v1_1'
+  application 'Default Web Site/v1_1'
   type 'System.Web.Handlers.ScriptModule, System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'
   precondition 'managedHandler'
   action :add
-end
-
-iis_module 'HttpCacheModule' do
-  site 'Default Web Site'
-  application_path '/v1_1'
-  lock_on_parent true
-  action :delete
 end
