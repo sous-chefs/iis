@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.5.3 (2017-05-17)
+- Refactor `iis_vdir` name property to `application_name`
+- Resolves a bug in iis_vdir also adds more liberty in config
+
 ## 6.5.2 (2017-05-15)
 - [Update iis_vdir name to not require a trailing /](https://github.com/chef-cookbooks/iis/pull/363)
 - [Fix iis_pool identity_type issue](https://github.com/chef-cookbooks/iis/pull/362)

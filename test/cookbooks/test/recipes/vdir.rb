@@ -30,6 +30,14 @@ directory "#{node['iis']['docroot']}\\foo" do
   recursive true
 end
 
+directory "#{node['iis']['docroot']}\\app_test" do
+  recursive true
+end
+
+directory "#{node['iis']['docroot']}\\app_test\\vdir_test2" do
+  recursive true
+end
+
 iis_pool 'DefaultAppPool' do
   pipeline_mode :Classic
   action :add
@@ -40,6 +48,14 @@ iis_site 'Default Web Site' do
   port 80
   path node['iis']['docroot'].to_s
   action [:add, :start]
+end
+
+iis_app 'Default Web Site' do
+  path '/app_test'
+  application_pool 'DefaultAppPool'
+  physical_path "#{node['iis']['docroot']}/app_test"
+  enabled_protocols 'http,net.pipe'
+  action [:add, :config]
 end
 
 iis_vdir 'Default Web Site/' do
@@ -56,5 +72,12 @@ iis_vdir 'Creating vDir /foo for Sitename' do
   application_name 'Default Web Site'
   path '/foo'
   physical_path "#{node['iis']['docroot']}\\foo"
+  action [:add, :config]
+end
+
+iis_vdir 'Creating vDir /vdir_test2 in app' do
+  application_name 'Default Web Site/app_test'
+  path '/vdir_test2'
+  physical_path "#{node['iis']['docroot']}\\app_test\\vdir_test2"
   action [:add, :config]
 end

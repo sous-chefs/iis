@@ -119,7 +119,11 @@ class VdirProvider
 
   # want to populate everything using one powershell command here and spit it out as json
   def iis_vdir(path, application_name)
-    command = "Import-Module WebAdministration; Get-WebVirtualDirectory -Site \"#{application_name}\" -Name \"#{path}\" | Select-Object path, physicalPath, userName, password, logonMethod, allowSubDirConfig, PSPath, ItemXPath | ConvertTo-Json"
+    site_app = application_name.split('/', 2)
+
+    command = "Import-Module WebAdministration; Get-WebVirtualDirectory -Site \"#{site_app[0]}\""
+    command = "#{command.dup} -Application \"#{site_app[1]}\"" if site_app.length > 1
+    command = "#{command.dup} -Name \"#{path}\" | Select-Object path, physicalPath, userName, password, logonMethod, allowSubDirConfig, PSPath, ItemXPath | ConvertTo-Json"
     cmd = @inspec.command(command)
 
     begin
