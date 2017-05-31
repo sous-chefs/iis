@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.6.0 (2017-06-01)
+- Convert `iis_module` to a custom resource
+
 ## 6.5.3 (2017-05-17)
 - Refactor `iis_vdir` name property to `application_name`
 - Resolves a bug in iis_vdir also adds more liberty in config
