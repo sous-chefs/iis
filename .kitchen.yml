@@ -26,6 +26,12 @@ suites:
   - name: app
     run_list:
       - recipe[test::app]
+  - name: module
+    run_list:
+      - recipe[test::module]
+  - name: pool
+    run_list:
+      - recipe[test::pool]
   - name: root
     run_list:
       - recipe[test::root]
@@ -35,9 +41,6 @@ suites:
   - name: site
     run_list:
       - recipe[test::site]
-  - name: pool
-    run_list:
-      - recipe[test::pool]
   - name: vdir
     run_list:
       - recipe[test::vdir]

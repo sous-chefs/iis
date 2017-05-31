@@ -32,6 +32,27 @@ module Opscode
         cmd_list_section node, :unlock, section, location, returns
       end
 
+      def override_mode(node, action, section, location = '', returns = [0])
+        cmd_list_section(node, action, section, location, returns)
+      end
+
+      def get_current_lock(node, section, location = '')
+        command_path = 'MACHINE/WEBROOT/APPHOST'
+        command_path << "/#{location}" if location
+        cmd = "#{appcmd(node)} list config \"#{command_path}}\""
+        cmd << " -section:#{section} -commit:apphost /config:* /xml"
+        result = shell_out cmd
+        if result.stderr.empty?
+          xml = result.stdout
+          doc = Document.new xml
+          value(doc.root, 'CONFIG/@overrideMode')
+        else
+          Chef::Log.info(result.stderr)
+        end
+
+        nil
+      end
+
       def cmd_section(node, check, section, location, returns)
         cmd = "#{appcmd(node)} set config \"MACHINE/WEBROOT/APPHOST/#{location}\""
         cmd << " -section:\"#{section}\" -overrideMode:#{check}"
@@ -47,21 +68,11 @@ module Opscode
       end
 
       def cmd_list_section(node, action, section, location, returns)
-        command_path = 'MACHINE/WEBROOT/APPHOST'
-        command_path << "/#{location}" if location
-        cmd = "#{appcmd(node)} list config \"#{command_path}}\""
-        cmd << " -section:#{section} -commit:apphost /config:* /xml"
-        result = shell_out cmd
-        if result.stderr.empty?
-          xml = result.stdout
-          doc = Document.new xml
-          check = action == :lock ? 'Deny' : 'Allow'
-          unless value(doc.root, 'CONFIG/@overrideMode') == check
-            cmd_section node, check, section, location, returns
-          end
-        else
-          Chef::Log.info(result.stderr)
-        end
+        current_lock = get_current_lock(node, section, location)
+        check = action if action == 'Inherit'
+        check = (action == :lock ? 'Deny' : 'Allow') if action != 'Inherit'
+
+        cmd_section node, check, section, location, returns unless current_lock == check
       end
     end
   end
