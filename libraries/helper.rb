@@ -74,9 +74,9 @@ module Opscode
       end
 
       def application_cleanname(application_name)
-        if !application_name.include?('/') && !application_name.end_with?('/')
+        if application_name.count('/') == 0
           "#{application_name}/"
-        elsif application_name.chomp('/').include?('/') && application_name.end_with?('/')
+        elsif application_name.count('/') > 1
           application_name.chomp('/')
         else
           application_name
