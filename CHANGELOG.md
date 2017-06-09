@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.7.1 (2017-06-09)
+- [Fix issue with guard clause missing on check](https://github.com/chef-cookbooks/iis/pull/378)
+
 ## 6.7.0 (2017-06-09)
 - [Fix idempotency in `iis_app`, `iis_root`, and `iis_vdir`](https://github.com/chef-cookbooks/iis/pull/375)
 
