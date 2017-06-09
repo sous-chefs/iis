@@ -33,7 +33,7 @@ default_action :add
 load_current_value do |desired|
   site_name desired.site_name
   # Sanitize physical path
-  desired.physical_path = windows_cleanpath(desired.physical_path)
+  desired.physical_path = windows_cleanpath(desired.physical_path) if desired.physical_path
   cmd = shell_out("#{appcmd(node)} list app \"#{desired.site_name}#{desired.path}\"")
   Chef::Log.debug("#{appcmd(node)} list app command output: #{cmd.stdout}")
   if cmd.stderr.empty?

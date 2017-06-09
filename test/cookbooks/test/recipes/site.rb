@@ -26,6 +26,14 @@ directory "#{node['iis']['docroot']}\\site_test2" do
   recursive true
 end
 
+iis_site 'to_be_deleted' do
+  application_pool 'DefaultAppPool'
+  path "#{node['iis']['docroot']}/site_test"
+  host_header 'localhost'
+  port 8081
+  action [:add, :start]
+end
+
 iis_site 'test' do
   application_pool 'DefaultAppPool'
   path "#{node['iis']['docroot']}/site_test"
@@ -39,4 +47,8 @@ iis_site 'test2' do
   host_header 'localhost'
   port 8080
   action [:add, :start]
+end
+
+iis_site 'to_be_deleted' do
+  action [:stop, :delete]
 end
