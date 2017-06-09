@@ -18,13 +18,25 @@
 
 include_recipe 'iis'
 
-directory "#{node['iis']['docroot']}\\test" do
+directory "#{node['iis']['docroot']}\\site_test" do
+  recursive true
+end
+
+directory "#{node['iis']['docroot']}\\site_test2" do
   recursive true
 end
 
 iis_site 'test' do
   application_pool 'DefaultAppPool'
-  path "#{node['iis']['docroot']}/test"
+  path "#{node['iis']['docroot']}/site_test"
   host_header 'localhost'
+  action [:add, :start]
+end
+
+iis_site 'test2' do
+  application_pool 'DefaultAppPool'
+  path "#{node['iis']['docroot']}/site_test2"
+  host_header 'localhost'
+  port 8080
   action [:add, :start]
 end

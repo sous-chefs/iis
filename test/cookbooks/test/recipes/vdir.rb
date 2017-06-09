@@ -81,3 +81,13 @@ iis_vdir 'Creating vDir /vdir_test2 in app' do
   physical_path "#{node['iis']['docroot']}\\app_test\\vdir_test2"
   action [:add, :config]
 end
+
+iis_vdir 'Default Web Site/' do
+  path '/vdir_test'
+  physical_path "#{node['iis']['docroot']}\\vdir_test"
+  username 'vagrant'
+  password 'vagrant'
+  logon_method :ClearText
+  allow_sub_dir_config false
+  action [:add, :config]
+end

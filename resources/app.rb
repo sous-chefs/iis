@@ -32,6 +32,8 @@ default_action :add
 
 load_current_value do |desired|
   site_name desired.site_name
+  # Sanitize physical path
+  desired.physical_path = windows_cleanpath(desired.physical_path)
   cmd = shell_out("#{appcmd(node)} list app \"#{desired.site_name}#{desired.path}\"")
   Chef::Log.debug("#{appcmd(node)} list app command output: #{cmd.stdout}")
   if cmd.stderr.empty?
@@ -49,7 +51,7 @@ load_current_value do |desired|
         path value doc.root, 'APP/application/@path'
         application_pool value doc.root, 'APP/application/@applicationPool'
         enabled_protocols value doc.root, 'APP/application/@enabledProtocols'
-        physical_path value doc.root, 'APP/application/virtualDirectory/@physicalPath'
+        physical_path windows_cleanpath(value(doc.root, 'APP/application/virtualDirectory/@physicalPath'))
       end
     else
       path ''
@@ -60,55 +62,61 @@ load_current_value do |desired|
 end
 
 action :add do
-  if current_resource.path.empty?
+  if exists
+    Chef::Log.debug("#{new_resource.inspect} app already exists - nothing to do")
+  else
     converge_by "Creating the Application - \"#{new_resource}\"" do
       cmd = "#{appcmd(node)} add app /site.name:\"#{new_resource.site_name}\""
       cmd << " /path:\"#{new_resource.path}\""
       cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
-      cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\"" if new_resource.physical_path
+      cmd << " /physicalPath:\"#{new_resource.physical_path}\"" if new_resource.physical_path
       cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
       cmd << ' /commit:\"MACHINE/WEBROOT/APPHOST\"'
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
-  else
-    Chef::Log.debug("#{new_resource.inspect} app already exists - nothing to do")
   end
 end
 
 action :config do
-  # only get the beginning of the command if there is something that changes
-  cmd = cmd_set_app
-  converge_if_changed :path do
-    # adds path to the cmd
-    cmd << " /path:\"#{new_resource.path}\"" if new_resource.path
-  end
-  converge_if_changed :application_pool do
-    # adds applicationPool to the cmd
-    cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
-  end
-  converge_if_changed :enabled_protocols do
-    # adds enabledProtocols to the cmd
-    cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
-  end
-  Chef::Log.debug(cmd)
-
-  if cmd == cmd_set_app
-    Chef::Log.debug("#{new_resource.inspect} application - nothing to do")
-  else
-    shell_out!(cmd)
-  end
-
-  converge_if_changed :physical_path do
-    cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
-    cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
+  if exists
+    # only get the beginning of the command if there is something that changes
+    cmd = cmd_set_app
+    converge_if_changed :path do
+      # adds path to the cmd
+      cmd << " /path:\"#{new_resource.path}\"" if new_resource.path
+    end
+    converge_if_changed :application_pool do
+      # adds applicationPool to the cmd
+      cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
+    end
+    converge_if_changed :enabled_protocols do
+      # adds enabledProtocols to the cmd
+      cmd << " /enabledProtocols:\"#{new_resource.enabled_protocols}\"" if new_resource.enabled_protocols
+    end
     Chef::Log.debug(cmd)
-    shell_out!(cmd)
+
+    if cmd == cmd_set_app
+      Chef::Log.debug("#{new_resource.inspect} application - nothing to do")
+    else
+      converge_by "Updating the Application - \"#{new_resource}\"" do
+        shell_out!(cmd)
+      end
+    end
+
+    converge_if_changed :physical_path do
+      cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
+      cmd << " /physicalPath:\"#{new_resource.physical_path}\""
+      Chef::Log.debug(cmd)
+      shell_out!(cmd)
+    end
+  else
+    Chef::Log.debug("#{new_resource.inspect} app needs to be added - cannot configure non-existent items")
   end
 end
 
 action :delete do
-  if !current_resource.path.empty?
+  if exists
     converge_by "Deleting the Application - \"#{new_resource}\"" do
       shell_out!("#{appcmd(node)} delete app \"#{site_identifier}\"")
       Chef::Log.info("#{new_resource} deleted")
@@ -119,6 +127,10 @@ action :delete do
 end
 
 action_class.class_eval do
+  def exists
+    !current_resource.path.empty?
+  end
+
   def cmd_set_app
     "#{appcmd(node)} set app \"#{site_identifier}\""
   end

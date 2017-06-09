@@ -34,6 +34,8 @@ default_action :add
 load_current_value do |desired|
   module_name desired.module_name
   application desired.application if desired.application
+  # Sanitize Image Path (file system path)
+  desired.image = windows_cleanpath(desired.image) if desired.image
   cmd = "#{appcmd(node)} list module /module.name:\"#{desired.module_name}\""
   cmd << " /app.name:\"#{desired.application}\"" if desired.application
 
@@ -60,7 +62,9 @@ end
 # appcmd syntax for adding modules
 # appcmd add module /name:string /type:string /preCondition:string
 action :add do
-  if !current_resource.type
+  if exists
+    Chef::Log.debug("#{new_resource} module already exists - nothing to do")
+  else
     converge_by("add IIS module #{new_resource.module_name}") do
       unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} add module /module.name:\"#{new_resource.module_name}\""
@@ -71,13 +75,11 @@ action :add do
       shell_out!(cmd, returns: [0, 42])
       override_mode(node, current_resource.previous_lock, 'system.webServer/modules', new_resource.application)
     end
-  else
-    Chef::Log.debug("#{new_resource} module already exists - nothing to do")
   end
 end
 
 action :delete do
-  if current_resource.type
+  if exists
     converge_by("delete IIS module #{new_resource.module_name}") do
       unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} delete module /module.name:\"#{new_resource.module_name}\""
@@ -94,7 +96,9 @@ end
 # appcmd syntax for installing native modules
 # appcmd install module /name:string /add:string(true|false) /image:string
 action :install do
-  if !current_resource.type
+  if exists
+    Chef::Log.debug("#{new_resource} module already exists - nothing to do")
+  else
     converge_by("install IIS module #{new_resource.module_name}") do
       unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} install module /name:\"#{new_resource.module_name}\""
@@ -105,15 +109,13 @@ action :install do
       shell_out!(cmd, returns: [0, 42])
       override_mode(node, current_resource.previous_lock, 'system.webServer/modules', new_resource.application)
     end
-  else
-    Chef::Log.debug("#{new_resource} module already exists - nothing to do")
   end
 end
 
 # appcmd syntax for uninstalling native modules
 # appcmd uninstall module <name>
 action :uninstall do
-  if current_resource.type
+  if exists
     converge_by("uninstall IIS module #{new_resource.module_name}") do
       unlock(node, 'system.webServer/modules', new_resource.application)
       cmd = "#{appcmd(node)} uninstall module \"#{new_resource.module_name}\""
@@ -123,5 +125,11 @@ action :uninstall do
     end
   else
     Chef::Log.debug("#{new_resource} module does not exists - nothing to do")
+  end
+end
+
+action_class.class_eval do
+  def exists
+    current_resource.type ? true : false
   end
 end

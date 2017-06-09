@@ -54,41 +54,35 @@ load_current_value do |desired|
 end
 
 action :config do
-  converge_by "Configured Root Config \"#{new_resource}\"" do
-    converge_if_changed :default_documents_enabled do
-      set_default_documents_enabled(new_resource.default_documents_enabled)
-    end
+  converge_if_changed :default_documents_enabled do
+    set_default_documents_enabled(new_resource.default_documents_enabled)
+  end
 
-    converge_if_changed :default_documents do
-      set_default_documents(new_resource.default_documents, current_resource.default_documents)
-    end
+  converge_if_changed :default_documents do
+    set_default_documents(new_resource.default_documents, current_resource.default_documents)
+  end
 
-    converge_if_changed :mime_maps do
-      set_mime_maps(new_resource.mime_maps, current_resource.mime_maps)
-    end
+  converge_if_changed :mime_maps do
+    set_mime_maps(new_resource.mime_maps, current_resource.mime_maps)
   end
 end
 
 action :add do
-  converge_by "Added Root Config \"#{new_resource}\"" do
-    converge_if_changed :add_default_documents do
-      set_default_documents(new_resource.add_default_documents, current_resource.add_default_documents, true, false)
-    end
+  converge_if_changed :add_default_documents do
+    set_default_documents(new_resource.add_default_documents, current_resource.add_default_documents, true, false)
+  end
 
-    converge_if_changed :add_mime_maps do
-      set_mime_maps(new_resource.add_mime_maps, current_resource.add_mime_maps, true, false)
-    end
+  converge_if_changed :add_mime_maps do
+    set_mime_maps(new_resource.add_mime_maps, current_resource.add_mime_maps, true, false)
   end
 end
 
 action :delete do
-  converge_by "Deleted Root Config \"#{new_resource}\"" do
-    converge_if_changed :delete_default_documents do
-      set_default_documents(new_resource.delete_default_documents, current_resource.delete_default_documents, false, true)
-    end
+  converge_if_changed :delete_default_documents do
+    set_default_documents(new_resource.delete_default_documents, current_resource.delete_default_documents, false, true)
+  end
 
-    converge_if_changed :delete_mime_maps do
-      set_mime_maps(new_resource.delete_mime_maps, current_resource.delete_mime_maps, false, true)
-    end
+  converge_if_changed :delete_mime_maps do
+    set_mime_maps(new_resource.delete_mime_maps, current_resource.delete_mime_maps, false, true)
   end
 end

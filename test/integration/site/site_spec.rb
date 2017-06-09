@@ -28,3 +28,10 @@ describe iis_site('test') do
   it { should be_running }
   it { should have_app_pool('DefaultAppPool') }
 end
+
+describe iis_site('test2') do
+  it { should exist }
+  it { should be_running }
+  it { should have_app_pool('DefaultAppPool') }
+  its('bindings') { should eq ['http *:8080:localhost'] }
+end

@@ -34,10 +34,12 @@ property :allow_sub_dir_config, [true, false], default: true
 default_action :add
 
 load_current_value do |desired|
-  application_name application_cleanname(desired.application_name).end_with?('/') ? application_cleanname(desired.application_name) : application_cleanname(desired.application_name) + '/'
+  # Sanitize Application Name
+  desired.application_name = application_cleanname(desired.application_name)
+  # Sanitize Physical Path
+  desired.physical_path = windows_cleanpath(desired.physical_path)
+  application_name desired.application_name
   path desired.path
-  Chef::Log.warn("application name: #{application_name}")
-  Chef::Log.warn("application name chomp: #{application_name.chomp('/')}")
   cmd = shell_out("#{appcmd(node)} list vdir \"#{application_name.chomp('/') + path}\"")
   Chef::Log.debug("#{desired} list vdir command output: #{cmd.stdout}")
 
@@ -63,11 +65,13 @@ load_current_value do |desired|
 end
 
 action :add do
-  if !@current_resource.physical_path
+  if exists
+    Chef::Log.debug("#{new_resource} virtual directory already exists - nothing to do")
+  else
     converge_by "Created the VDIR - \"#{new_resource}\"" do
       cmd = "#{appcmd(node)} add vdir /app.name:\"#{vdir_identifier}\""
       cmd << " /path:\"#{new_resource.path}\""
-      cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
+      cmd << " /physicalPath:\"#{new_resource.physical_path}\""
       cmd << " /userName:\"#{new_resource.username}\"" if new_resource.username
       cmd << " /password:\"#{new_resource.password}\"" if new_resource.password
       cmd << " /logonMethod:#{new_resource.logon_method}" if new_resource.logon_method
@@ -77,45 +81,45 @@ action :add do
       Chef::Log.debug(cmd)
       shell_out!(cmd, returns: [0, 42, 183])
     end
-  else
-    Chef::Log.debug("#{new_resource} virtual directory already exists - nothing to do")
   end
 end
 
 action :config do
-  if current_resource.physical_path
-    converge_by "Configured the VDIR - \"#{new_resource}\"" do
-      cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\""
-      converge_if_changed :physical_path do
-        cmd << " /physicalPath:\"#{windows_cleanpath(new_resource.physical_path)}\""
-      end
+  if exists
+    cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\""
+    converge_if_changed :physical_path do
+      cmd << " /physicalPath:\"#{new_resource.physical_path}\""
+    end
 
-      converge_if_changed :username do
-        cmd << " /userName:\"#{new_resource.username}\""
-      end
+    converge_if_changed :username do
+      cmd << " /userName:\"#{new_resource.username}\""
+    end
 
-      converge_if_changed :password do
-        cmd << " /password:\"#{new_resource.password}\""
-      end
+    converge_if_changed :password do
+      cmd << " /password:\"#{new_resource.password}\""
+    end
 
-      converge_if_changed :logon_method do
-        cmd << " /logonMethod:#{new_resource.logon_method}"
-      end
+    converge_if_changed :logon_method do
+      cmd << " /logonMethod:#{new_resource.logon_method}"
+    end
 
-      converge_if_changed :allow_sub_dir_config do
-        cmd << " /allowSubDirConfig:#{new_resource.allow_sub_dir_config}"
-      end
+    converge_if_changed :allow_sub_dir_config do
+      cmd << " /allowSubDirConfig:#{new_resource.allow_sub_dir_config}"
+    end
 
-      if cmd != "#{appcmd(node)} set vdir \"#{application_identifier}\""
+    if cmd != "#{appcmd(node)} set vdir \"#{application_identifier}\""
+      converge_by "Updated the VDIR - \"#{new_resource}\"" do
         Chef::Log.debug(cmd)
         shell_out!(cmd)
       end
+    else
+      Chef::Log.debug("#{new_resource} virtual directory - nothing changed")
     end
   end
 end
 
 action :delete do
-  if current_resource.physical_path
+  if exists
     converge_by "Deleted the VDIR - \"#{new_resource}\"" do
       Chef::Log.debug("#{appcmd(node)} delete vdir \"#{application_identifier}\"")
       shell_out!("#{appcmd(node)} delete vdir \"#{application_identifier}\"", returns: [0, 42])
@@ -126,6 +130,10 @@ action :delete do
 end
 
 action_class.class_eval do
+  def exists
+    current_resource.physical_path ? true : false
+  end
+
   def application_identifier
     new_resource.path.start_with?('/') ? vdir_identifier.chomp('/') + new_resource.path : vdir_identifier + new_resource.path
   end
