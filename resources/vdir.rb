@@ -37,7 +37,7 @@ load_current_value do |desired|
   # Sanitize Application Name
   desired.application_name = application_cleanname(desired.application_name)
   # Sanitize Physical Path
-  desired.physical_path = windows_cleanpath(desired.physical_path)
+  desired.physical_path = windows_cleanpath(desired.physical_path) if desired.physical_path
   application_name desired.application_name
   path desired.path
   cmd = shell_out("#{appcmd(node)} list vdir \"#{application_name.chomp('/') + path}\"")

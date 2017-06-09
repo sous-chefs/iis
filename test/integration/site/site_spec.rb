@@ -35,3 +35,8 @@ describe iis_site('test2') do
   it { should have_app_pool('DefaultAppPool') }
   its('bindings') { should eq ['http *:8080:localhost'] }
 end
+
+describe iis_site('to_be_deleted') do
+  it { should_not exist }
+  it { should_not be_running }
+end

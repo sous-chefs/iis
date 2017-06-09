@@ -42,8 +42,8 @@ default_action :add
 load_current_value do |desired|
   site_name desired.site_name
   # Sanitize windows file system path
-  desired.path = windows_cleanpath(desired.path)
-  desired.log_directory = windows_cleanpath(desired.log_directory)
+  desired.path = windows_cleanpath(desired.path) if desired.path
+  desired.log_directory = windows_cleanpath(desired.log_directory) if desired.log_directory
   cmd = shell_out "#{appcmd(node)} list site \"#{site_name}\""
   Chef::Log.debug(appcmd(node))
   # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
