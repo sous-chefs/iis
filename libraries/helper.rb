@@ -92,7 +92,9 @@ module Opscode
       end
 
       def new_value?(document, xpath, value_to_check)
-        XPath.first(document, xpath).to_s != value_to_check.to_s
+        old_value = XPath.first(document, xpath)
+        return old_value.value != value_to_check.to_s unless old_value.nil?
+        '' != value_to_check.to_s
       end
 
       def new_or_empty_value?(document, xpath, value_to_check)
