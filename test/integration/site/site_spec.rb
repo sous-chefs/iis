@@ -44,5 +44,5 @@ end
 describe iis_site('myftpsite') do
   it { should exist }
   it { should be_running }
-  its('bindings') { should eq ['ftp *:21:localhost']}
+  its('bindings') { should eq ['ftp *:21:*']}
 end

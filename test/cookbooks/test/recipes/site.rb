@@ -17,6 +17,7 @@
 # limitations under the License.
 
 include_recipe 'iis'
+include_recipe 'iis::mod_ftp'
 
 directory "#{node['iis']['docroot']}\\site_test" do
   recursive true
