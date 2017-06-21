@@ -125,10 +125,9 @@ Allows for easy management of IIS virtual sites (ie vhosts).
 - `protocol` - http protocol type the site should respond to. valid values are :http, :https. default is :http
 - `port` - port site will listen on. default is 80
 - `host_header` - host header (also known as domains or host names) the site should map to. default is all host headers
-- `options` - additional options to configure the site
 - `bindings` - Advanced options to configure the information required for requests to communicate with a Web site. See <http://www.iis.net/configreference/system.applicationhost/sites/site/bindings/binding> for parameter format. When binding is used, port protocol and host_header should not be used.
 - `application_pool` - set the application pool of the site
-- `options` - support for additional options -logDir, -limits, -ftpServer, etc...
+- `options` - additional options to configure the site.  Such as `"-logDir"`, `"-limits"`, `"-ftpServer"`, `"-applicationDefaults.preloadEnabled:True"`. This can be anything that you would normally add to a appcmd, so if you want to find out the possible values google "appcmd iis site <enter thing you want>".  This only runs during `add` since it isn't idempotent.
 - `log_directory` - specifies the logging directory, where the log file and logging-related support files are stored.
 - `log_period` - specifies how often iis creates a new log file
 - `log_truncsize` - specifies the maximum size of the log file (in bytes) after which to create a new log file.
@@ -194,6 +193,18 @@ iis_site 'FooBar Site' do
   bindings "http/10.12.0.136:80:www.domain.com,https/*:443:www.domain.com
   path "#{node['iis']['docroot']}/testfu"
   action [:add,:start]
+end
+```
+
+```ruby
+# create a site with preloadEnabled enabled
+iis_site 'mysite.com' do
+  protocol :http
+  port 80
+  path "#{node['iis']['docroot']}\dataverify"
+  application_pool 'dataverify.com'
+  options "-applicationDefaults.preloadEnabled:True"
+  action [:add, :start, :config]
 end
 ```
 
