@@ -26,6 +26,10 @@ directory "#{node['iis']['docroot']}\\site_test2" do
   recursive true
 end
 
+directory "#{node['iis']['docroot']}\\ftp_site_test" do
+  recursive true
+end
+
 iis_site 'to_be_deleted' do
   application_pool 'DefaultAppPool'
   path "#{node['iis']['docroot']}/site_test"
@@ -51,4 +55,11 @@ end
 
 iis_site 'to_be_deleted' do
   action [:stop, :delete]
+end
+
+iis_site 'myftpsite' do
+  path "#{node['iis']['docroot']}\\ftp_site_test"
+  application_pool 'DefaultAppPool'
+  bindings 'ftp/*:21:*'
+  action [:add, :config]
 end

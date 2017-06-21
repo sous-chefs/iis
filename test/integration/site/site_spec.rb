@@ -40,3 +40,9 @@ describe iis_site('to_be_deleted') do
   it { should_not exist }
   it { should_not be_running }
 end
+
+describe iis_site('myftpsite') do
+  it { should exist }
+  it { should be_running }
+  its('bindings') { should eq ['ftp *:21:localhost']}
+end
