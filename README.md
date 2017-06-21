@@ -576,6 +576,7 @@ This cookbook also contains recipes for installing individual IIS modules (exten
 - `mod_auth_windows` - installs Windows Authentication (authenticate clients by using NTLM or Kerberos) support
 - `mod_compress_dynamic` - installs dynamic content compression support. _PLEASE NOTE_ - enabling dynamic compression always gives you more efficient use of bandwidth, but if your server's processor utilization is already very high, the CPU load imposed by dynamic compression might make your site perform more slowly.
 - `mod_compress_static` - installs static content compression support
+- `mod_ftp` - installs FTP service
 - `mod_iis6_metabase_compat` - installs IIS 6 Metabase Compatibility component.
 - `mod_isapi` - installs ISAPI (Internet Server Application Programming Interface) extension and filter support.
 - `mod_logging` - installs and enables HTTP Logging (logging of Web site activity), Logging Tools (logging tools and scripts) and Custom Logging (log any of the HTTP request/response headers, IIS server variables, and client-side fields with simple configuration) support

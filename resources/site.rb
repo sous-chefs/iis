@@ -27,7 +27,7 @@ property    :site_name, String, name_property: true
 property    :site_id, Integer
 property    :port, Integer, default: 80, coerce: proc { |v| v.to_i }
 property    :path, String
-property    :protocol, [Symbol, String], equal_to: [:http, :https], default: :http, coerce: proc { |v| v.to_sym }
+property    :protocol, [Symbol, String], equal_to: [:http, :https, :ftp], default: :http, coerce: proc { |v| v.to_sym }
 property    :host_header, String
 property    :bindings, String
 property    :application_pool, String

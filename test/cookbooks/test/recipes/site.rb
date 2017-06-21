@@ -17,12 +17,17 @@
 # limitations under the License.
 
 include_recipe 'iis'
+include_recipe 'iis::mod_ftp'
 
 directory "#{node['iis']['docroot']}\\site_test" do
   recursive true
 end
 
 directory "#{node['iis']['docroot']}\\site_test2" do
+  recursive true
+end
+
+directory "#{node['iis']['docroot']}\\ftp_site_test" do
   recursive true
 end
 
@@ -51,4 +56,11 @@ end
 
 iis_site 'to_be_deleted' do
   action [:stop, :delete]
+end
+
+iis_site 'myftpsite' do
+  path "#{node['iis']['docroot']}\\ftp_site_test"
+  application_pool 'DefaultAppPool'
+  bindings 'ftp/*:21:*'
+  action [:add, :config]
 end
