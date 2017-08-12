@@ -21,7 +21,13 @@
 include_recipe 'iis'
 
 features = if Opscode::IIS::Helper.older_than_windows2008r2?
-             %w(Web-Mgmt-Console Web-Mgmt-Service)
+             if Opscode::IIS::Helper.core?
+               %w(Web-Mgmt-Service)
+             else
+               %w(Web-Mgmt-Console Web-Mgmt-Service)
+             end
+           elsif Opscode::IIS::Helper.core?
+             %w(IIS-ManagementService)
            else
              %w(IIS-ManagementConsole IIS-ManagementService)
            end
