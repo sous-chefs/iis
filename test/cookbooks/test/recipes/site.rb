@@ -46,6 +46,10 @@ iis_site 'test' do
   action [:add, :start]
 end
 
+iis_site 'to_be_deleted' do
+  action [:restart]
+end
+
 iis_site 'test2' do
   application_pool 'DefaultAppPool'
   path "#{node['iis']['docroot']}/site_test2"
