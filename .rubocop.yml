@@ -9,4 +9,4 @@ Style/GuardClause:
 Style/PredicateName:
   Exclude:
     - 'spec/**/*'
-    - 'test/integration/**/*
+    - 'test/integration/**/*'
