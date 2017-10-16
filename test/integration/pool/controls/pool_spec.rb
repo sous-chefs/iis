@@ -26,7 +26,7 @@ describe iis_pool('testapppool') do
   it { should have_name('testapppool') }
   its('start_mode') { should eq 'OnDemand' }
   its('identity_type') { should eq 'SpecificUser' }
-  its('recycle_at_time') { should eq ['06:00:00', '14:00:00', '17:00:00'] }
+  its('periodic_restart_schedule') { should eq ['06:00:00', '14:00:00', '17:00:00'] }
   its('username') { should include('\\vagrant') }
   its('password') { should eq 'vagrant' }
 end
