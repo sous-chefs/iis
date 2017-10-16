@@ -57,7 +57,7 @@ property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
 property :log_event_on_recycle, String, default: node['iis']['recycle']['log_events']
 property :recycle_after_time, String
-property :recycle_at_time, String
+property :recycle_at_time, [Array, String], default: [], coerce: proc { |v| [*v].sort }
 property :private_memory, Integer, coerce: proc { |v| v.to_i }
 property :virtual_memory, Integer, coerce: proc { |v| v.to_i }
 
@@ -144,7 +144,7 @@ load_current_value do |desired|
     disallow_overlapping_rotation bool(value(doc.root, 'APPPOOL/add/recycling/@disallowOverlappingRotation'))
     disallow_rotation_on_config_change bool(value(doc.root, 'APPPOOL/add/recycling/@disallowRotationOnConfigChange'))
     recycle_after_time value doc.root, 'APPPOOL/add/recycling/periodicRestart/@time'
-    recycle_at_time value doc.root, "APPPOOL/add/recycling/periodicRestart/schedule/add[@value='#{desired.recycle_at_time}']/@value"
+    recycle_at_time get_value(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add/@value').map(&:value)
     private_memory value(doc.root, 'APPPOOL/add/recycling/periodicRestart/@privateMemory').to_i
     virtual_memory value(doc.root, 'APPPOOL/add/recycling/periodicRestart/@memory').to_i
     log_event_on_recycle value doc.root, 'APPPOOL/add/recycling/@logEventOnRecycle'
@@ -323,26 +323,22 @@ action_class.class_eval do
       cmd << configure_application_pool("processModel.pingResponseTime:#{new_resource.ping_response_time}")
     end
 
-    should_clear_apppool_schedules = ((new_resource.recycle_at_time != current_resource.recycle_at_time) && !@node_array.nil? && !@node_array.empty?) || (new_resource.recycle_schedule_clear && !@node_array.nil? && !@node_array.empty?)
+    converge_if_changed :recycle_at_time do
+      # Remove the values that are no longer required
+      ([*current_resource.recycle_at_time] - [*new_resource.recycle_at_time]).each do |periodic_restart|
+        cmd << configure_application_pool("recycling.periodicRestart.schedule.[value='#{periodic_restart}']", '-')
+      end
 
-    # recycling items
-    ## Special case this collection removal for now.
-    # TODO: test if this is needed
-    # is_new_recycle_at_time = true
-    if !current_resource.runtime_version && should_clear_apppool_schedules
-      converge_by "Cleared Periodic Restart Schedule #{new_resource} - #{should_clear_apppool_schedules}" do
-        clear_pool_schedule_cmd = "#{appcmd(node)} set config /section:applicationPools \"/-[name='#{new_resource.name}'].recycling.periodicRestart.schedule\""
-        Chef::Log.debug(clear_pool_schedule_cmd)
-        shell_out!(clear_pool_schedule_cmd)
+      # Add the new values
+      ([*new_resource.recycle_at_time] - [*current_resource.recycle_at_time]).each do |periodic_restart|
+        cmd << configure_application_pool("recycling.periodicRestart.schedule.[value='#{periodic_restart}']", '+')
       end
     end
 
     converge_if_changed :recycle_after_time do
       cmd << configure_application_pool("recycling.periodicRestart.time:#{new_resource.recycle_after_time}")
     end
-    converge_if_changed :recycle_at_time do
-      cmd << configure_application_pool("recycling.periodicRestart.schedule.[value='#{new_resource.recycle_at_time}']", '+')
-    end
+
     converge_if_changed :log_event_on_recycle do
       cmd << configure_application_pool("recycling.logEventOnRecycle:#{new_resource.log_event_on_recycle}")
     end

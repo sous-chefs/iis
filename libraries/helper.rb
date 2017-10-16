@@ -87,6 +87,10 @@ module Opscode
         XPath.first(document, xpath).to_s
       end
 
+      def get_value(document, xpath)
+        XPath.match(document, xpath)
+      end
+
       def bool(value)
         value == 'true'
       end

@@ -40,6 +40,7 @@ iis_pool 'testapppool' do
   pipeline_mode :Integrated
   start_mode :OnDemand
   identity_type :SpecificUser
+  recycle_at_time ['06:00:00', '14:00:00', '17:00:00']
   username "#{node['hostname']}\\vagrant"
   password 'vagrant'
   action [:add, :config]
