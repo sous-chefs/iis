@@ -83,6 +83,9 @@ property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce
 # internally used for the state of the pool [Starting, Started, Stopping, Stopped, Unknown, Undefined value]
 property :running, [true, false], desired_state: true
 
+# Alias property until the next major release
+alias_method :recycle_at_time, :periodic_restart_schedule
+
 default_action :add
 
 load_current_value do |desired|
