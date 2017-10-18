@@ -57,7 +57,7 @@ property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
 property :log_event_on_recycle, String, default: node['iis']['recycle']['log_events']
 property :recycle_after_time, String
-property :recycle_at_time, [Array, String], default: [], coerce: proc { |v| [*v].sort }
+property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| [*v].sort }
 property :private_memory, Integer, coerce: proc { |v| v.to_i }
 property :virtual_memory, Integer, coerce: proc { |v| v.to_i }
 
@@ -82,6 +82,9 @@ property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce
 
 # internally used for the state of the pool [Starting, Started, Stopping, Stopped, Unknown, Undefined value]
 property :running, [true, false], desired_state: true
+
+# Alias property until the next major release
+alias_method :recycle_at_time, :periodic_restart_schedule
 
 default_action :add
 
@@ -144,7 +147,7 @@ load_current_value do |desired|
     disallow_overlapping_rotation bool(value(doc.root, 'APPPOOL/add/recycling/@disallowOverlappingRotation'))
     disallow_rotation_on_config_change bool(value(doc.root, 'APPPOOL/add/recycling/@disallowRotationOnConfigChange'))
     recycle_after_time value doc.root, 'APPPOOL/add/recycling/periodicRestart/@time'
-    recycle_at_time get_value(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add/@value').map(&:value)
+    periodic_restart_schedule get_value(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add/@value').map(&:value)
     private_memory value(doc.root, 'APPPOOL/add/recycling/periodicRestart/@privateMemory').to_i
     virtual_memory value(doc.root, 'APPPOOL/add/recycling/periodicRestart/@memory').to_i
     log_event_on_recycle value doc.root, 'APPPOOL/add/recycling/@logEventOnRecycle'
@@ -323,14 +326,14 @@ action_class.class_eval do
       cmd << configure_application_pool("processModel.pingResponseTime:#{new_resource.ping_response_time}")
     end
 
-    converge_if_changed :recycle_at_time do
+    converge_if_changed :periodic_restart_schedule do
       # Remove the values that are no longer required
-      ([*current_resource.recycle_at_time] - [*new_resource.recycle_at_time]).each do |periodic_restart|
+      ([*current_resource.periodic_restart_schedule] - [*new_resource.periodic_restart_schedule]).each do |periodic_restart|
         cmd << configure_application_pool("recycling.periodicRestart.schedule.[value='#{periodic_restart}']", '-')
       end
 
       # Add the new values
-      ([*new_resource.recycle_at_time] - [*current_resource.recycle_at_time]).each do |periodic_restart|
+      ([*new_resource.periodic_restart_schedule] - [*current_resource.periodic_restart_schedule]).each do |periodic_restart|
         cmd << configure_application_pool("recycling.periodicRestart.schedule.[value='#{periodic_restart}']", '+')
       end
     end

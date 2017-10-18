@@ -97,7 +97,7 @@ class IisPool < Inspec.resource(1)
     iis_pool[:process_model][:password]
   end
 
-  def recycle_at_time
+  def periodic_restart_schedule
     iis_pool[:recycling][:periodic_restart][:schedule]
   end
 
