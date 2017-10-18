@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.8.0 (2017-10-18)
+
+- [Adds `periodic_restart_schedule` the ability to define multiple recycle times on an app pool](https://github.com/chef-cookbooks/iis/pull/397)
+
 ## 6.7.3 (2017-09-08)
 
 - Add better documentation for the options parameter (#383)
