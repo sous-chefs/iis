@@ -46,3 +46,13 @@ describe iis_site('myftpsite') do
   it { should be_running }
   its('bindings') { should eq ['ftp *:21:*'] }
 end
+
+describe iis_site('mytest') do
+  it { should exist }
+  it { should be_running }
+  its('bindings') { should eq ['http *:8090:localhost'] }
+end
+
+describe port(8090) do
+  it { should be_listening }
+end
