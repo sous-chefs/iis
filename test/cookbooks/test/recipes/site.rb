@@ -77,7 +77,7 @@ iis_site 'MyTest' do
   protocol :http
   port 8080
   path "#{node['iis']['docroot']}\\mytest"
-  action [:add,:start]
+  action [:add, :start]
 end
 
 iis_app 'MyTest' do
@@ -87,7 +87,6 @@ iis_app 'MyTest' do
   enabled_protocols 'http'
   action :add
 end
-
 
 iis_site 'MyTest' do
   protocol :http

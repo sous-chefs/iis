@@ -44,6 +44,7 @@ load_current_value do |desired|
   # Sanitize windows file system path
   desired.path = windows_cleanpath(desired.path) if desired.path
   desired.log_directory = windows_cleanpath(desired.log_directory) if desired.log_directory
+  desired.port = desired.port.to_i if desired.port
   cmd = shell_out "#{appcmd(node)} list site \"#{site_name}\""
   Chef::Log.debug(appcmd(node))
   # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
@@ -61,7 +62,7 @@ load_current_value do |desired|
     end
 
     if site_id
-      values = "#{bindings},".match(%r{(?<protocol>[^\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),})
+      values = "#{bindings},".match(%r{(?<protocol>[^\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),?})
       # get current values
       cmd = "#{appcmd(node)} list site \"#{site_name}\" /config:* /xml"
       Chef::Log.debug(cmd)
@@ -83,12 +84,6 @@ load_current_value do |desired|
       end
     else
       running false
-    end
-
-    if values
-      protocol values[:protocol]
-      port values[:port].to_i
-      host_header values[:host_header]
     end
   else
     Chef::Log.warn "Failed to run iis_site action :config, #{cmd.stderr}"
@@ -183,7 +178,7 @@ action_class.class_eval do
         shell_out!(cmd)
       end
     elsif new_resource.port || new_resource.host_header || new_resource.protocol
-      converge_if_changed :bindings, :host_header, :protocol do
+      converge_if_changed :host_header, :protocol, :port do
         cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
         cmd << " /bindings:#{new_resource.protocol}/*:#{new_resource.port}:#{new_resource.host_header}"
         Chef::Log.debug(cmd)

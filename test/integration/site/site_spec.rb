@@ -50,7 +50,7 @@ end
 describe iis_site('mytest') do
   it { should exist }
   it { should be_running }
-  its('bindings') { should eq ['http *:8090:localhost'] }
+  its('bindings') { should eq ['http *:8090:'] }
 end
 
 describe port(8090) do
