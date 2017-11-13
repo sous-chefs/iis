@@ -2,16 +2,29 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 6.8.0 (2017-10-18)
+
+- [Adds `periodic_restart_schedule` the ability to define multiple recycle times on an app pool](https://github.com/chef-cookbooks/iis/pull/397)
+
+## 6.7.3 (2017-09-08)
+
+- Add better documentation for the options parameter (#383)
+- Resolve a Chef 14 deprecation warning
+
 ## 6.7.2 (2017-06-21)
+
 - Fix FTP issue with iis_site resource
 
 ## 6.7.1 (2017-06-09)
+
 - [Fix issue with guard clause missing on check](https://github.com/chef-cookbooks/iis/pull/378)
 
 ## 6.7.0 (2017-06-09)
+
 - [Fix idempotency in `iis_app`, `iis_root`, and `iis_vdir`](https://github.com/chef-cookbooks/iis/pull/375)
 
 ## 6.6.0 (2017-06-01)
+
 - Convert `iis_module` to a custom resource
 
 ## 6.5.3 (2017-05-17)
