@@ -163,7 +163,7 @@ end
 
 action :restart do
   converge_by "Restarted the Site - \"#{new_resource}\"" do
-    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42]) if running
+    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42]) if current_resource.running
     sleep 2
     shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
   end

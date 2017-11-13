@@ -330,7 +330,7 @@ Creates an application pool in IIS.
 - `log_event_on_recycle` - configure IIS to log an event when one or more of the following configured events cause an application pool to recycle (for additional information about [logging events] (<https://technet.microsoft.com/en-us/library/cc771318%28v=ws.10%29.aspx>). - default is 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory' - optional
 - `recycle_schedule_clear` - specifies a pool to clear all scheduled recycle times, [true,false] Default is false - optional
 - `recycle_after_time` - specifies a pool to recycle at regular time intervals, d.hh:mm:ss, d optional
-- `recycle_at_time` - schedule a pool to recycle at a specific time, d.hh:mm:ss, d optional
+- `periodic_restart_schedule` - schedule a pool to recycle at specific times. Single value or array accepted. `hh:mm:ss` or `['hh:mm:ss','hh:mm:ss']`, optional
 - `private_memory` - specifies the amount of private memory (in kilobytes) after which you want the pool to recycle
 - `virtual_memory` - specifies the amount of virtual memory (in kilobytes) after which you want the pool to recycle
 

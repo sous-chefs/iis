@@ -97,6 +97,10 @@ class IisPool < Inspec.resource(1)
     iis_pool[:process_model][:password]
   end
 
+  def periodic_restart_schedule
+    iis_pool[:recycling][:periodic_restart][:schedule]
+  end
+
   def exists?
     !iis_pool.nil? && !iis_pool[:name].nil?
   end
