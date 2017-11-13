@@ -35,6 +35,10 @@ module Opscode
       include REXML
       include Windows::Helper
 
+      def self.core?
+        RUBY_PLATFORM =~ /mswin|mingw32|windows/ && win_version.core?
+      end
+
       def self.older_than_windows2008r2?
         if RUBY_PLATFORM =~ /mswin|mingw32|windows/
           win_version = Chef::ReservedNames::Win32::Version.new
