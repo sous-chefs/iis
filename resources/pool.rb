@@ -40,7 +40,7 @@ property :max_processes, Integer, coerce: proc { |v| v.to_i }
 property :load_user_profile, [true, false], default: false
 property :identity_type, [Symbol, String], equal_to: [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity], default: :ApplicationPoolIdentity, coerce: proc { |v| v.to_sym }
 property :username, String
-property :password, String
+property :password, String, sensitive: true
 property :logon_type, [Symbol, String], equal_to: [:LogonBatch, :LogonService], default: :LogonBatch, coerce: proc { |v| v.to_sym }
 property :manual_group_membership, [true, false], default: false
 property :idle_timeout, String, default: '00:20:00'
