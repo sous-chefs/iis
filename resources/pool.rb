@@ -24,7 +24,6 @@ include Opscode::IIS::Helper
 include Opscode::IIS::Processors
 
 # root
-property :pool_name, String, name_property: true
 property :no_managed_code, [true, false], default: false
 property :pipeline_mode, [Symbol, String], equal_to: [:Integrated, :Classic], coerce: proc { |v| v.to_sym }
 property :runtime_version, String
