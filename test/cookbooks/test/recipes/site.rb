@@ -68,3 +68,29 @@ iis_site 'myftpsite' do
   bindings 'ftp/*:21:*'
   action [:add, :config]
 end
+
+directory "#{node['iis']['docroot']}\\mytest" do
+  action :create
+end
+
+iis_site 'MyTest' do
+  protocol :http
+  port 8080
+  path "#{node['iis']['docroot']}\\mytest"
+  action [:add, :start]
+end
+
+iis_app 'MyTest' do
+  path '/testpool'
+  application_pool 'Test AppPool'
+  physical_path "#{node['iis']['docroot']}\\mytest"
+  enabled_protocols 'http'
+  action :add
+end
+
+iis_site 'MyTest' do
+  protocol :http
+  port 8090
+  path "#{node['iis']['docroot']}\\mytest"
+  action :config
+end
