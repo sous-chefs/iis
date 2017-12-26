@@ -21,6 +21,10 @@
 include_recipe 'iis'
 include_recipe 'iis::mod_isapi'
 
+ohai 'reload' do
+  action :nothing
+end
+
 features = if Opscode::IIS::Helper.older_than_windows2008r2?
              %w(NET-Framework)
            else
@@ -30,5 +34,6 @@ features = if Opscode::IIS::Helper.older_than_windows2008r2?
 features.each do |feature|
   windows_feature feature do
     action :install
+    notifies :reload, 'ohai[reload]', :immediately
   end
 end
