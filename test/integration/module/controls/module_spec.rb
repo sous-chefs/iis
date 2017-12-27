@@ -16,3 +16,15 @@ describe iis_module('example module', 'Default Web Site/v1_1') do
   it { should have_pre_condition('managedHandler') }
   it { should have_type('System.Web.Handlers.ScriptModule, System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35') }
 end
+
+describe iis_module('F5XFFHttpModule-x64') do
+  it { should exist }
+  it { should have_name('F5XFFHttpModule-x64') }
+  it { should have_pre_condition('bitness64') }
+end
+
+describe iis_module('F5XFFHttpModule-x86') do
+  it { should exist }
+  it { should have_name('F5XFFHttpModule-x86') }
+  it { should have_pre_condition('bitness32') }
+end
