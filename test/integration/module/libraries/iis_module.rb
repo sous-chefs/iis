@@ -21,7 +21,7 @@ class IisModule < Inspec.resource(1)
     end
   "
 
-  def initialize(module_name, application)
+  def initialize(module_name, application = nil)
     @module_name = module_name
     @application = application
     @cache = nil
@@ -78,8 +78,13 @@ class ModuleProvider
   end
 
   # want to populate everything using one powershell command here and spit it out as json
-  def iis_module(module_name, application)
-    command = "Import-Module WebAdministration; Get-WebManagedModule -Name '#{module_name}' -PSPath 'IIS:\\sites\\#{application}' | Select-Object name, type, preCondition | ConvertTo-Json"
+  def iis_module(module_name, application = nil)
+    command = if application.nil?
+                "Import-Module WebAdministration; Get-WebGlobalModule -Name '#{module_name}' | Select-Object name, type, preCondition | ConvertTo-Json"
+              else
+                "Import-Module WebAdministration; Get-WebManagedModule -Name '#{module_name}' -PSPath 'IIS:\\sites\\#{application}' | Select-Object name, type, preCondition | ConvertTo-Json"
+              end
+
     cmd = @inspec.command(command)
 
     begin

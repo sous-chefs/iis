@@ -36,3 +36,34 @@ iis_module 'example module' do
   precondition 'managedHandler'
   action :add
 end
+
+f5xff_module_path = 'C:/httpmodules/F5XFF'
+
+directory f5xff_module_path do
+  recursive true
+  action :create
+end
+
+cookbook_file ::File.join(f5xff_module_path, 'F5XFFHttpModule-x64.dll') do
+  source 'F5XFFHttpModule/x64/F5XFFHttpModule.dll'
+  action :create
+end
+
+cookbook_file ::File.join(f5xff_module_path, 'F5XFFHttpModule-x86.dll') do
+  source 'F5XFFHttpModule/x86/F5XFFHttpModule.dll'
+  action :create
+end
+
+iis_module 'F5XFFHttpModule-x64' do
+  module_name 'F5XFFHttpModule-x64'
+  precondition 'bitness64'
+  image ::File.join(f5xff_module_path, 'F5XFFHttpModule-x64.dll')
+  action [:install, :add]
+end
+
+iis_module 'F5XFFHttpModule-x86' do
+  module_name 'F5XFFHttpModule-x86'
+  precondition 'bitness32'
+  image ::File.join(f5xff_module_path, 'F5XFFHttpModule-x86.dll')
+  action [:install, :add]
+end
