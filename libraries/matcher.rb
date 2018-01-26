@@ -7,6 +7,13 @@ if defined?(ChefSpec)
                    )
   end
 
+  [:set, :add, :remove].each do |action|
+    self.class.send(:define_method, "#{action}_iis_config_property", proc do |config_name|
+      ChefSpec::Matchers::ResourceMatcher.new(:iis_config_property, action, config_name)
+    end
+                   )
+  end
+
   [:config, :add, :delete].each do |action|
     self.class.send(:define_method, "#{action}_iis_app", proc do |app_name|
       ChefSpec::Matchers::ResourceMatcher.new(:iis_app, action, app_name)
@@ -64,6 +71,7 @@ if defined?(ChefSpec)
 
   define_method.call :iis_app
   define_method.call :iis_config
+  define_method.call :iis_config_property
   define_method.call :iis_lock
   define_method.call :iis_module
   define_method.call :iis_pool
