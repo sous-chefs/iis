@@ -28,7 +28,7 @@ end
 # now create and start the site (note this will use the default application pool which must exist)
 iis_site 'MySite' do
   protocol :http
-  port 80
+  port 8080
   path "#{node['iis']['docroot']}/MySite"
   action [:add, :start]
 end
