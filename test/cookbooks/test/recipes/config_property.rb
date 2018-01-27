@@ -21,15 +21,15 @@ include_recipe 'iis'
 # create and start a new site that maps to
 # the physical location C:\inetpub\wwwroot\testfu
 # first the physical location must exist
-directory "#{node['iis']['docroot']}/MySite" do
+directory "#{node['iis']['docroot']}/ConfigSite" do
   action :create
 end
 
 # now create and start the site (note this will use the default application pool which must exist)
-iis_site 'MySite' do
+iis_site 'ConfigSite' do
   protocol :http
   port 8080
-  path "#{node['iis']['docroot']}/MySite"
+  path "#{node['iis']['docroot']}/ConfigSite"
   action [:add, :start]
 end
 
@@ -40,9 +40,9 @@ iis_config_property 'directory' do
   value     'D:\\logs'
 end
 
-# Increase file upload size for 'MySite'
+# Increase file upload size for 'ConfigSite'
 iis_config_property 'maxAllowedContentLength' do
-  ps_path   'MACHINE/WEBROOT/APPHOST/MySite'
+  ps_path   'MACHINE/WEBROOT/APPHOST/ConfigSite'
   filter    'system.webServer/security/requestFiltering/requestLimits'
   value     50_000_000
 end

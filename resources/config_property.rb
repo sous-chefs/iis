@@ -37,7 +37,7 @@ action :set do
                       "\"#{new_resource.value}\""
                     end
   powershell_script "Set #{new_resource.ps_path}#{new_resource.location}\
-    /#{escaped_filter}/#{new_resource.property}" do
+/#{escaped_filter}/#{new_resource.property}" do
     code <<-EOH
     Set-WebConfigurationProperty -pspath "#{new_resource.ps_path}" \
     #{location_param} -filter "#{escaped_filter}" \
@@ -61,7 +61,7 @@ action :add do
   escaped_filter = new_resource.filter.gsub('{', '{{').gsub('}', '}}')
 
   powershell_script "Set #{new_resource.ps_path}#{new_resource.location}\
-    /#{escaped_filter}/#{new_resource.property}" do
+/#{escaped_filter}/#{new_resource.property}" do
     code <<-EOH
     Add-WebConfigurationProperty -pspath "#{new_resource.ps_path}" \
     #{location_param} -filter "#{escaped_filter}" \
@@ -85,7 +85,7 @@ action :remove do
   escaped_filter = filter.gsub('{', '{{').gsub('}', '}}')
 
   powershell_script "Set #{new_resource.ps_path}#{new_resource.location}\
-    /#{escaped_filter}/#{new_resource.property}" do
+/#{escaped_filter}/#{new_resource.property}" do
     code <<-EOH
     Remove-WebConfigurationProperty -pspath "#{new_resource.ps_path}" \
     #{location_param} -filter "#{escaped_filter}" \
