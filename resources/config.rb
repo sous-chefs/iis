@@ -20,7 +20,7 @@
 include Opscode::IIS::Helper
 include Opscode::IIS::Processors
 
-property    :cfg_cmd,   String,             name_attribute: true
+property    :cfg_cmd,   String,             name_property: true
 property    :returns,   [Integer, Array],   default: 0
 
 default_action :set
