@@ -50,7 +50,6 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 - `node['iis']['conf_dir']` - location where main IIS configs lives. default is `%WINDIR%\System32\inetsrv\config`
 - `node['iis']['pubroot']` - . default is `%SYSTEMDRIVE%\inetpub`
 - `node['iis']['docroot']` - IIS web site home directory. default is `%SYSTEMDRIVE%\inetpub\wwwroot`
-- `node['iis']['log_dir']` - location of IIS logs. default is `%SYSTEMDRIVE%\inetpub\logs\LogFiles`
 - `node['iis']['cache_dir']` - location of cached data. default is `%SYSTEMDRIVE%\inetpub\temp`
 
 ## Resource/Provider
