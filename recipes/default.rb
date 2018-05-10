@@ -17,15 +17,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+# Install base IIS in powershell mode until chef client 14, because -
+# a. Default install mode for windows_feature is dism in chef-client 13
+# b. Dism feature for IIS is not always enabled at startup.
+# After IIS install, other auxiliary features are enabled for installation,
+# so they can continue to use dism.
+# Base IIS feature in powershell mode is always "Web-Server".
 # Always add this, so that we don't require this to be added if we want to add other components
-default = Opscode::IIS::Helper.older_than_windows2008r2? ? 'Web-Server' : 'IIS-WebServerRole'
+default = 'Web-Server'
 
-([default] + node['iis']['components']).each do |feature|
-  windows_feature feature do
-    action :install
-    all !Opscode::IIS::Helper.older_than_windows2012?
-    source node['iis']['source'] unless node['iis']['source'].nil?
+windows_feature default do
+  action :install
+  all !Opscode::IIS::Helper.older_than_windows2012?
+  source node['iis']['source'] unless node['iis']['source'].nil?
+  install_method :windows_feature_powershell
+end
+
+if node['iis']['components']
+  node['iis']['components'].each do |feature|
+    windows_feature feature do
+      action :install
+      all !Opscode::IIS::Helper.older_than_windows2012?
+      source node['iis']['source'] unless node['iis']['source'].nil?
+    end
   end
 end
 
