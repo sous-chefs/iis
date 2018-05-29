@@ -7,7 +7,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 ## Contents
 
 - [Attributes](#attributes)
-- [Resource/Provider](#resourceprovider)
+- [Resources](#resources)
 
   - [iis_root](#iis_root) Allows for easy management of the IIS Root Machine settings
   - [iis_site](#iis_site) Allows for easy management of IIS virtual sites (ie vhosts).
@@ -51,7 +51,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 - `node['iis']['docroot']` - IIS web site home directory. default is `%SYSTEMDRIVE%\inetpub\wwwroot`
 - `node['iis']['cache_dir']` - location of cached data. default is `%SYSTEMDRIVE%\inetpub\temp`
 
-## Resource/Provider
+## Resources
 
 ### iis_root
 
