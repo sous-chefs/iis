@@ -292,7 +292,7 @@ Creates an application pool in IIS.
 
 ##### Root Items
 
-- `name` - name attribute. Specifies the name of the pool to create.
+- `pool_name` - name property. Specifies the name of the pool to create. We use the resource name if this isn't specified here.
 - `runtime_version` - specifies what .NET version of the runtime to use.
 - `pipeline_mode` - specifies what pipeline mode to create the pool with, valid values are :Integrated or :Classic, the default is :Integrated
 - `no_managed_code` - allow Unmanaged Code in setting up IIS app pools is shutting down. - default is true - optional
