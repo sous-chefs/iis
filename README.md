@@ -31,7 +31,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 
 ### Platforms
 
-- Windows Server 2008 (R1, R2)
+- Windows Server 2008 R2
 - Windows Server 2012 (R1, R2)
 - Windows Server 2016
 
