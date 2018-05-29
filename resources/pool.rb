@@ -88,8 +88,7 @@ property :running, [true, false]
 alias_method :recycle_at_time, :periodic_restart_schedule
 
 load_current_value do |desired|
-  name desired.name
-  cmd = shell_out("#{appcmd(node)} list apppool \"#{desired.name}\"")
+  cmd = shell_out("#{appcmd(node)} list apppool \"#{desired.pool_name}\"")
   # APPPOOL "DefaultAppPool" (MgdVersion:v2.0,MgdMode:Integrated,state:Started)
   Chef::Log.debug("#{desired} list apppool command output: #{cmd.stdout}")
   unless cmd.stderr.empty?
@@ -98,7 +97,7 @@ load_current_value do |desired|
   end
 
   result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
-  result = result.match(/^APPPOOL\s\"(#{desired.name})\"\s\(MgdVersion:(.*),MgdMode:(.*),state:(.*)\)$/i)
+  result = result.match(/^APPPOOL\s\"(#{desired.pool_name})\"\s\(MgdVersion:(.*),MgdMode:(.*),state:(.*)\)$/i)
   Chef::Log.debug("#{desired} current_resource match output: #{result}")
   unless result
     running false
@@ -106,7 +105,7 @@ load_current_value do |desired|
   end
 
   running result[4] =~ /Started/ ? true : false
-  cmd_current_values = "#{appcmd(node)} list apppool \"#{desired.name}\" /config:* /xml"
+  cmd_current_values = "#{appcmd(node)} list apppool \"#{desired.pool_name}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
