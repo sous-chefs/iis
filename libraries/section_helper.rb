@@ -17,63 +17,61 @@
 # limitations under the License.
 #
 
-module Opscode
-  module IIS
-    # Contains functions that are used throughout this cookbook
-    module SectionHelper
-      require 'rexml/document'
-      include REXML
+module IISCookbook
+  # Contains functions that are used throughout this cookbook
+  module SectionHelper
+    require 'rexml/document'
+    include REXML
 
-      def lock(node, section, location = '', returns = [0])
-        cmd_list_section node, :lock, section, location, returns
+    def lock(node, section, location = '', returns = [0])
+      cmd_list_section node, :lock, section, location, returns
+    end
+
+    def unlock(node, section, location = '', returns = [0])
+      cmd_list_section node, :unlock, section, location, returns
+    end
+
+    def override_mode(node, action, section, location = '', returns = [0])
+      cmd_list_section(node, action, section, location, returns)
+    end
+
+    def get_current_lock(node, section, location = '')
+      command_path = 'MACHINE/WEBROOT/APPHOST'
+      command_path << "/#{location}" if location
+      cmd = "#{appcmd(node)} list config \"#{command_path}}\""
+      cmd << " -section:#{section} -commit:apphost /config:* /xml"
+      result = shell_out cmd
+      if result.stderr.empty?
+        xml = result.stdout
+        doc = Document.new xml
+        value(doc.root, 'CONFIG/@overrideMode')
+      else
+        Chef::Log.info(result.stderr)
       end
 
-      def unlock(node, section, location = '', returns = [0])
-        cmd_list_section node, :unlock, section, location, returns
-      end
+      nil
+    end
 
-      def override_mode(node, action, section, location = '', returns = [0])
-        cmd_list_section(node, action, section, location, returns)
-      end
+    def cmd_section(node, check, section, location, returns)
+      cmd = "#{appcmd(node)} set config \"MACHINE/WEBROOT/APPHOST/#{location}\""
+      cmd << " -section:\"#{section}\" -overrideMode:#{check}"
+      cmd << ' -commit:apphost'
+      Chef::Log.debug(cmd)
+      shell_out!(cmd, returns: returns)
 
-      def get_current_lock(node, section, location = '')
-        command_path = 'MACHINE/WEBROOT/APPHOST'
-        command_path << "/#{location}" if location
-        cmd = "#{appcmd(node)} list config \"#{command_path}}\""
-        cmd << " -section:#{section} -commit:apphost /config:* /xml"
-        result = shell_out cmd
-        if result.stderr.empty?
-          xml = result.stdout
-          doc = Document.new xml
-          value(doc.root, 'CONFIG/@overrideMode')
-        else
-          Chef::Log.info(result.stderr)
-        end
+      return unless location
+      cmd = "#{appcmd(node)} set config \"MACHINE/WEBROOT/APPHOST/#{location}\""
+      cmd << " -section:\"#{section}\" -overrideMode:#{check}"
+      Chef::Log.debug(cmd)
+      shell_out!(cmd, returns: returns)
+    end
 
-        nil
-      end
+    def cmd_list_section(node, action, section, location, returns)
+      current_lock = get_current_lock(node, section, location)
+      check = action if action == 'Inherit'
+      check = (action == :lock ? 'Deny' : 'Allow') if action != 'Inherit'
 
-      def cmd_section(node, check, section, location, returns)
-        cmd = "#{appcmd(node)} set config \"MACHINE/WEBROOT/APPHOST/#{location}\""
-        cmd << " -section:\"#{section}\" -overrideMode:#{check}"
-        cmd << ' -commit:apphost'
-        Chef::Log.debug(cmd)
-        shell_out!(cmd, returns: returns)
-
-        return unless location
-        cmd = "#{appcmd(node)} set config \"MACHINE/WEBROOT/APPHOST/#{location}\""
-        cmd << " -section:\"#{section}\" -overrideMode:#{check}"
-        Chef::Log.debug(cmd)
-        shell_out!(cmd, returns: returns)
-      end
-
-      def cmd_list_section(node, action, section, location, returns)
-        current_lock = get_current_lock(node, section, location)
-        check = action if action == 'Inherit'
-        check = (action == :lock ? 'Deny' : 'Allow') if action != 'Inherit'
-
-        cmd_section node, check, section, location, returns unless current_lock == check
-      end
+      cmd_section node, check, section, location, returns unless current_lock == check
     end
   end
 end

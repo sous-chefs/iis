@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-include Opscode::IIS::Helper
-include Opscode::IIS::Processors
-include Opscode::IIS::SectionHelper
+include IISCookbook::Helper
+include IISCookbook::Processors
+include IISCookbook::SectionHelper
 
 property :module_name, String, name_property: true
 property :type, String
@@ -28,8 +28,6 @@ property :image, String
 property :precondition, String
 property :application, String
 property :previous_lock, String
-
-default_action :add
 
 load_current_value do |desired|
   module_name desired.module_name

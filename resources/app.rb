@@ -20,15 +20,13 @@
 require 'rexml/document'
 
 include REXML
-include Opscode::IIS::Helper
+include IISCookbook::Helper
 
 property  :site_name,          String,        name_property: true
 property  :path,               String,        default: '/'
 property  :application_pool,   String
 property  :physical_path,      String
 property  :enabled_protocols,  String
-
-default_action :add
 
 load_current_value do |desired|
   site_name desired.site_name

@@ -1,9 +1,8 @@
 #
-# Author:: Seth Chisamore (<schisamo@chef.io>)
 # Cookbook:: iis
-# Recipe:: mod_auth_basic
+# Resource:: install
 #
-# Copyright:: 2011-2018, Chef Software, Inc.
+# Copyright:: 2018, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +17,15 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
+include IISCookbook::Helper
 
-windows_feature 'IIS-BasicAuthentication'
+property :source, String
+property :additional_components, Array, default: []
 
-iis_section 'unlocks basic authentication control in web.config' do
-  section 'system.webServer/security/authentication/basicAuthentication'
-  action :unlock
+action :install do
+  windows_feature ['IIS-WebServerRole'] + new_resource.additional_components do
+    action :install
+    all !IISCookbook::Helper.older_than_windows2012?
+    source new_resource.source unless new_resource.source.nil?
+  end
 end

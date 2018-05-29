@@ -7,7 +7,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 ## Contents
 
 - [Attributes](#attributes)
-- [Resource/Provider](#resourceprovider)
+- [Resources](#resources)
 
   - [iis_root](#iis_root) Allows for easy management of the IIS Root Machine settings
   - [iis_site](#iis_site) Allows for easy management of IIS virtual sites (ie vhosts).
@@ -37,7 +37,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 
 ### Chef
 
-- Chef 12.7+
+- Chef 12.14+
 
 ### Cookbooks
 
@@ -51,7 +51,20 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 - `node['iis']['docroot']` - IIS web site home directory. default is `%SYSTEMDRIVE%\inetpub\wwwroot`
 - `node['iis']['cache_dir']` - location of cached data. default is `%SYSTEMDRIVE%\inetpub\temp`
 
-## Resource/Provider
+## Resources
+
+### iis_install
+
+Simple resource to install the IIS feature
+
+#### Actions
+
+- `:install`
+
+#### Properties
+
+- `source` - Optional source to install the features from (String)
+- `additional_components` - Optional features of IIS to install (Array)
 
 ### iis_root
 
@@ -118,7 +131,7 @@ Allows for easy management of IIS virtual sites (ie vhosts).
 
 #### Properties
 
-- `site_name` - name attribute.
+- `site_name` - specify the name of the site. Unless specified we use the name of the resource instead.
 - `site_id` - if not given IIS generates a unique ID for the site
 - `path` - IIS will create a root application and a root virtual directory mapped to this specified local path
 - `protocol` - http protocol type the site should respond to. valid values are :http, :https. default is :http
@@ -218,7 +231,7 @@ Runs a config command on your IIS instance.
 
 #### Properties
 
-- `cfg_cmd` - name attribute. What ever command you would pass in after "appcmd.exe set config"
+- `cfg_cmd` - name property. What ever command you would pass in after "appcmd.exe set config" We use the resource name if this isn't specified here.
 
 #### Example
 
@@ -292,7 +305,7 @@ Creates an application pool in IIS.
 
 ##### Root Items
 
-- `name` - name attribute. Specifies the name of the pool to create.
+- `pool_name` - name property. Specifies the name of the pool to create. We use the resource name if this isn't specified here.
 - `runtime_version` - specifies what .NET version of the runtime to use.
 - `pipeline_mode` - specifies what pipeline mode to create the pool with, valid values are :Integrated or :Classic, the default is :Integrated
 - `no_managed_code` - allow Unmanaged Code in setting up IIS app pools is shutting down. - default is true - optional
@@ -376,7 +389,7 @@ Creates an application in IIS.
 
 #### Properties
 
-- `site_name` - name attribute. The name of the site to add this app to
+- `site_name` - name property. The name of the site to add this app to. We use the resource name if this isn't specified here.
 - `path` -The virtual path for this application
 - `application_pool` - The pool this application belongs to
 - `physical_path` - The physical path where this app resides.
@@ -405,9 +418,9 @@ Allows easy management of IIS virtual directories (i.e. vdirs).
 - :delete: - delete an existing virtual directory
 - :config: - configure a virtual directory
 
-#### Attribute Parameters
+#### Properties
 
-- `application_name`: name attribute. This is the name of the website or site + application you are adding it to.
+- `application_name`: name property. This is the name of the website or site + application you are adding it to. We use the resource name if this isn't specified here.
 - `path`: The virtual directory path on the site.
 - `physical_path`: The physical path of the virtual directory on the disk.
 - `username`: (optional) The username required to logon to the physical_path. If set to "" will clear username and password.
@@ -473,13 +486,12 @@ This is valuable to allow the `web.config` of an individual application/website 
 - `:lock`: - locks the `section` passed
 - `:unlock`: - unlocks the `section` passed
 
-#### Attribute Parameters
+#### Properties
 
 - `section`: The name of the section to lock.
 - `site`: The name of the site you want to lock or unlock a section for.
 - `application_path`: The path to the application you want to lock or unlock a section for.
 - `returns`: The result of the `shell_out` command.
-- 
 
 #### Examples
 
@@ -545,7 +557,7 @@ Manages modules globally or on a per site basis.
 - `:install` - install a native module from the filesystem (.dll)
 - `:uninstall` - uninstall a native module
 
-#### Attribute Parameters
+#### Properties
 
 - `module_name` - The name of the module to add or delete
 - `type` - The type of module

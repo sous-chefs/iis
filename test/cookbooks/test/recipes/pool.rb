@@ -46,7 +46,8 @@ iis_pool 'testapppool' do
   action [:add, :config]
 end
 
-iis_pool 'test_start' do
+iis_pool 'start test_start' do
+  pool_name 'test_start'
   action [:start]
 end
 

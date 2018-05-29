@@ -20,8 +20,8 @@
 require 'rexml/document'
 
 include REXML
-include Opscode::IIS::Helper
-include Opscode::IIS::Processors
+include IISCookbook::Helper
+include IISCookbook::Processors
 
 property    :site_name, String, name_property: true
 property    :site_id, Integer
@@ -35,9 +35,7 @@ property    :options, String, default: ''
 property    :log_directory, String
 property    :log_period, [Symbol, String], equal_to: [:Daily, :Hourly, :MaxSize, :Monthly, :Weekly], default: :Daily, coerce: proc { |v| v.to_sym }
 property    :log_truncsize, Integer, default: 1_048_576
-property    :running, [true, false], desired_state: true
-
-default_action :add
+property    :running, [true, false]
 
 load_current_value do |desired|
   site_name desired.site_name

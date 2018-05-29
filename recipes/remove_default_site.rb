@@ -3,7 +3,7 @@
 # Cookbook:: iis
 # Recipe:: remove_default_site
 #
-# Copyright:: 2012-2016, Webtrends, Inc.
+# Copyright:: 2012-2018, Webtrends, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
