@@ -1,12 +1,14 @@
 Lint/ParenthesesAsGroupedExpression:
   Exclude:
-    - 'test/integration/**/*'
+    - 'test/**/*.rb'
 
-Style/GuardClause:
-  Exclude:
-    - 'libraries/helper.rb'
-
-Style/PredicateName:
+Naming/PredicateName:
   Exclude:
     - 'spec/**/*'
     - 'test/integration/**/*'
+
+
+ Style/IfUnlessModifier:
+  Exclude:
+    - 'resources/pool.rb'
+    - 'resources/site.rb'
