@@ -35,7 +35,7 @@ property    :options, String, default: ''
 property    :log_directory, String
 property    :log_period, [Symbol, String], equal_to: [:Daily, :Hourly, :MaxSize, :Monthly, :Weekly], default: :Daily, coerce: proc { |v| v.to_sym }
 property    :log_truncsize, Integer, default: 1_048_576
-property    :running, [true, false], desired_state: true
+property    :running, [true, false]
 
 default_action :add
 

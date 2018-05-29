@@ -80,7 +80,7 @@ property :smp_processor_affinity_mask, Float, default: 4_294_967_295.0, coerce: 
 property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 
 # internally used for the state of the pool [Starting, Started, Stopping, Stopped, Unknown, Undefined value]
-property :running, [true, false], desired_state: true
+property :running, [true, false]
 
 # Alias property until the next major release
 alias_method :recycle_at_time, :periodic_restart_schedule
