@@ -20,9 +20,9 @@
 require 'rexml/document'
 
 include REXML
-include Opscode::IIS::Helper
-include Opscode::IIS::SectionHelper
-include Opscode::IIS::Processors
+include IISCookbook::Helper
+include IISCookbook::SectionHelper
+include IISCookbook::Processors
 
 property :section, String, name_property: true
 property :site, String

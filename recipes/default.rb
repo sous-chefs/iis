@@ -20,7 +20,7 @@
 
 windows_feature ['IIS-WebServerRole'] + node['iis']['components'] do
   action :install
-  all !Opscode::IIS::Helper.older_than_windows2012?
+  all !IISCookbook::Helper.older_than_windows2012?
   source node['iis']['source'] unless node['iis']['source'].nil?
 end
 

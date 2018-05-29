@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-include Opscode::IIS::Helper
-include Opscode::IIS::Processors
+include IISCookbook::Helper
+include IISCookbook::Processors
 
 property    :cfg_cmd,   String,             name_property: true
 property    :returns,   [Integer, Array],   default: 0

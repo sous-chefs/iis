@@ -23,6 +23,6 @@ include_recipe 'iis::mod_isapi'
 
 windows_feature %w(IIS-NetFxExtensibility IIS-ASPNET) do
   action :install
-  all !Opscode::IIS::Helper.older_than_windows2012?
+  all !IISCookbook::Helper.older_than_windows2012?
   source node['iis']['source'] unless node['iis']['source'].nil?
 end

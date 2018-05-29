@@ -20,8 +20,8 @@
 require 'rexml/document'
 
 include REXML
-include Opscode::IIS::Helper
-include Opscode::IIS::Processors
+include IISCookbook::Helper
+include IISCookbook::Processors
 
 # root
 property :no_managed_code, [true, false], default: false

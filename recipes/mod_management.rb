@@ -22,5 +22,5 @@ include_recipe 'iis'
 
 windows_feature %w(IIS-ManagementConsole IIS-ManagementService) do
   action :install
-  all !Opscode::IIS::Helper.older_than_windows2012?
+  all !IISCookbook::Helper.older_than_windows2012?
 end

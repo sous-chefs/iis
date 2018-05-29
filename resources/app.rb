@@ -20,7 +20,7 @@
 require 'rexml/document'
 
 include REXML
-include Opscode::IIS::Helper
+include IISCookbook::Helper
 
 property  :site_name,          String,        name_property: true
 property  :path,               String,        default: '/'

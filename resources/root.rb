@@ -17,13 +17,13 @@
 # limitations under the License.
 #
 
-include Opscode::IIS::Constants
-include Opscode::IIS::Helper
-include Opscode::IIS::Processors
+include IISCookbook::Constants
+include IISCookbook::Helper
+include IISCookbook::Processors
 
 property :default_documents_enabled, [true, false], default: true
-property :default_documents, Array, default: Opscode::IIS::Constants.default_documents
-property :mime_maps, Array, default: Opscode::IIS::Constants.default_mime_types
+property :default_documents, Array, default: IISCookbook::Constants.default_documents
+property :mime_maps, Array, default: IISCookbook::Constants.default_mime_types
 property :add_default_documents, Array, default: []
 property :add_mime_maps, Array, default: []
 property :delete_default_documents, Array, default: []
