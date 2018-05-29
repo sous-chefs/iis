@@ -1,3 +1,5 @@
+# rubocop todo
+
 Lint/ParenthesesAsGroupedExpression:
   Exclude:
     - 'test/**/*.rb'
@@ -7,8 +9,7 @@ Naming/PredicateName:
     - 'spec/**/*'
     - 'test/integration/**/*'
 
-
- Style/IfUnlessModifier:
+Style/IfUnlessModifier:
   Exclude:
     - 'resources/pool.rb'
     - 'resources/site.rb'
