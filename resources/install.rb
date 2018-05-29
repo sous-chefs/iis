@@ -1,9 +1,8 @@
 #
-# Author:: Seth Chisamore (<schisamo@chef.io>)
 # Cookbook:: iis
-# Recipe:: default
+# Resource:: install
 #
-# Copyright:: 2011-2018, Chef Software, Inc.
+# Copyright:: 2018, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +17,15 @@
 # limitations under the License.
 #
 
-iis_install 'install IIS' do
-  additional_components node['iis']['components']
-  source node['iis']['source']
-end
+include IISCookbook::Helper
 
-service 'iis' do
-  service_name 'W3SVC'
-  action [:enable, :start]
+property :source, String
+property :additional_components, Array, default: []
+
+action :install do
+  windows_feature ['IIS-WebServerRole'] + new_resource.additional_components do
+    action :install
+    all !IISCookbook::Helper.older_than_windows2012?
+    source new_resource.source unless new_resource.source.nil?
+  end
 end

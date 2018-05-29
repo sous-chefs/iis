@@ -53,6 +53,19 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 
 ## Resources
 
+### iis_install
+
+Simple resource to install the IIS feature
+
+#### Actions
+
+- `:install`
+
+#### Properties
+
+- `source` - Optional source to install the features from (String)
+- `additional_components` - Optional features of IIS to install (Array)
+
 ### iis_root
 
 Allows for easy management of the IIS Root Machine settings
