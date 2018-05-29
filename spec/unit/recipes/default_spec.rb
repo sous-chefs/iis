@@ -27,13 +27,13 @@ describe 'iis::default' do
     end
 
     it 'installs windows feature foobar' do
-      expect(chef_run).to install_windows_feature('foobar')
+      expect(chef_run).to install_iis_install('install IIS').with(additional_components: ['foobar'])
     end
 
     it 'installs windows feature foobar with source' do
       chef_run.node.normal['iis']['source'] = 'somesource'
       chef_run.converge(described_recipe)
-      expect(chef_run).to install_windows_feature('foobar').with(source: 'somesource')
+      expect(chef_run).to install_iis_install('install IIS').with(source: 'somesource')
     end
   end
 
