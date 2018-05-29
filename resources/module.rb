@@ -29,8 +29,6 @@ property :precondition, String
 property :application, String
 property :previous_lock, String
 
-default_action :add
-
 load_current_value do |desired|
   module_name desired.module_name
   application desired.application if desired.application

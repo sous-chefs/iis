@@ -23,8 +23,6 @@ include IISCookbook::Processors
 property    :cfg_cmd,   String,             name_property: true
 property    :returns,   [Integer, Array],   default: 0
 
-default_action :set
-
 action :set do
   config
 end

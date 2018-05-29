@@ -87,8 +87,6 @@ property :running, [true, false]
 # Alias property until the next major release
 alias_method :recycle_at_time, :periodic_restart_schedule
 
-default_action :add
-
 load_current_value do |desired|
   name desired.name
   cmd = shell_out("#{appcmd(node)} list apppool \"#{desired.name}\"")

@@ -28,8 +28,6 @@ property  :application_pool,   String
 property  :physical_path,      String
 property  :enabled_protocols,  String
 
-default_action :add
-
 load_current_value do |desired|
   site_name desired.site_name
   # Sanitize physical path

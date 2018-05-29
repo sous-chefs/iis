@@ -29,8 +29,6 @@ property :add_mime_maps, Array, default: []
 property :delete_default_documents, Array, default: []
 property :delete_mime_maps, Array, default: []
 
-default_action :config
-
 load_current_value do |desired|
   current_default_documents_object = current_default_documents_config
   return unless current_default_documents_object

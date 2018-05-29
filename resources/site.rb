@@ -37,8 +37,6 @@ property    :log_period, [Symbol, String], equal_to: [:Daily, :Hourly, :MaxSize,
 property    :log_truncsize, Integer, default: 1_048_576
 property    :running, [true, false]
 
-default_action :add
-
 load_current_value do |desired|
   site_name desired.site_name
   # Sanitize windows file system path
