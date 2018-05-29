@@ -38,7 +38,7 @@ describe 'iis::default' do
   end
 
   context 'When all attributes are default, on an unspecified platform' do
-    let(:chef_run) do
+    cached(:chef_run) do
       ChefSpec::SoloRunner.new.converge(described_recipe)
     end
 
