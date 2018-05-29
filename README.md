@@ -37,7 +37,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
 
 ### Chef
 
-- Chef 12.7+
+- Chef 12.14+
 
 ### Cookbooks
 
@@ -479,7 +479,6 @@ This is valuable to allow the `web.config` of an individual application/website 
 - `site`: The name of the site you want to lock or unlock a section for.
 - `application_path`: The path to the application you want to lock or unlock a section for.
 - `returns`: The result of the `shell_out` command.
-- 
 
 #### Examples
 
