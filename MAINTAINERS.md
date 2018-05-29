@@ -10,12 +10,6 @@ Check out [How Cookbooks are Maintained](https://github.com/chef-cookbooks/commu
 * [Adam Edwards](https://github.com/adamedx)
 
 # Maintainers
-* [Salim Alam](https://github.com/chefsalim)
-* [Jennifer Davis](https://github.com/sigje)
-* [Adam Edwards](https://github.com/adamedx)
-* [Claire McQuin](https://github.com/mcquin)
-* [Steven Murawski](https://github.com/smurawski)
-* [Kartik Null Cating-Subramanian](https://github.com/ksubrama)
+* [Stuart Preston](https://github.com/stuartpreston)
 * [Justin Schuhmann](https://github.com/EasyAsABC123)
 * [Tim Smith](https://github.com/tas50)
-* [Matt Wrock](https://github.com/mwrock)
