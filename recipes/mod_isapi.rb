@@ -3,7 +3,7 @@
 # Cookbook:: iis
 # Recipe:: mod_isapi
 #
-# Copyright:: 2011-2016, Chef Software, Inc.
+# Copyright:: 2011-2018, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,14 +20,4 @@
 
 include_recipe 'iis'
 
-features = if Opscode::IIS::Helper.older_than_windows2008r2?
-             %w(Web-ISAPI-Filter Web-ISAPI-Ext)
-           else
-             %w(IIS-ISAPIFilter IIS-ISAPIExtensions)
-           end
-
-features.each do |feature|
-  windows_feature feature do
-    action :install
-  end
-end
+windows_feature %w(IIS-ISAPIFilter IIS-ISAPIExtensions)

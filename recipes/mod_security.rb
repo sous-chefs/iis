@@ -3,7 +3,7 @@
 # Cookbook:: iis
 # Recipe:: mod_security
 #
-# Copyright:: 2011-2016, Chef Software, Inc.
+# Copyright:: 2011-2018, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,14 +20,4 @@
 
 include_recipe 'iis'
 
-features = if Opscode::IIS::Helper.older_than_windows2008r2?
-             %w(Web-Url-Auth Web-Filtering Web-IP-Security)
-           else
-             %w(IIS-URLAuthorization IIS-RequestFiltering IIS-IPSecurity)
-           end
-
-features.each do |feature|
-  windows_feature feature do
-    action :install
-  end
-end
+windows_feature %w(IIS-URLAuthorization IIS-RequestFiltering IIS-IPSecurity)

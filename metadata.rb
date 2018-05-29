@@ -6,7 +6,7 @@ description 'Installs/Configures Microsoft Internet Information Services'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '6.8.1'
 supports 'windows'
-depends 'windows', '>= 3.3.0'
+depends 'windows', '>= 4.1.0'
 source_url 'https://github.com/chef-cookbooks/iis'
 issues_url 'https://github.com/chef-cookbooks/iis/issues'
 chef_version '>= 12.7' if respond_to?(:chef_version)

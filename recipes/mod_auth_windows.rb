@@ -3,7 +3,7 @@
 # Cookbook:: iis
 # Recipe:: mod_auth_windows
 #
-# Copyright:: 2011-2016, Chef Software, Inc.
+# Copyright:: 2011-2018, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,15 +20,7 @@
 
 include_recipe 'iis'
 
-feature = if Opscode::IIS::Helper.older_than_windows2008r2?
-            'Web-Windows-Auth'
-          else
-            'IIS-WindowsAuthentication'
-          end
-
-windows_feature feature do
-  action :install
-end
+windows_feature 'IIS-WindowsAuthentication'
 
 iis_section 'unlocks windows authentication control in web.config' do
   section 'system.webServer/security/authentication/windowsAuthentication'
