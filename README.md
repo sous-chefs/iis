@@ -118,7 +118,7 @@ Allows for easy management of IIS virtual sites (ie vhosts).
 
 #### Properties
 
-- `site_name` - name attribute.
+- `site_name` - specify the name of the site. Unless specified we use the name of the resource instead.
 - `site_id` - if not given IIS generates a unique ID for the site
 - `path` - IIS will create a root application and a root virtual directory mapped to this specified local path
 - `protocol` - http protocol type the site should respond to. valid values are :http, :https. default is :http
@@ -218,7 +218,7 @@ Runs a config command on your IIS instance.
 
 #### Properties
 
-- `cfg_cmd` - name attribute. What ever command you would pass in after "appcmd.exe set config"
+- `cfg_cmd` - name property. What ever command you would pass in after "appcmd.exe set config" We use the resource name if this isn't specified here.
 
 #### Example
 
@@ -376,7 +376,7 @@ Creates an application in IIS.
 
 #### Properties
 
-- `site_name` - name attribute. The name of the site to add this app to
+- `site_name` - name property. The name of the site to add this app to. We use the resource name if this isn't specified here.
 - `path` -The virtual path for this application
 - `application_pool` - The pool this application belongs to
 - `physical_path` - The physical path where this app resides.
@@ -405,9 +405,9 @@ Allows easy management of IIS virtual directories (i.e. vdirs).
 - :delete: - delete an existing virtual directory
 - :config: - configure a virtual directory
 
-#### Attribute Parameters
+#### Properties
 
-- `application_name`: name attribute. This is the name of the website or site + application you are adding it to.
+- `application_name`: name property. This is the name of the website or site + application you are adding it to. We use the resource name if this isn't specified here.
 - `path`: The virtual directory path on the site.
 - `physical_path`: The physical path of the virtual directory on the disk.
 - `username`: (optional) The username required to logon to the physical_path. If set to "" will clear username and password.
@@ -473,7 +473,7 @@ This is valuable to allow the `web.config` of an individual application/website 
 - `:lock`: - locks the `section` passed
 - `:unlock`: - unlocks the `section` passed
 
-#### Attribute Parameters
+#### Properties
 
 - `section`: The name of the section to lock.
 - `site`: The name of the site you want to lock or unlock a section for.
@@ -544,7 +544,7 @@ Manages modules globally or on a per site basis.
 - `:install` - install a native module from the filesystem (.dll)
 - `:uninstall` - uninstall a native module
 
-#### Attribute Parameters
+#### Properties
 
 - `module_name` - The name of the module to add or delete
 - `type` - The type of module
