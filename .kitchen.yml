@@ -11,6 +11,8 @@ transport:
 provisioner:
   name: chef_zero
   deprecations_as_errors: true
+  client_rb:
+    log_level: :info
 
 verifier:
   name: inspec
@@ -35,6 +37,9 @@ suites:
   - name: app
     run_list:
       - recipe[test::app]
+  - name: config
+    run_list:
+      - recipe[test::config]
   - name: module
     run_list:
       - recipe[test::module]
