@@ -34,6 +34,12 @@ iis_pool 'test_start' do
   action [:add, :config, :stop]
 end
 
+iis_pool 'test_no_managed_code' do
+  no_managed_code false
+  pipeline_mode :Integrated
+  action [:add, :config, :start]
+end
+
 iis_pool 'testapppool' do
   thirty_two_bit false
   runtime_version '4.0'
@@ -60,5 +66,11 @@ end
 
 iis_pool 'test_identity_type' do
   identity_type :NetworkService
+  action [:add, :config, :start]
+end
+
+iis_pool 'test_no_managed_code' do
+  no_managed_code true
+  pipeline_mode :Classic
   action [:add, :config, :start]
 end

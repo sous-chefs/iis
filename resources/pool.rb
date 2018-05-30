@@ -268,8 +268,12 @@ action_class.class_eval do
     end
 
     if new_resource.no_managed_code
-      converge_if_changed :runtime_version do
+      Chef::Log.warn("ran into no managed runtime #{new_resource.runtime_version} | #{current_resource.runtime_version}")
+      if new_resource.runtime_version != current_resource.runtime_version
+        # temporary fix for issue with converge_if_changed should be able to be removed when we get to chef 14
+        # converge_if_changed :runtime_version do
         cmd << configure_application_pool('managedRuntimeVersion:')
+        Chef::Log.warn("ran into no managed runtime #{cmd}")
       end
     else
       converge_if_changed :runtime_version do
