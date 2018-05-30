@@ -32,6 +32,10 @@ suites:
   - name: default
     run_list:
       - recipe[iis::default]
+  - name: disable_default
+    run_list:
+      - recipe[iis::default]
+      - recipe[iis::remove_default_site]
   - name: app
     run_list:
       - recipe[test::app]
