@@ -43,87 +43,95 @@ load_current_value do |desired|
   desired.path = windows_cleanpath(desired.path) if desired.path
   desired.log_directory = windows_cleanpath(desired.log_directory) if desired.log_directory
   desired.port = desired.port.to_i if desired.port
-  cmd = shell_out "#{appcmd(node)} list site \"#{site_name}\""
-  Chef::Log.debug(appcmd(node))
-  # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
-  Chef::Log.debug("#{desired} list site command output: #{cmd.stdout}")
-  if cmd.stderr.empty?
-    result = cmd.stdout.gsub(/\r\n?/, "\n") # ensure we have no carriage returns
-    result = result.match(/^SITE\s\"(?<site>#{desired.site_name})\"\s\(id:(?<site_id>.*),bindings:(?<bindings>.*),state:(?<state>.*)\)$/i)
-    Chef::Log.debug("#{desired} current_resource match output: #{result}")
-    if result
-      site_id result[:site_id].to_i
-      bindings result[:bindings]
-      running result[:state] =~ /Started/ ? true : false
-    else
-      running false
-    end
 
-    if site_id
-      values = "#{bindings},".match(%r{(?<protocol>[^\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),?})
-      # get current values
-      cmd = "#{appcmd(node)} list site \"#{site_name}\" /config:* /xml"
-      Chef::Log.debug(cmd)
-      cmd = shell_out cmd
-      if cmd.stderr.empty?
-        xml = cmd.stdout
-        doc = Document.new(xml)
-        path windows_cleanpath(value(doc.root, 'SITE/site/application/virtualDirectory/@physicalPath'))
-        log_directory windows_cleanpath(value(doc.root, 'SITE/site/logFile/@directory'))
-        log_period value(doc.root, 'SITE/site/logFile/@period').to_sym
-        log_truncsize value(doc.root, 'SITE/site/logFile/@truncateSize').to_i
-        application_pool value doc.root, 'SITE/site/application/@applicationPool'
-      end
+  # Retrieve everything we need about the site
+  cmd = "Get-Website -name '#{site_name}' | Select-Object -Property name,`
+                                                                    id,`
+                                                                    physicalPath,`
+                                                                    state,`
+                                                                    @{Name='bindings'; Expression = {$_.Bindings.Collection | ForEach-Object{$_.ToString()}}},`
+                                                                    @{Name='applicationPool'; Expression = {$_.applicationPool}},`
+                                                                    @{Name='logDirectory'; Expression = {$_.LogFile.Directory}},`
+                                                                    @{Name='logPeriod'; Expression = {$_.LogFile.Period}},`
+                                                                    @{Name='logTruncateSize'; Expression = {$_.LogFile.truncateSize}} | ConvertTo-Json -Compress"
 
-      if values
-        protocol values[:protocol].to_sym
-        port values[:port].to_i
-        host_header values[:host_header]
-      end
-    else
-      running false
-    end
-  else
-    Chef::Log.warn "Failed to run iis_site action :config, #{cmd.stderr}"
+  Chef::Log.debug("Retrieving site details via: #{cmd}")
+  ps_results = powershell_out(cmd)
+
+  if ps_results.stdout.empty?
+    current_value_does_not_exist!
+  end
+
+  if ps_results.error?
+    Chef::Log.debug("Error fetching config state: #{results.stderr}")
+    current_value_does_not_exist!
+  end
+
+  results = Chef::JSONCompat.from_json(ps_results.stdout)
+  Chef::Log.debug("Site details command output: #{results}")
+
+  site_id results['id'].to_i
+  bindings results['bindings']
+  running results['state'] =~ /Started/ ? true : false
+
+  # get current values
+  path windows_cleanpath(results['physicalPath'])
+  log_directory windows_cleanpath(results['logDirectory'])
+  log_period results['logPeriod'].to_sym
+  log_truncsize results['logTruncateSize'].to_i
+  application_pool results['applicationPool']
+
+  binding_values = "#{bindings},".match(%r{(?<protocol>[^\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),?})
+
+  if binding_values
+    protocol binding_values[:protocol].to_sym
+    port binding_values[:port].to_i
+    host_header binding_values[:host_header]
   end
 end
 
 action :add do
-  if exists
+  if @current_resource
     Chef::Log.debug("#{new_resource} site already exists - nothing to do")
   else
     converge_by "Created the Site - \"#{new_resource}\"" do
-      cmd = "#{appcmd(node)} add site /name:\"#{new_resource.site_name}\""
-      cmd << " /id:#{new_resource.site_id}" if new_resource.site_id
-      cmd << " /physicalPath:\"#{new_resource.path}\"" if new_resource.path
-      if new_resource.bindings
-        cmd << " /bindings:\"#{new_resource.bindings}\""
-      else
-        cmd << " /bindings:#{new_resource.protocol}/*"
-        cmd << ":#{new_resource.port}:" if new_resource.port
-        cmd << new_resource.host_header if new_resource.host_header
-      end
+      cmd = "New-WebSite -Name '#{new_resource.site_name}'"
+      cmd << " -ID '#{new_resource.site_id}'" if new_resource.site_id
+      cmd << " -PhysicalPath '#{new_resource.path}'" if new_resource.path
 
+      # ! Do we just move this into the configure step since we can't do it in one swoop?
+      # if new_resource.bindings
+      #   cmd << " /bindings:\"#{new_resource.bindings}\""
+      # else
+      #   cmd << " /bindings:#{new_resource.protocol}/*"
+      #   cmd << ":#{new_resource.port}:" if new_resource.port
+      #   cmd << new_resource.host_header if new_resource.host_header
+      # end
+
+      # ! We can't really support this with PowerShell
       # support for additional options -logDir, -limits, -ftpServer, etc...
-      cmd << " #{new_resource.options}" if new_resource.options
-      shell_out!(cmd, returns: [0, 42])
+      #cmd << " #{new_resource.options}" if new_resource.options
+      #shell_out!(cmd, returns: [0, 42])
+      powershell_out!(cmd)
 
       configure
 
-      if new_resource.application_pool
-        shell_out!("#{appcmd(node)} set site /site.name:\"#{new_resource.site_name}\" /[path='/'].applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
-      end
+      # ! This should really be moved too
+      # if new_resource.application_pool
+      #   shell_out!("#{appcmd(node)} set site /site.name:\"#{new_resource.site_name}\" /[path='/'].applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
+      # end
+
       Chef::Log.info("#{new_resource} added new site '#{new_resource.site_name}'")
     end
   end
 end
 
 action :config do
-  configure if exists
+  configure if @current_resource
 end
 
 action :delete do
-  if exists
+  if @current_resource
     converge_by "Deleted the Site - \"#{new_resource}\"" do
       Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
       shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
@@ -134,7 +142,7 @@ action :delete do
 end
 
 action :start do
-  if exists && !current_resource.running
+  if @current_resource && !current_resource.running
     converge_by "Started the Site - \"#{new_resource}\"" do
       shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
     end
@@ -144,7 +152,7 @@ action :start do
 end
 
 action :stop do
-  if exists && current_resource.running
+  if @current_resource && current_resource.running
     converge_by "Stopped the Site - \"#{new_resource}\"" do
       Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
       shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
@@ -162,11 +170,7 @@ action :restart do
   end
 end
 
-action_class.class_eval do
-  def exists
-    current_resource.site_id ? true : false
-  end
-
+action_class do
   def configure
     if new_resource.bindings
       converge_if_changed :bindings do
@@ -184,45 +188,57 @@ action_class.class_eval do
       end
     end
 
-    converge_if_changed :application_pool do
-      cmd = "#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd, returns: [0, 42])
+    if new_resource.application_pool
+      converge_if_changed :application_pool do
+        cmd = "#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\""
+        Chef::Log.debug(cmd)
+        shell_out!(cmd, returns: [0, 42])
+      end
     end
 
-    converge_if_changed :path do
-      cmd = "#{appcmd(node)} set vdir \"#{new_resource.site_name}/\""
-      cmd << " /physicalPath:\"#{new_resource.path}\""
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
+    if new_resource.site_id
+      converge_if_changed :path do
+        cmd = "#{appcmd(node)} set vdir \"#{new_resource.site_name}/\""
+        cmd << " /physicalPath:\"#{new_resource.path}\""
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
     end
 
-    converge_if_changed :site_id do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
-      cmd << " /id:#{new_resource.site_id}"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
+    if new_resource.site_id
+      converge_if_changed :site_id do
+        cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+        cmd << " /id:#{new_resource.site_id}"
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
     end
 
-    converge_if_changed :log_directory do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
-      cmd << " /logFile.directory:#{new_resource.log_directory}"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
+    if new_resource.log_directory
+      converge_if_changed :log_directory do
+        cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+        cmd << " /logFile.directory:#{new_resource.log_directory}"
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
     end
 
-    converge_if_changed :log_period do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
-      cmd << " /logFile.period:#{new_resource.log_period}"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
+    if new_resource.log_period
+      converge_if_changed :log_period do
+        cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+        cmd << " /logFile.period:#{new_resource.log_period}"
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
     end
 
-    converge_if_changed :log_truncsize do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
-      cmd << " /logFile.truncateSize:#{new_resource.log_truncsize}"
-      Chef::Log.debug(cmd)
-      shell_out!(cmd)
+    if new_resource.log_truncsize
+      converge_if_changed :log_truncsize do
+        cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+        cmd << " /logFile.truncateSize:#{new_resource.log_truncsize}"
+        Chef::Log.debug(cmd)
+        shell_out!(cmd)
+      end
     end
   end
 end
