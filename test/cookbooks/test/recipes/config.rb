@@ -28,17 +28,43 @@ end
 # now create and start the site (note this will use the default application pool which must exist)
 iis_site 'MySite' do
   protocol :http
-  port 80
+  port 8080
   path "#{node['iis']['docroot']}/MySite"
   action [:add, :start]
 end
 
 # Sets up logging
-iis_config '/section:system.applicationHost/sites /siteDefaults.logfile.directory:\"D:\\logs\"' do
+iis_psconfig_key 'config logs' do
+  filter 'system.applicationHost/sites/siteDefaults/logFile'
+  key 'directory'
+  value 'D:\logs'
+  action :set
+end
+
+iis_psconfig_key 'Disable 29 hour app pool recycle' do
+  filter 'system.applicationHost/applicationPools/applicationPoolDefaults/recycling/periodicRestart'
+  key 'time'
+  value '00:00:00'
   action :set
 end
 
 # Increase file upload size for 'MySite'
-iis_config '\"MySite\" /section:requestfiltering /requestlimits.maxallowedcontentlength:50000000' do
+iis_psconfig_key '"MySite" /section:system.webServer/security/requestFiltering /requestLimits.maxAllowedContentLength:50000000' do
+  pspath 'MACHINE/WEBROOT/APPHOST/MySite'
+  filter 'system.webServer/security/requestFiltering/requestLimits'
+  key 'maxAllowedContentLength'
+  value 50000000
   action :set
 end
+
+# Test a single value
+iis_psconfig_collection 'system.applicationHost/applicationPools/applicationPoolDefaults/recycling/periodicRestart/schedule' do
+  pspath 'MACHINE/WEBROOT/APPHOST'
+  filter 'system.applicationHost/applicationPools/applicationPoolDefaults/recycling/periodicRestart/schedule'
+  value ['06:00:00', '07:00:00']
+  action :set
+end
+
+# Test multiple values
+
+# lock/unlock

@@ -18,8 +18,13 @@
 
 include_recipe 'iis'
 
-iis_section 'unlock staticContent of default web site' do
-  section 'system.webServer/staticContent'
-  site 'Default Web Site'
+iis_pssection 'unlock anonymousAuthentication of server' do
+  filter 'system.webServer/security/authentication/anonymousAuthentication'
   action :unlock
+end
+
+iis_pssection 'unlock staticContent of default web site' do
+  filter 'system.webServer/staticContent'
+  pspath 'MACHINE/WEBROOT/APPHOST/Default Web Site'
+  action :lock
 end
