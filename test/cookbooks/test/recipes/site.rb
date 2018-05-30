@@ -31,7 +31,8 @@ directory "#{node['iis']['docroot']}\\ftp_site_test" do
   recursive true
 end
 
-iis_site 'to_be_deleted' do
+iis_site 'add/start to_be_deleted' do
+  site_name 'to_be_deleted'
   application_pool 'DefaultAppPool'
   path "#{node['iis']['docroot']}/site_test"
   host_header 'localhost'
@@ -46,7 +47,8 @@ iis_site 'test' do
   action [:add, :start]
 end
 
-iis_site 'to_be_deleted' do
+iis_site 'restart to_be_deleted' do
+  site_name 'to_be_deleted'
   action [:restart]
 end
 
@@ -58,7 +60,8 @@ iis_site 'test2' do
   action [:add, :start]
 end
 
-iis_site 'to_be_deleted' do
+iis_site 'stop/delete to_be_deleted' do
+  site_name 'to_be_deleted'
   action [:stop, :delete]
 end
 
@@ -73,7 +76,8 @@ directory "#{node['iis']['docroot']}\\mytest" do
   action :create
 end
 
-iis_site 'MyTest' do
+iis_site 'add/start MyTest' do
+  site_name 'MyTest'
   protocol :http
   port 8080
   path "#{node['iis']['docroot']}\\mytest"
@@ -88,7 +92,8 @@ iis_app 'MyTest' do
   action :add
 end
 
-iis_site 'MyTest' do
+iis_site 'config MyTest' do
+  site_name 'MyTest'
   protocol :http
   port 8090
   path "#{node['iis']['docroot']}\\mytest"
