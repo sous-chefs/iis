@@ -60,4 +60,3 @@ describe iis_pool('Process Model Cleanup') do
   its('username') { should eq '' }
   its('password') { should eq '' }
 end
-
