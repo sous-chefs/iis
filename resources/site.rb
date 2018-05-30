@@ -60,7 +60,7 @@ load_current_value do |desired|
     end
 
     if site_id
-      values = "#{bindings},".match(%r{(?<protocol>[^\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),?})
+      values = "#{bindings},".match(%r{(?<protocol>[^,\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),?})
       # get current values
       cmd = "#{appcmd(node)} list site \"#{site_name}\" /config:* /xml"
       Chef::Log.debug(cmd)
