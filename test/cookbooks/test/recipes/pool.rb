@@ -62,3 +62,17 @@ iis_pool 'test_identity_type' do
   identity_type :NetworkService
   action [:add, :config, :start]
 end
+
+iis_pool 'Process Model Create' do
+  pool_name 'Process Model Cleanup'
+  identity_type :SpecificUser
+  username "#{node['hostname']}\\vagrant"
+  password 'vagrant'
+  action [:add, :config, :start]
+end
+
+iis_pool 'Process Model Cleanup' do
+  pool_name 'Process Model Cleanup'
+  identity_type :ApplicationPoolIdentity
+  action [:add, :config, :start]
+end

@@ -52,3 +52,11 @@ describe iis_pool('test_identity_type') do
   it { should be_running }
   its('identity_type') { should eq 'NetworkService' }
 end
+
+describe iis_pool('Process Model Cleanup') do
+  it { should exist }
+  it { should be_running }
+  its('identity_type') { should eq 'ApplicationPoolIdentity' }
+  its('username') { should eq '' }
+  its('password') { should eq '' }
+end
