@@ -23,6 +23,15 @@ iis_install 'install IIS' do
   source node['iis']['source']
 end
 
+powershell_script 'Install IIS' do
+  code <<-EOH
+  Import-Module ServerManager
+  Add-WindowsFeature Web-Server
+  EOH
+  guard_interpreter :powershell_script
+  not_if '(Get-WindowsFeature -Name Web-Server).Installed'
+end
+
 service 'iis' do
   service_name 'W3SVC'
   action [:enable, :start]
