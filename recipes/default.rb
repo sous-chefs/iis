@@ -21,6 +21,7 @@
 iis_install 'install IIS' do
   additional_components node['iis']['components']
   source node['iis']['source']
+  install_method node['iis']['install_method']
 end
 
 service 'iis' do
