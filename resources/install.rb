@@ -21,11 +21,14 @@ include IISCookbook::Helper
 
 property :source, String
 property :additional_components, Array, default: []
+property :install_method, Symbol, default: :windows_feature_dism
 
 action :install do
-  windows_feature ['IIS-WebServerRole'] + new_resource.additional_components do
+  webserver = new_resource.install_method == :windows_feature_dism ? 'IIS-WebServerRole' : 'Web-Server'
+  windows_feature [webserver] + new_resource.additional_components do
     action :install
     all !IISCookbook::Helper.older_than_windows2012?
     source new_resource.source unless new_resource.source.nil?
+    install_method new_resource.install_method
   end
 end
