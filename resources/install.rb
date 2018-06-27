@@ -25,6 +25,7 @@ property :additional_components, Array, default: []
 action :install do
   windows_feature ['IIS-WebServerRole'] + new_resource.additional_components do
     action :install
+    install_method :windows_feature_powershell
     all !IISCookbook::Helper.older_than_windows2012?
     source new_resource.source unless new_resource.source.nil?
   end
