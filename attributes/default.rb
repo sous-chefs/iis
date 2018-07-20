@@ -25,5 +25,6 @@ default['iis']['cache_dir']  = "#{ENV['SYSTEMDRIVE']}\\inetpub\\temp"
 default['iis']['components'] = []
 
 default['iis']['source'] = nil
+default['iis']['install_method'] = :windows_feature_dism
 
 default['iis']['recycle']['log_events'] = 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory'
