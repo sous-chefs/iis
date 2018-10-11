@@ -62,7 +62,7 @@ action :add do
     property_is_set?(:location)
 
   escaped_filter = new_resource.filter.gsub('{', '{{').gsub('}', '}}')
-  add_cmd = "Add-WebConfigurationProperty -ErrorAction Stop -PSPath #{new_resource.ps_path} #{location_param}"\
+  add_cmd = "Add-WebConfigurationProperty -ErrorAction Stop -PSPath #{new_resource.ps_path} #{location_param} "\
     "-Filter \"#{escaped_filter}\" -Name \".\""
 
   # powershell doesn't like { or } in xpath values (e.g. server variables)
