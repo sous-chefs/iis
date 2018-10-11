@@ -19,7 +19,7 @@ control 'config_property' do
 
   describe powershell("(Get-WebConfigurationProperty -PSPath \"MACHINE/WEBROOT/APPHOST\" \
                       -filter \"/system.webServer/security/requestFiltering/verbs/add\" \
-                      -Name \"verb\").Value")
+                      -Name \"verb\").Value") do
     its('stdout') { should eq "TRACE"}
   end
 end
