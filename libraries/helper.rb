@@ -87,5 +87,14 @@ module IISCookbook
       end
       @iis_version.to_f
     end
+
+    def to_powershell_hash(hash)
+      return unless hash.is_a?(Hash)
+
+      psh_hash = ''
+      hash.each { |k, v| psh_hash << "\'#{k}\' = \'#{v}\';" }
+
+      "@{ #{psh_hash} }"
+    end
   end
 end
