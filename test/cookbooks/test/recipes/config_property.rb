@@ -55,9 +55,21 @@ iis_config_property 'Add X-Xss-Protection' do
   value     'X-Xss-Protection'
   action    :add
 end
+
 iis_config_property 'Set X-Xss-Protection' do
   ps_path   'MACHINE/WEBROOT/APPHOST'
   filter    "system.webServer/httpProtocol/customHeaders/add[@name='X-Xss-Protection']"
   property  'value'
   value     '1; mode=block'
+end
+
+# Set HTTP request filtering
+iis_config_property 'Add HTTP Trace Method' do
+  ps_path 'MACHINE/WEBROOT/APPHOST'
+  filter 'system.webServer/security/requestFiltering/verbs'
+  value(
+    verb: 'TRACE',
+    allowed: 'False'
+  )
+  action :add
 end

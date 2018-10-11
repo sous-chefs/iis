@@ -16,4 +16,10 @@ control 'config_property' do
                       -Name \"value\").value") do
     its('stdout') { should eq "1; mode=block\r\n" }
   end
+
+  describe powershell("(Get-WebConfigurationProperty -PSPath \"MACHINE/WEBROOT/APPHOST\" \
+                      -filter \"/system.webServer/security/requestFiltering/verbs/add\" \
+                      -Name \"verb\").Value")
+    its('stdout') { should eq "TRACE"}
+  end
 end
