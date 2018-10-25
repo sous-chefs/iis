@@ -423,7 +423,7 @@ action_class.class_eval do
         cmd << " \"/[name='#{new_resource.pool_name}'].processModel.userName:#{new_resource.username}\""
       end
       converge_if_changed :password do
-        cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.password}\""
+        cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.password.gsub(/\"/, '\\\"')}\""
       end
       if cmd != default_app_pool_user
         converge_by "Configured Application Pool Identity Settings \"#{new_resource}\"" do
@@ -435,6 +435,8 @@ action_class.class_eval do
       converge_if_changed :identity_type do
         cmd = "#{appcmd(node)} set config /section:applicationPools"
         cmd << " \"/[name='#{new_resource.pool_name}'].processModel.identityType:#{new_resource.identity_type}\""
+        cmd << " \"/[name='#{new_resource.name}'].processModel.userName:\""
+        cmd << " \"/[name='#{new_resource.name}'].processModel.password:\""
         Chef::Log.debug(cmd)
         shell_out!(cmd)
       end

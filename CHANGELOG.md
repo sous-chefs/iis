@@ -2,6 +2,17 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 7.1.1 (2018-10-25)
+
+- Fix password containing xml entities like & are set every run
+- Fix passwords with quotation marks do not get set correctly
+- Renamed the kitchen files and use non-private boxes
+
+## 7.1.0 (2018-07-19)
+
+- iis_pool: Updated cmd to clear out username and password when changing to a different Identity Type
+- Added new config_property resource which uses powershell and is fully idempotent.
+
 ## 7.0.0 (2018-05-29)
 
 ### Breaking Changes

@@ -58,6 +58,18 @@ iis_pool 'test_no_managed_code' do
   action [:add, :config, :start]
 end
 
+iis_pool 'passwordwithentityapppool' do
+  thirty_two_bit false
+  runtime_version '4.0'
+  pipeline_mode :Integrated
+  start_mode :OnDemand
+  identity_type :SpecificUser
+  periodic_restart_schedule ['06:00:00', '14:00:00', '17:00:00']
+  username "#{node['hostname']}\\vagrant"
+  password 'vagrant&'
+  action [:add, :config]
+end
+
 iis_pool 'start test_start' do
   pool_name 'test_start'
   action [:start]
@@ -72,5 +84,19 @@ end
 
 iis_pool 'test_identity_type' do
   identity_type :NetworkService
+  action [:add, :config, :start]
+end
+
+iis_pool 'Process Model Create' do
+  pool_name 'Process Model Cleanup'
+  identity_type :SpecificUser
+  username "#{node['hostname']}\\vagrant"
+  password 'vagrant'
+  action [:add, :config, :start]
+end
+
+iis_pool 'Process Model Cleanup' do
+  pool_name 'Process Model Cleanup'
+  identity_type :ApplicationPoolIdentity
   action [:add, :config, :start]
 end

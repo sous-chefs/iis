@@ -31,6 +31,11 @@ describe iis_pool('testapppool') do
   its('password') { should eq 'vagrant' }
 end
 
+describe iis_pool('passwordwithentityapppool') do
+  it { should exist }
+  its('password') { should eq 'vagrant&' }
+end
+
 describe iis_pool('test_start') do
   it { should exist }
   it { should be_running }
@@ -58,4 +63,12 @@ describe iis_pool('test_no_managed_code') do
   it { should be_running }
   its('managed_pipeline_mode') { should eq 'Classic' }
   its('managed_runtime_version') { should eq '' }
+end
+
+describe iis_pool('Process Model Cleanup') do
+  it { should exist }
+  it { should be_running }
+  its('identity_type') { should eq 'ApplicationPoolIdentity' }
+  its('username') { should eq '' }
+  its('password') { should eq '' }
 end
