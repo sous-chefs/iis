@@ -31,6 +31,11 @@ describe iis_pool('testapppool') do
   its('password') { should eq 'vagrant' }
 end
 
+describe iis_pool('passwordwithentityapppool') do
+  it { should exist }
+  its('password') { should eq 'vagrant&' }
+end
+
 describe iis_pool('test_start') do
   it { should exist }
   it { should be_running }

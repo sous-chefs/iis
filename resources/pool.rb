@@ -419,7 +419,7 @@ action_class.class_eval do
         cmd << " \"/[name='#{new_resource.pool_name}'].processModel.userName:#{new_resource.username}\""
       end
       converge_if_changed :password do
-        cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.password}\""
+        cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.password.gsub(/\"/, '\\\"')}\""
       end
       if cmd != default_app_pool_user
         converge_by "Configured Application Pool Identity Settings \"#{new_resource}\"" do
