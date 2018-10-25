@@ -79,7 +79,7 @@ end
 iis_site 'add/start MyTest' do
   site_name 'MyTest'
   protocol :http
-  port 8080
+  port 8090
   path "#{node['iis']['docroot']}\\mytest"
   action [:add, :start]
 end

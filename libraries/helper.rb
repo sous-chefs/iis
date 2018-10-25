@@ -62,7 +62,7 @@ module IISCookbook
     end
 
     def value(document, xpath)
-      XPath.first(document, xpath).to_s
+      Text.unnormalize(XPath.first(document, xpath).to_s)
     end
 
     def get_value(document, xpath)
