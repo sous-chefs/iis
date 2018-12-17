@@ -19,9 +19,9 @@
 #
 # Grants access to IIS manager against a site or application
 
-property :config_path, String, name_property: true, required: true
-property :users, Array, default: []
-property :groups, Array, default: []
+property :config_path,  String, name_property: true
+property :users,        Array,  default: []
+property :groups,       Array,  default: []
 
 action :config do
   # This only works on 2016 + servers, Server 2012r2 does not dispose
