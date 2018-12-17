@@ -333,6 +333,50 @@ iis_config_property 'Set X-Xss-Protection' do
 end
 ```
 
+## iis_manager
+
+Configures the IIS Manager service
+
+#### Actions
+
+- `:config` - Change the configuration of the service. Restarts as necessary and sets the service to be automatic and running.
+
+
+#### Properties
+
+- `port` : The port the service listens on. Default is 8172
+- `enable_remote_management` : If remote access allowed. Default `true`
+- `log_directory` : Optional. The directory to write log files to.
+
+#### Example
+
+```ruby
+iis_manager 'IIS Manager' do
+  port                      9090
+  enable_remote_management  true
+  log_directory             "C:\\CustomPath"
+end
+```
+
+## iis_manager_permission
+
+Requires: Server 2016+
+
+Set the permissions for user access to the IIS Manager
+
+#### Actions
+
+- `config` : Configure the given path to allow only the defined users and groups access. Removes any other principals. This is an idempotent action.
+
+
+#### Properties
+
+- `config_path` : The IIS Manager path to be configured. Usually just the site name. Taken from the `name` attribute if not set, The config_path takes the form of _site_name_/_application_/_application_ (where applications are optional)
+- `users` : Optional. Array of users to be allowed access
+- `groups` : Optional. Array of groups to be allowed access
+
+
+
 ### iis_pool
 
 Creates an application pool in IIS.
