@@ -8,7 +8,4 @@ control 'Manager Property' do
     it { should be_installed }
   end
 
-  describe powershell('if (gci C:\CustomPath\ | ? {$_.name -like "W3SVC*"}) { $true } else { $false }') do
-    its('strip') { should eq 'True' }
-  end
 end
