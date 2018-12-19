@@ -82,7 +82,7 @@ action :remove do
 
   # powershell doesn't like { or } in xpath values (e.g. server variables)
   escaped_value = new_resource.value.gsub('{', '{{').gsub('}', '}}')
-  escaped_filter = filter.gsub('{', '{{').gsub('}', '}}')
+  escaped_filter = new_resource.filter.gsub('{', '{{').gsub('}', '}}')
 
   powershell_script "Set #{new_resource.ps_path}#{new_resource.location}\
 /#{escaped_filter}/#{new_resource.property}" do
