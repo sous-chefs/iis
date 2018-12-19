@@ -7,5 +7,4 @@ control 'Manager Property' do
   describe windows_feature('Web-Mgmt-Service') do
     it { should be_installed }
   end
-
 end
