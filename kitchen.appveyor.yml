@@ -30,6 +30,9 @@ suites:
   - name: config_property
     run_list:
       - recipe[test::config_property]
+  - name: manager
+    run_list:
+      - recipe[test::manager]
   - name: module
     run_list:
       - recipe[test::module]

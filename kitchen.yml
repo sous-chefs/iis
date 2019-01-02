@@ -44,6 +44,13 @@ suites:
   - name: config_property
     run_list:
       - recipe[test::config_property]
+  - name: manager
+    run_list:
+      - recipe[test::manager]
+  - name: manager_permission
+    run_list:
+      - recipe[test::manager_permission]
+    excludes: ["windows-2008r2", "windows-2012r2"]
   - name: module
     run_list:
       - recipe[test::module]
