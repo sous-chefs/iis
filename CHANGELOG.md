@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 7.2.0 (2019-01-02)
+
+- Add a new iis_manager resource to enable users to set permissions for remote management of IIS
+- Resolve a deprecation warning in config_property
+
 ## 7.1.1 (2018-10-25)
 
 - Fix password containing xml entities like & are set every run
