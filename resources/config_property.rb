@@ -60,7 +60,7 @@ action :add do
   # powershell doesn't like { or } in xpath values (e.g. server variables)
   escaped_value = new_resource.value.gsub('{', '{{').gsub('}', '}}')
   escaped_filter = new_resource.filter.gsub('{', '{{').gsub('}', '}}')
-  extra_values = extra_add_values.map do |n, v|
+  extra_values = new_resource.extra_add_values.map do |n, v|
     property_value = if v.is_a?(Integer)
                        v.to_s
                      else
