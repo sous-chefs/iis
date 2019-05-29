@@ -12,6 +12,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
   - [iis_root](#iis_root) Allows for easy management of the IIS Root Machine settings
   - [iis_site](#iis_site) Allows for easy management of IIS virtual sites (ie vhosts).
   - [iis_config](#iis_config) Runs a config command on your IIS instance.
+  - [iis_config_property](#iis_config_property) Sets an IIS property idempotently via PowerShell.
   - [iis_pool](#iis_pool) Creates an application pool in IIS.
   - [iis_app](#iis_app) Creates an application in IIS.
   - [iis_vdir](#iis_vdir) Allows easy management of IIS virtual directories (i.e. vdirs).
@@ -304,6 +305,7 @@ Sets an IIS configuration property. Idempotent. Uses Powershell [Set-WebConfigur
 - `location` : Optional. The location of the configuration setting. Location tags are frequently used for configuration settings that must be set more precisely than per application or per virtual directory. For example, a setting for a particular file or directory could use a location tag. Location tags are also used if a particular section is locked. In such an instance, the configuration system would have to use a location tag in one of the parent configuration files.
 - `filter` : Specifies the IIS configuration section or an XPath query that returns a configuration element.
 - `value` : The value to set the property to. Either a string or an integer.
+- `extra_add_values` : Optional. If the `add` action requires additional values to be set at creation then supply them in this hash. This property is not idempotent. It is only used when the configuration is created.
 
 #### Example
 
@@ -330,6 +332,27 @@ iis_config_property 'Set X-Xss-Protection' do
   filter    "system.webServer/httpProtocol/customHeaders/add[@name='X-Xss-Protection']"
   property  'value'
   value     '1; mode=block'
+end
+```
+
+```ruby
+# Set environment variable ASPNETCORE_ENVIRONMENT to Test
+# Note we still need to maintain the value via a Set resource
+iis_config_property 'Add login/ASPNETCORE_ENVIRONMENT' do
+  ps_path           'MACHINE/WEBROOT/APPHOST'
+  location          'Default Web site'
+  filter            'system.webServer/aspNetCore/environmentVariables'
+  property          'name'
+  value             'ASPNETCORE_ENVIRONMENT'
+  extra_add_values  value: 'Test'
+  action            :add
+end
+iis_config_property 'Set login/ASPNETCORE_ENVIRONMENT' do
+  ps_path   'MACHINE/WEBROOT/APPHOST'
+  location  'Default Web site'
+  filter    "system.webServer/aspNetCore/environmentVariables/environmentVariable[@name='ASPNETCORE_ENVIRONMENT']"
+  property  'value'
+  value     'Test'
 end
 ```
 

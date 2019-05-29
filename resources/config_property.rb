@@ -23,6 +23,7 @@ property :ps_path, String, required: true
 property :location, String
 property :filter, String, required: true
 property :value, [String, Integer], required: true
+property :extra_add_values, Hash
 
 action :set do
   location_param = "-location \"#{new_resource.location}\"" if
@@ -59,13 +60,21 @@ action :add do
   # powershell doesn't like { or } in xpath values (e.g. server variables)
   escaped_value = new_resource.value.gsub('{', '{{').gsub('}', '}}')
   escaped_filter = new_resource.filter.gsub('{', '{{').gsub('}', '}}')
+  extra_values = new_resource.extra_add_values.map do |n, v|
+    property_value = if v.is_a?(Integer)
+                       v.to_s
+                     else
+                       "'#{v}'"
+                     end
+    "#{n} = #{property_value}"
+  end.join(';') if property_is_set?(:extra_add_values)
 
   powershell_script "Set #{new_resource.ps_path}#{new_resource.location}\
 /#{escaped_filter}/#{new_resource.property}" do
     code <<-EOH
     Add-WebConfigurationProperty -pspath "#{new_resource.ps_path}" \
     #{location_param} -filter "#{escaped_filter}" \
-    -name "." -value @{ #{new_resource.property} = '#{new_resource.value}'; } \
+    -name "." -value @{ #{new_resource.property} = '#{new_resource.value}'; #{extra_values} } \
     -ErrorAction Stop
     EOH
     only_if <<-EOH
