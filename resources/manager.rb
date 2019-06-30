@@ -1,6 +1,6 @@
 #
 # Author:: Jason Field
-# Cookbook Name:: iis
+# Cookbook:: iis
 # Resource:: manager
 #
 # Copyright:: 2018, Calastone Ltd.
