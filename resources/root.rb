@@ -21,7 +21,7 @@ include IISCookbook::Constants
 include IISCookbook::Helper
 include IISCookbook::Processors
 
-property :default_documents_enabled, [true, false], default: true
+property :default_documents_enabled, [TrueClass, FalseClass], default: true
 property :default_documents, Array, default: IISCookbook::Constants.default_documents
 property :mime_maps, Array, default: IISCookbook::Constants.default_mime_types
 property :add_default_documents, Array, default: []

@@ -23,7 +23,7 @@ include IISCookbook::SectionHelper
 
 property :module_name, String, name_property: true
 property :type, String
-property :add, [true, false], default: false
+property :add, [TrueClass, FalseClass], default: false
 property :image, String
 property :precondition, String
 property :application, String

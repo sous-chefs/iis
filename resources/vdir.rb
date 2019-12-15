@@ -29,7 +29,7 @@ property :physical_path, String
 property :username, String
 property :password, String, sensitive: true
 property :logon_method, [Symbol, String], default: :ClearText, equal_to: [:Interactive, :Batch, :Network, :ClearText], coerce: proc { |v| v.to_sym }
-property :allow_sub_dir_config, [true, false], default: true
+property :allow_sub_dir_config, [TrueClass, FalseClass], default: true
 
 load_current_value do |desired|
   # Sanitize Application Name
