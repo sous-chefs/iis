@@ -26,36 +26,36 @@ include IISCookbook::Processors
 property :pool_name, String, name_property: true
 
 # root
-property :no_managed_code, [TrueClass, FalseClass], default: false
+property :no_managed_code, [true, false], default: false
 property :pipeline_mode, [Symbol, String], equal_to: [:Integrated, :Classic], coerce: proc { |v| v.to_sym }
 property :runtime_version, String
 
 # add items
 property :start_mode, [Symbol, String], equal_to: [:AlwaysRunning, :OnDemand], default: :OnDemand, coerce: proc { |v| v.to_sym }
-property :auto_start, [TrueClass, FalseClass], default: true
+property :auto_start, [true, false], default: true
 property :queue_length, Integer, default: 1000, coerce: proc { |v| v.to_i }
-property :thirty_two_bit, [TrueClass, FalseClass], default: false
+property :thirty_two_bit, [true, false], default: false
 
 # processModel items
 property :max_processes, Integer, coerce: proc { |v| v.to_i }
-property :load_user_profile, [TrueClass, FalseClass], default: false
+property :load_user_profile, [true, false], default: false
 property :identity_type, [Symbol, String], equal_to: [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity], default: :ApplicationPoolIdentity, coerce: proc { |v| v.to_sym }
 property :username, String
 property :password, String, sensitive: true
 property :logon_type, [Symbol, String], equal_to: [:LogonBatch, :LogonService], default: :LogonBatch, coerce: proc { |v| v.to_sym }
-property :manual_group_membership, [TrueClass, FalseClass], default: false
+property :manual_group_membership, [true, false], default: false
 property :idle_timeout, String, default: '00:20:00'
 property :idle_timeout_action, [Symbol, String], equal_to: [:Terminate, :Suspend], default: :Terminate, coerce: proc { |v| v.to_sym }
 property :shutdown_time_limit, String, default: '00:01:30'
 property :startup_time_limit, String, default: '00:01:30'
-property :pinging_enabled, [TrueClass, FalseClass], default: true
+property :pinging_enabled, [true, false], default: true
 property :ping_interval, String, default: '00:00:30'
 property :ping_response_time, String, default: '00:01:30'
 
 # recycling items
-property :disallow_rotation_on_config_change, [TrueClass, FalseClass], default: false
-property :disallow_overlapping_rotation, [TrueClass, FalseClass], default: false
-property :recycle_schedule_clear, [TrueClass, FalseClass], default: false
+property :disallow_rotation_on_config_change, [true, false], default: false
+property :disallow_overlapping_rotation, [true, false], default: false
+property :recycle_schedule_clear, [true, false], default: false
 property :log_event_on_recycle, String, default: node['iis']['recycle']['log_events']
 property :recycle_after_time, String
 property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| [*v].sort }
@@ -64,10 +64,10 @@ property :virtual_memory, Integer, coerce: proc { |v| v.to_i }
 
 # failure items
 property :load_balancer_capabilities, [Symbol, String], equal_to: [:HttpLevel, :TcpLevel], default: :HttpLevel, coerce: proc { |v| v.to_sym }
-property :orphan_worker_process, [TrueClass, FalseClass], default: false
+property :orphan_worker_process, [true, false], default: false
 property :orphan_action_exe, String
 property :orphan_action_params, String
-property :rapid_fail_protection, [TrueClass, FalseClass], default: true
+property :rapid_fail_protection, [true, false], default: true
 property :rapid_fail_protection_interval, String, default: '00:05:00'
 property :rapid_fail_protection_max_crashes, Integer, default: 5, coerce: proc { |v| v.to_i }
 property :auto_shutdown_exe, String
@@ -77,12 +77,12 @@ property :auto_shutdown_params, String
 property :cpu_action, [Symbol, String], equal_to: [:NoAction, :KillW3wp, :Throttle, :ThrottleUnderLoad], default: :NoAction, coerce: proc { |v| v.to_sym }
 property :cpu_limit, Integer, default: 0, coerce: proc { |v| v.to_i }
 property :cpu_reset_interval, String, default: '00:05:00'
-property :cpu_smp_affinitized, [TrueClass, FalseClass], default: false
+property :cpu_smp_affinitized, [true, false], default: false
 property :smp_processor_affinity_mask, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 
 # internally used for the state of the pool [Starting, Started, Stopping, Stopped, Unknown, Undefined value]
-property :running, [TrueClass, FalseClass]
+property :running, [true, false]
 
 # Alias property until the next major release
 alias_method :recycle_at_time, :periodic_restart_schedule

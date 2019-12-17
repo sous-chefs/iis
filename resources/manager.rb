@@ -19,7 +19,7 @@
 #
 # Configures IIS Manager
 
-property :enable_remote_management, [TrueClass, FalseClass], default: true
+property :enable_remote_management, [true, false], default: true
 property :log_directory, String
 property :port, Integer, default: 8172
 
