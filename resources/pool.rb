@@ -173,7 +173,7 @@ load_current_value do |desired|
     smp_processor_affinity_mask_2 value(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask2').to_f
 
     # environment variables
-    environment_variables get_value(doc.root, 'APPPOOL/add/environmentVariables/add').map{ |x| "#{value(x, '@name')}=#{value(x, '@value')}"} if iis_version >= 10
+    environment_variables get_value(doc.root, 'APPPOOL/add/environmentVariables/add').map { |x| "#{value(x, '@name')}=#{value(x, '@value')}" } if iis_version >= 10
 
     @node_array = XPath.match(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add')
   end

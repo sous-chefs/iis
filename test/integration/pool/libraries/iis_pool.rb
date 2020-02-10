@@ -180,7 +180,7 @@ class PoolProvider
     pool_worker_processes['Collection'].each { |process| worker_processes.push(process_id: process['processId'], handles: process['Handles'], state: process['state'], start_time: process['StartTime']) }
 
     environment_variables = []
-    pool_environment_variables['Collection'].each { |environment_variable| environment_variables.push("#{environment_variable['name']}=#{environment_variable['value']}")}
+    pool_environment_variables['Collection'].each { |environment_variable| environment_variables.push("#{environment_variable['name']}=#{environment_variable['value']}") }
 
     # map our values to a hash table
     {
