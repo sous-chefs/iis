@@ -27,6 +27,7 @@ describe iis_pool('testapppool') do
   its('start_mode') { should eq 'OnDemand' }
   its('identity_type') { should eq 'SpecificUser' }
   its('periodic_restart_schedule') { should eq ['06:00:00', '14:00:00', '17:00:00'] }
+  its('environment_variables') { should eq ['ALPHA=BETA2','FOO=BAR','HELLO=WORLD']}
   its('username') { should include('\\vagrant') }
   its('password') { should eq 'vagrant' }
 end
@@ -34,6 +35,7 @@ end
 describe iis_pool('passwordwithentityapppool') do
   it { should exist }
   its('password') { should eq 'vagrant&' }
+  its('environment_variables') { should eq ['HELLO=WORLD']}
 end
 
 describe iis_pool('test_start') do
