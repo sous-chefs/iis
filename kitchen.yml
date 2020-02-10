@@ -13,6 +13,7 @@ provisioner:
   deprecations_as_errors: true
   product_name: chef
   channel: current
+  chef_license: accept
 
 verifier:
   name: inspec
