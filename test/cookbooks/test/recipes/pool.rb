@@ -41,6 +41,7 @@ iis_pool 'testapppool' do
   start_mode :OnDemand
   identity_type :SpecificUser
   periodic_restart_schedule ['06:00:00', '14:00:00', '17:00:00']
+  environment_variables ['HELLO=WORLD', 'FOO=BAR', 'ALPHA=BETA2']
   username "#{node['hostname']}\\vagrant"
   password 'vagrant'
   action [:add, :config]
@@ -53,6 +54,7 @@ iis_pool 'passwordwithentityapppool' do
   start_mode :OnDemand
   identity_type :SpecificUser
   periodic_restart_schedule ['06:00:00', '14:00:00', '17:00:00']
+  environment_variables 'HELLO=WORLD'
   username "#{node['hostname']}\\vagrant"
   password 'vagrant&'
   action [:add, :config]

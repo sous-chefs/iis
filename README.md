@@ -479,6 +479,9 @@ Creates an application pool in IIS.
 - `smp_processor_affinity_mask` - Specifies the hexadecimal processor mask for multi-processor computers, which indicates to which CPU the worker processes in an application pool should be bound. Before this property takes effect, the smpAffinitized attribute must be set to true for the application pool. - default is 4294967295 - optional
 - `smp_processor_affinity_mask_2` - Specifies the high-order DWORD hexadecimal processor mask for 64-bit multi-processor computers, which indicates to which CPU the worker processes in an application pool should be bound. Before this property takes effect, the smpAffinitized attribute must be set to true for the application pool. - default is 4294967295 - optional
 
+##### Environment Variables
+- `environment_variables` - Specifies a list of environment variables that will be passed to a worker process when an application is launched. Single value or array accepted. `FOO=BAR` or `['FOO=BAR','HELLO=WORLD']`, optional
+
 #### Example
 
 ```ruby

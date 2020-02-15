@@ -101,6 +101,10 @@ class IisPool < Inspec.resource(1)
     iis_pool[:recycling][:periodic_restart][:schedule]
   end
 
+  def environment_variables
+    iis_pool[:environment_variables]
+  end
+
   def exists?
     !iis_pool.nil? && !iis_pool[:name].nil?
   end
@@ -152,6 +156,8 @@ class PoolProvider
     cmd_cpu = @inspec.command(command_cpu)
     command_worker_processes = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").workerProcesses | Select-Object Collection | ConvertTo-Json"
     cmd_worker_processes = @inspec.command(command_worker_processes)
+    command_environment_variables = "(Get-Item \"IIS:\\AppPools\\#{pool_name}\").environmentVariables | Select-Object Collection | ConvertTo-Json"
+    cmd_environment_variables = @inspec.command(command_environment_variables)
 
     begin
       pool = JSON.parse(cmd.stdout)
@@ -162,6 +168,7 @@ class PoolProvider
       pool_failing = JSON.parse(cmd_failing.stdout)
       pool_cpu = JSON.parse(cmd_cpu.stdout)
       pool_worker_processes = JSON.parse(cmd_worker_processes.stdout)
+      pool_environment_variables = JSON.parse(cmd_environment_variables.stdout)
     rescue JSON::ParserError => _e
       return {}
     end
@@ -171,6 +178,9 @@ class PoolProvider
 
     worker_processes = []
     pool_worker_processes['Collection'].each { |process| worker_processes.push(process_id: process['processId'], handles: process['Handles'], state: process['state'], start_time: process['StartTime']) }
+
+    environment_variables = []
+    pool_environment_variables['Collection'].each { |environment_variable| environment_variables.push("#{environment_variable['name']}=#{environment_variable['value']}") }
 
     # map our values to a hash table
     {
@@ -238,6 +248,7 @@ class PoolProvider
         numaNodeAssignment: pool_cpu['numaNodeAssignment'],
         numaNodeAffinityMode: pool_cpu['numaNodeAffinityMode'],
       },
+      environment_variables: environment_variables,
       worker_processes: worker_processes,
     }
   end

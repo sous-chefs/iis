@@ -81,6 +81,9 @@ property :cpu_smp_affinitized, [true, false], default: false
 property :smp_processor_affinity_mask, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 
+# environment variables
+property :environment_variables, [Array, String], coerce: proc { |v| [*v].sort }
+
 # internally used for the state of the pool [Starting, Started, Stopping, Stopped, Unknown, Undefined value]
 property :running, [true, false]
 
@@ -168,6 +171,9 @@ load_current_value do |desired|
     cpu_reset_interval value doc.root, 'APPPOOL/add/cpu/@resetInterval'
     smp_processor_affinity_mask value(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask').to_f
     smp_processor_affinity_mask_2 value(doc.root, 'APPPOOL/add/cpu/@smpProcessorAffinityMask2').to_f
+
+    # environment variables
+    environment_variables get_value(doc.root, 'APPPOOL/add/environmentVariables/add').map { |x| "#{value(x, '@name')}=#{value(x, '@value')}" } if iis_version >= 10
 
     @node_array = XPath.match(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add')
   end
@@ -403,6 +409,21 @@ action_class.class_eval do
     end
     converge_if_changed :smp_processor_affinity_mask_2 do
       cmd << configure_application_pool("cpu.smpProcessorAffinityMask2:#{new_resource.smp_processor_affinity_mask_2.floor}")
+    end
+
+    # environment variables
+    if iis_version >= 10
+      converge_if_changed :environment_variables do
+        # Remove the values that are no longer required
+        ([*current_resource.environment_variables] - [*new_resource.environment_variables]).each do |environment_variable|
+          cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2)[0]}',value='#{environment_variable.split('=', 2)[1]}']", '-')
+        end
+
+        # Add the new values
+        ([*new_resource.environment_variables] - [*current_resource.environment_variables]).each do |environment_variable|
+          cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2)[0]}',value='#{environment_variable.split('=', 2)[1]}']", '+')
+        end
+      end
     end
 
     unless current_resource.runtime_version && cmd == "#{appcmd(node)} set config /section:applicationPools"
