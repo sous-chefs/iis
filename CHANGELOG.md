@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 7.3.0 (2020-03-06)
+
+- Cookstyle fixes - [@tas50](https://github.com/tas50)
+- extend config_property to support setting multiple values - [@rlaveycal](https://github.com/rlaveycal)
+- Remove deprecated metadata - [@tas50](https://github.com/tas50)
+- Don't use node.normal in the specs - [@tas50](https://github.com/tas50)
+- Adds support for configuring environment variables on app pools on IIS 10+ - [@jakauppila](https://github.com/jakauppila)
+
 ## 7.2.0 (2019-01-02)
 
 - Add a new iis_manager resource to enable users to set permissions for remote management of IIS
