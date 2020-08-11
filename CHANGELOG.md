@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## Unreleased
+
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:114:5 convention: `Style/RedundantAssignment`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:121:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:122:1 convention: `Layout/EmptyLines`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:122:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:122:1 convention: `Layout/TrailingWhitespace`
+
 ## 7.3.0 (2020-03-06)
 
 - Cookstyle fixes - [@tas50](https://github.com/tas50)
