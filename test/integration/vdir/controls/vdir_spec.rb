@@ -7,7 +7,7 @@ title 'iis_vdir section'
 describe service('W3SVC') do
   it { should be_installed }
   it { should be_running }
-  its ('startmode') { should eq 'Auto' }
+  its('startmode') { should eq 'Auto' }
 end
 
 describe iis_vdir('/vdir_test', 'Default Web Site') do
