@@ -1,5 +1,5 @@
 #
-# Copyright:: 2015-2016, Chef Software, Inc.
+# Copyright:: 2015-2019, Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,7 +49,7 @@ def preamble
   <<-EOL
 # #{@toml['Preamble']['title']}
 #{@toml['Preamble']['text']}
-EOL
+  EOL
 end
 
 def project_lieutenant
@@ -57,7 +57,7 @@ def project_lieutenant
 # #{@toml['Org']['Components']['Core']['title']}
 #{github_link(@toml['Org']['Components']['Core']['lieutenant'])}
 
-EOL
+  EOL
 end
 
 def all_maintainers

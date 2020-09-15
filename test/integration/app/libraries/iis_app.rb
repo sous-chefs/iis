@@ -111,14 +111,12 @@ class AppProvider
     end
 
     # map our values to a hash table
-    info = {
+    {
       site_name: site_name,
       path: path,
       application_pool: app['applicationPool'],
       physical_path: app['PhysicalPath'],
       protocols: app['enabledProtocols'],
     }
-
-    info
   end
 end

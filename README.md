@@ -12,6 +12,7 @@ Installs and configures Microsoft Internet Information Services (IIS) 7.0 and la
   - [iis_root](#iis_root) Allows for easy management of the IIS Root Machine settings
   - [iis_site](#iis_site) Allows for easy management of IIS virtual sites (ie vhosts).
   - [iis_config](#iis_config) Runs a config command on your IIS instance.
+  - [iis_config_property](#iis_config_property) Sets an IIS property idempotently via PowerShell.
   - [iis_pool](#iis_pool) Creates an application pool in IIS.
   - [iis_app](#iis_app) Creates an application in IIS.
   - [iis_vdir](#iis_vdir) Allows easy management of IIS virtual directories (i.e. vdirs).
@@ -304,6 +305,7 @@ Sets an IIS configuration property. Idempotent. Uses Powershell [Set-WebConfigur
 - `location` : Optional. The location of the configuration setting. Location tags are frequently used for configuration settings that must be set more precisely than per application or per virtual directory. For example, a setting for a particular file or directory could use a location tag. Location tags are also used if a particular section is locked. In such an instance, the configuration system would have to use a location tag in one of the parent configuration files.
 - `filter` : Specifies the IIS configuration section or an XPath query that returns a configuration element.
 - `value` : The value to set the property to. Either a string or an integer.
+- `extra_add_values` : Optional. If the `add` action requires additional values to be set at creation then supply them in this hash. This property is not idempotent. It is only used when the configuration is created.
 
 #### Example
 
@@ -332,6 +334,71 @@ iis_config_property 'Set X-Xss-Protection' do
   value     '1; mode=block'
 end
 ```
+
+```ruby
+# Set environment variable ASPNETCORE_ENVIRONMENT to Test
+# Note we still need to maintain the value via a Set resource
+iis_config_property 'Add login/ASPNETCORE_ENVIRONMENT' do
+  ps_path           'MACHINE/WEBROOT/APPHOST'
+  location          'Default Web site'
+  filter            'system.webServer/aspNetCore/environmentVariables'
+  property          'name'
+  value             'ASPNETCORE_ENVIRONMENT'
+  extra_add_values  value: 'Test'
+  action            :add
+end
+iis_config_property 'Set login/ASPNETCORE_ENVIRONMENT' do
+  ps_path   'MACHINE/WEBROOT/APPHOST'
+  location  'Default Web site'
+  filter    "system.webServer/aspNetCore/environmentVariables/environmentVariable[@name='ASPNETCORE_ENVIRONMENT']"
+  property  'value'
+  value     'Test'
+end
+```
+
+## iis_manager
+
+Configures the IIS Manager service
+
+#### Actions
+
+- `:config` - Change the configuration of the service. Restarts as necessary and sets the service to be automatic and running.
+
+
+#### Properties
+
+- `port` : The port the service listens on. Default is 8172
+- `enable_remote_management` : If remote access allowed. Default `true`
+- `log_directory` : Optional. The directory to write log files to.
+
+#### Example
+
+```ruby
+iis_manager 'IIS Manager' do
+  port                      9090
+  enable_remote_management  true
+  log_directory             "C:\\CustomPath"
+end
+```
+
+## iis_manager_permission
+
+Requires: Server 2016+
+
+Set the permissions for user access to the IIS Manager
+
+#### Actions
+
+- `config` : Configure the given path to allow only the defined users and groups access. Removes any other principals. This is an idempotent action.
+
+
+#### Properties
+
+- `config_path` : The IIS Manager path to be configured. Usually just the site name. Taken from the `name` attribute if not set, The config_path takes the form of _site_name_/_application_/_application_ (where applications are optional)
+- `users` : Optional. Array of users to be allowed access
+- `groups` : Optional. Array of groups to be allowed access
+
+
 
 ### iis_pool
 
@@ -411,6 +478,9 @@ Creates an application pool in IIS.
 - `cpu_smp_affinitized` - Specifies whether a particular worker process assigned to an application pool should also be assigned to a given CPU. - default is false - optional
 - `smp_processor_affinity_mask` - Specifies the hexadecimal processor mask for multi-processor computers, which indicates to which CPU the worker processes in an application pool should be bound. Before this property takes effect, the smpAffinitized attribute must be set to true for the application pool. - default is 4294967295 - optional
 - `smp_processor_affinity_mask_2` - Specifies the high-order DWORD hexadecimal processor mask for 64-bit multi-processor computers, which indicates to which CPU the worker processes in an application pool should be bound. Before this property takes effect, the smpAffinitized attribute must be set to true for the application pool. - default is 4294967295 - optional
+
+##### Environment Variables
+- `environment_variables` - Specifies a list of environment variables that will be passed to a worker process when an application is launched. Single value or array accepted. `FOO=BAR` or `['FOO=BAR','HELLO=WORLD']`, optional
 
 #### Example
 

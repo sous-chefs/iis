@@ -16,4 +16,11 @@ control 'config_property' do
                       -Name \"value\").value") do
     its('stdout') { should eq "1; mode=block\r\n" }
   end
+
+  describe powershell("(Get-WebConfigurationProperty -PSPath \"MACHINE/WEBROOT/APPHOST\" \
+                      -Location \"Default Web site\" \
+                      -filter \"system.webServer/aspNetCore/environmentVariables/environmentVariable[@name='ASPNETCORE_ENVIRONMENT']\" \
+                      -Name \"value\").value") do
+    its('stdout') { should eq "Test\r\n" }
+  end
 end

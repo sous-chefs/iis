@@ -15,7 +15,8 @@ provisioner:
   name: chef_zero
   deprecations_as_errors: true
   product_name: chef
-  channel: current
+  channel: stable
+  chef_license: accept
 
 platforms:
   - name: windows-2012R2
@@ -30,6 +31,9 @@ suites:
   - name: config_property
     run_list:
       - recipe[test::config_property]
+  - name: manager
+    run_list:
+      - recipe[test::manager]
   - name: module
     run_list:
       - recipe[test::module]

@@ -2,6 +2,33 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 7.3.1 (2020-09-15)
+
+- Property of pool resource that uses a node attribute value now evaluated lazily - [@dave-q](https://github.com/dave-q)
+- Cookstyle 6.15.3 Fixes - [@xorimabot](https://github.com/xorimabot)
+- Standardise files with files in chef-cookbooks/repo-management - [@xorimabot](https://github.com/xorimabot)
+
+## Unreleased
+
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:114:5 convention: `Style/RedundantAssignment`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:121:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:122:1 convention: `Layout/EmptyLines`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:122:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: test/integration/app/libraries/iis_app.rb:122:1 convention: `Layout/TrailingWhitespace`
+
+## 7.3.0 (2020-03-06)
+
+- Cookstyle fixes - [@tas50](https://github.com/tas50)
+- extend config_property to support setting multiple values - [@rlaveycal](https://github.com/rlaveycal)
+- Remove deprecated metadata - [@tas50](https://github.com/tas50)
+- Don't use node.normal in the specs - [@tas50](https://github.com/tas50)
+- Adds support for configuring environment variables on app pools on IIS 10+ - [@jakauppila](https://github.com/jakauppila)
+
+## 7.2.0 (2019-01-02)
+
+- Add a new iis_manager resource to enable users to set permissions for remote management of IIS
+- Resolve a deprecation warning in config_property
+
 ## 7.1.1 (2018-10-25)
 
 - Fix password containing xml entities like & are set every run
