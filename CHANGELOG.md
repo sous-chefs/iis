@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## 7.3.1 (2020-09-15)
+
+- Property of pool resource that uses a node attribute value now evaluated lazily - [@dave-q](https://github.com/dave-q)
+- Cookstyle 6.15.3 Fixes - [@xorimabot](https://github.com/xorimabot)
+- Standardise files with files in chef-cookbooks/repo-management - [@xorimabot](https://github.com/xorimabot)
+
 ## Unreleased
 
 - resolved cookstyle error: test/integration/app/libraries/iis_app.rb:114:5 convention: `Style/RedundantAssignment`
