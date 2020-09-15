@@ -56,7 +56,7 @@ property :ping_response_time, String, default: '00:01:30'
 property :disallow_rotation_on_config_change, [true, false], default: false
 property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
-property :log_event_on_recycle, String, default: node['iis']['recycle']['log_events']
+property :log_event_on_recycle, String, default: lazy { node['iis']['recycle']['log_events'] }
 property :recycle_after_time, String
 property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| [*v].sort }
 property :private_memory, Integer, coerce: proc { |v| v.to_i }
