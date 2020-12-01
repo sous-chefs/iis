@@ -6,7 +6,7 @@ title 'iis_app section'
 describe service('W3SVC') do
   it { should be_installed }
   it { should be_running }
-  its ('startmode') { should eq 'Auto' }
+  its('startmode') { should eq 'Auto' }
 end
 
 describe iis_site('Default Web Site') do
