@@ -2,14 +2,20 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## Unreleased
+
+## 7.4.0 - *2021-01-10*
+
+- Adoption by Sous-chefs
+- Fixes to tests
+- Migrated all documention into seperate files for resources
+- Added note about next major removing recipes
+
 ## 7.3.1 (2020-09-15)
 
 - Property of pool resource that uses a node attribute value now evaluated lazily - [@dave-q](https://github.com/dave-q)
 - Cookstyle 6.15.3 Fixes - [@xorimabot](https://github.com/xorimabot)
 - Standardise files with files in chef-cookbooks/repo-management - [@xorimabot](https://github.com/xorimabot)
-
-## Unreleased
-
 - resolved cookstyle error: test/integration/app/libraries/iis_app.rb:114:5 convention: `Style/RedundantAssignment`
 - resolved cookstyle error: test/integration/app/libraries/iis_app.rb:121:1 convention: `Layout/EmptyLinesAroundMethodBody`
 - resolved cookstyle error: test/integration/app/libraries/iis_app.rb:122:1 convention: `Layout/EmptyLines`
