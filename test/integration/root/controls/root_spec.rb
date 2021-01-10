@@ -17,20 +17,19 @@ end
 control 'document tests' do
   title 'Check IIS default documents are set'
 
-  describe powershell("Import-Module WebAdministration; Get-WebConfiguration -Filter /system.webServer/defaultDocument/files/add -PSPath MACHINE/WEBROOT/APPHOST | Select-Object value") do
+  describe powershell('Import-Module WebAdministration; Get-WebConfiguration -Filter /system.webServer/defaultDocument/files/add -PSPath MACHINE/WEBROOT/APPHOST | Select-Object value') do
     its('stdout') { should match /test\.html/ }
     its('stdout') { should_not match /not_there\.html/ }
   end
 end
 
-
 control 'mime tests' do
   title 'Check IIS mimes are set'
 
-  describe powershell("Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap -PSPath MACHINE/WEBROOT/APPHOST | Select-Object fileExtension, mimeType") do
-    its('stdout') { should match /\.323\s+text\/h323/ }
-    its('stdout') { should match /\.dmg\s+application\/octet-stream/ }
-    its('stdout') { should_not match /\.rpm\s+audio\/x-pn-realaudio-plugin/ }
-    its('stdout') { should_not match /\.msi\s+application\/octet-stream/ }
+  describe powershell('Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap -PSPath MACHINE/WEBROOT/APPHOST | Select-Object fileExtension, mimeType') do
+    its('stdout') { should match %r{\.323\s+text/h323} }
+    its('stdout') { should match %r{\.dmg\s+application/octet-stream} }
+    its('stdout') { should_not match %r{\.rpm\s+audio/x-pn-realaudio-plugin} }
+    its('stdout') { should_not match %r{\.msi\s+application/octet-stream} }
   end
 end
