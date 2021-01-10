@@ -27,7 +27,6 @@ control 'mime tests' do
   title 'Check IIS mimes are set'
 
   describe powershell('Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap -PSPath MACHINE/WEBROOT/APPHOST | Select-Object fileExtension, mimeType') do
-    its('stdout') { should match %r{\.323\s+text/h323} }
     its('stdout') { should match %r{\.dmg\s+application/octet-stream} }
     its('stdout') { should_not match %r{\.rpm\s+audio/x-pn-realaudio-plugin} }
     its('stdout') { should_not match %r{\.msi\s+application/octet-stream} }
