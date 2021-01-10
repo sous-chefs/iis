@@ -140,7 +140,7 @@ Allows for easy management of IIS virtual sites (ie vhosts).
 - `host_header` - host header (also known as domains or host names) the site should map to. default is all host headers
 - `bindings` - Advanced options to configure the information required for requests to communicate with a Web site. See <http://www.iis.net/configreference/system.applicationhost/sites/site/bindings/binding> for parameter format. When binding is used, port protocol and host_header should not be used.
 - `application_pool` - set the application pool of the site
-- `options` - additional options to configure the site.  Such as `"-logDir"`, `"-limits"`, `"-ftpServer"`, `"-applicationDefaults.preloadEnabled:True"`. This can be anything that you would normally add to a appcmd, so if you want to find out the possible values google "appcmd iis site <enter thing you want>".  This only runs during `add` since it isn't idempotent.
+- `options` - additional options to configure the site.  Such as `"-logDir"`, `"-limits"`, `"-ftpServer"`, `"-applicationDefaults.preloadEnabled:True"`. This can be anything that you would normally add to a appcmd, so if you want to find out the possible values google `"appcmd iis site <enter thing you want>"`.  This only runs during `add` since it isn't idempotent.
 - `log_directory` - specifies the logging directory, where the log file and logging-related support files are stored.
 - `log_period` - specifies how often iis creates a new log file
 - `log_truncsize` - specifies the maximum size of the log file (in bytes) after which to create a new log file.
@@ -360,18 +360,17 @@ end
 
 Configures the IIS Manager service
 
-#### Actions
+### Actions
 
 - `:config` - Change the configuration of the service. Restarts as necessary and sets the service to be automatic and running.
 
-
-#### Properties
+### Properties
 
 - `port` : The port the service listens on. Default is 8172
 - `enable_remote_management` : If remote access allowed. Default `true`
 - `log_directory` : Optional. The directory to write log files to.
 
-#### Example
+### Example
 
 ```ruby
 iis_manager 'IIS Manager' do
@@ -387,18 +386,15 @@ Requires: Server 2016+
 
 Set the permissions for user access to the IIS Manager
 
-#### Actions
+### Actions
 
 - `config` : Configure the given path to allow only the defined users and groups access. Removes any other principals. This is an idempotent action.
 
-
-#### Properties
+### Properties
 
 - `config_path` : The IIS Manager path to be configured. Usually just the site name. Taken from the `name` attribute if not set, The config_path takes the form of _site_name_/_application_/_application_ (where applications are optional)
 - `users` : Optional. Array of users to be allowed access
 - `groups` : Optional. Array of groups to be allowed access
-
-
 
 ### iis_pool
 
@@ -480,6 +476,7 @@ Creates an application pool in IIS.
 - `smp_processor_affinity_mask_2` - Specifies the high-order DWORD hexadecimal processor mask for 64-bit multi-processor computers, which indicates to which CPU the worker processes in an application pool should be bound. Before this property takes effect, the smpAffinitized attribute must be set to true for the application pool. - default is 4294967295 - optional
 
 ##### Environment Variables
+
 - `environment_variables` - Specifies a list of environment variables that will be passed to a worker process when an application is launched. Single value or array accepted. `FOO=BAR` or `['FOO=BAR','HELLO=WORLD']`, optional
 
 #### Example

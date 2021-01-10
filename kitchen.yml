@@ -25,11 +25,12 @@ platforms:
   - name: windows-2012r2
     driver_config:
       box: tas50/windows_2012r2
-  - name: windows-2016-chef-12
+  - name: windows-2016
     driver_config:
       box: tas50/windows_2016
-    provisioner:
-      require_chef_omnibus: 12.14.89
+  - name: windows-2019
+    driver_config:
+      box: tas50/windows_2019
 
 suites:
   - name: default

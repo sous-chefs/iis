@@ -1,0 +1,5 @@
+driver:
+  name: exec
+
+platforms:
+  - name: windows-2019
