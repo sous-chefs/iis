@@ -23,7 +23,10 @@ property :source, String
 property :additional_components, Array, default: []
 
 action :install do
-  windows_feature ['IIS-WebServerRole'] + new_resource.additional_components do
+  features_to_install = ['IIS-WebServerRole'].concat new_resource.additional_components
+
+  windows_feature 'Install IIS and additional components' do
+    feature_name features_to_install
     action :install
     all !IISCookbook::Helper.older_than_windows2012?
     source new_resource.source unless new_resource.source.nil?

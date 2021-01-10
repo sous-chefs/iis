@@ -58,7 +58,7 @@ property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
 property :log_event_on_recycle, String, default: lazy { node['iis']['recycle']['log_events'] }
 property :recycle_after_time, String
-property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| [*v].sort }
+property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| Array(v).sort }
 property :private_memory, Integer, coerce: proc { |v| v.to_i }
 property :virtual_memory, Integer, coerce: proc { |v| v.to_i }
 
@@ -82,7 +82,7 @@ property :smp_processor_affinity_mask, Float, default: 4_294_967_295.0, coerce: 
 property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
 
 # environment variables
-property :environment_variables, [Array, String], coerce: proc { |v| [*v].sort }
+property :environment_variables, [Array, String], coerce: proc { |v| Array(v).sort }
 
 # internally used for the state of the pool [Starting, Started, Stopping, Stopped, Unknown, Undefined value]
 property :running, [true, false]
@@ -332,12 +332,12 @@ action_class.class_eval do
 
     converge_if_changed :periodic_restart_schedule do
       # Remove the values that are no longer required
-      ([*current_resource.periodic_restart_schedule] - [*new_resource.periodic_restart_schedule]).each do |periodic_restart|
+      (Array(current_resource.periodic_restart_schedule) - Array(new_resource.periodic_restart_schedule)).each do |periodic_restart|
         cmd << configure_application_pool("recycling.periodicRestart.schedule.[value='#{periodic_restart}']", '-')
       end
 
       # Add the new values
-      ([*new_resource.periodic_restart_schedule] - [*current_resource.periodic_restart_schedule]).each do |periodic_restart|
+      (Array(new_resource.periodic_restart_schedule) - Array(current_resource.periodic_restart_schedule)).each do |periodic_restart|
         cmd << configure_application_pool("recycling.periodicRestart.schedule.[value='#{periodic_restart}']", '+')
       end
     end
@@ -415,12 +415,12 @@ action_class.class_eval do
     if iis_version >= 10
       converge_if_changed :environment_variables do
         # Remove the values that are no longer required
-        ([*current_resource.environment_variables] - [*new_resource.environment_variables]).each do |environment_variable|
+        (Array(current_resource.environment_variables) - Array(new_resource.environment_variables)).each do |environment_variable|
           cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2)[0]}',value='#{environment_variable.split('=', 2)[1]}']", '-')
         end
 
         # Add the new values
-        ([*new_resource.environment_variables] - [*current_resource.environment_variables]).each do |environment_variable|
+        (Array(new_resource.environment_variables) - Array(current_resource.environment_variables)).each do |environment_variable|
           cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2)[0]}',value='#{environment_variable.split('=', 2)[1]}']", '+')
         end
       end

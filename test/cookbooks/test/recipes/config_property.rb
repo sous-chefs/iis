@@ -61,14 +61,3 @@ iis_config_property 'Set X-Xss-Protection' do
   property  'value'
   value     '1; mode=block'
 end
-
-# Add environment variable + value
-iis_config_property 'Add login/ASPNETCORE_ENVIRONMENT' do
-  ps_path           'MACHINE/WEBROOT/APPHOST'
-  location          'Default Web site'
-  filter            'system.webServer/aspNetCore/environmentVariables'
-  property          'name'
-  value             'ASPNETCORE_ENVIRONMENT'
-  extra_add_values  value: 'Test'
-  action            :add
-end
