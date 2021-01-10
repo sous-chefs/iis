@@ -6,6 +6,8 @@ This file is used to list changes made in each version of the iis cookbook.
 
 - Adoption by Sous-chefs
 - Fixes to tests
+- Migrated all documention into seperate files for resources
+- Added note about next major removing recipes
 
 ## 7.3.1 (2020-09-15)
 
