@@ -44,7 +44,7 @@ jobs:
         suite:
           - 'default'
           - 'disable-default'
-          - 'app-windows'
+          - 'app'
           - 'config-property'
           - 'manager'
           - 'manager-permission'
@@ -61,8 +61,8 @@ jobs:
         uses: actions/checkout@master
       - name: Install Chef
         uses: actionshub/chef-install@master
-      - name: Dokken
-        uses: actionshub/kitchen-dokken@master
+      - name: test-kitchen
+        uses: actionshub/test-kitchen@master
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.exec.yml

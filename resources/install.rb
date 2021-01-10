@@ -19,7 +19,7 @@
 
 include IISCookbook::Helper
 
-property :source, String, default: lazy { node['iis']['source'] }
+property :source, String
 property :additional_components, Array, default: []
 
 action :install do
