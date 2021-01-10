@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
-## Unreleased
+## 7.4.0 - *2021-01-10*
 
 - Adoption by Sous-chefs
 - Fixes to tests
