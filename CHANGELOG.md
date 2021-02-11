@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- Fixed `iis_pool` server-level app pool default value inheritance
+
 ## 7.4.0 - *2021-01-10*
 
 - Adoption by Sous-chefs

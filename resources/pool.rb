@@ -194,7 +194,7 @@ action :add do
       cmd << ' /commit:\"MACHINE/WEBROOT/APPHOST\"'
       Chef::Log.debug(cmd)
       shell_out!(cmd)
-      configure
+      action_config
     end
   end
 end
