@@ -4,6 +4,9 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- resolved cookstyle error: libraries/helper.rb:77:19 convention: `Style/RedundantBegin`
+- resolved cookstyle error: libraries/helper.rb:78:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: libraries/helper.rb:78:1 convention: `Layout/TrailingWhitespace`
 ## 7.5.0 - *2021-02-11*
 
 - Fixed `iis_pool` server-level app pool default value inheritance

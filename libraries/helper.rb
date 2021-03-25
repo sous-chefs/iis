@@ -74,9 +74,7 @@ module IISCookbook
     end
 
     def appcmd(node)
-      @appcmd ||= begin
-        "#{node['iis']['home']}\\appcmd.exe"
-      end
+      @appcmd ||= "#{node['iis']['home']}\\appcmd.exe"
     end
 
     def iis_version
