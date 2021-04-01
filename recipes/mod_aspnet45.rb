@@ -21,4 +21,8 @@
 include_recipe 'iis'
 include_recipe 'iis::mod_isapi'
 
-windows_feature %w(NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45)
+install_method = node['iis']['windows_feature_install_method']&.to_sym
+
+windows_feature transform_feature_name(install_method, %w(NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45)) do
+  install_method install_method
+end

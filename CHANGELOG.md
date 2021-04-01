@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- Allow specifying install method for windows_feature resources
+
 ## 7.5.1 - *2021-03-25*
 
 - Cookstyle fixes

@@ -55,4 +55,18 @@ describe 'iis::default' do
       expect(chef_run).to start_service('iis').with(service_name: 'W3SVC')
     end
   end
+
+  [:windows_feature_dism, :windows_feature_powershell, :windows_feature_servermanagercmd].each do |method|
+    context "When iis windows feature install method is provided as #{method}, on a unspecified platform" do
+      let(:chef_run) do
+        ChefSpec::SoloRunner.new do |node|
+          node.override['iis']['windows_feature_install_method'] = method
+        end.converge(described_recipe)
+      end
+
+      it "installs windows features using #{method}" do
+        expect(chef_run).to install_iis_install('install IIS').with(install_method: method)
+      end
+    end
+  end
 end

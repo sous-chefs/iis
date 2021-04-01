@@ -20,7 +20,11 @@
 
 include_recipe 'iis'
 
-windows_feature 'IIS-DigestAuthentication'
+install_method = node['iis']['windows_feature_install_method']&.to_sym
+
+windows_feature transform_feature_name(install_method, 'IIS-DigestAuthentication') do
+  install_method install_method
+end
 
 iis_section 'unlocks digest authentication control in web.config' do
   section 'system.webServer/security/authentication/digestAuthentication'

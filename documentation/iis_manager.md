@@ -17,6 +17,7 @@ Configures the IIS Manager service
 | `enable_remote_management`  |  true, false  | `true`  | If remote access allowed |
 | `log_directory`             |  String       |         | Optional. The directory to write log files to |
 | `port`                      |  Integer      | `8172`  | The port the service listens on. |
+| `install_method`            |  :windows_feature_dism, :windows_feature_powershell, :windows_feature_servermanagercmd | `:windows_feature_dism` | Optional. install_method to be used to any windows_features resources |
 
 ## Examples
 

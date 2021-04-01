@@ -27,3 +27,5 @@ default['iis']['components'] = []
 default['iis']['source'] = nil
 
 default['iis']['recycle']['log_events'] = 'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory'
+
+default['iis']['windows_feature_install_method'] = :windows_feature_dism

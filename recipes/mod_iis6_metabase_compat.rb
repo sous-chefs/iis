@@ -20,4 +20,8 @@
 
 include_recipe 'iis'
 
-windows_feature %w(IIS-IIS6ManagementCompatibility IIS-Metabase)
+install_method = node['iis']['windows_feature_install_method']&.to_sym
+
+windows_feature transform_feature_name(install_method, %w(IIS-IIS6ManagementCompatibility IIS-Metabase)) do
+  install_method install_method
+end

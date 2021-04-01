@@ -16,6 +16,7 @@ Simple resource to install the IIS feature
 | ----------------------- | -------- | -------- | ------------------------------------ |
 | `source`                |  String  | No       | Source to install the features from. |
 | `additional_components` |  Array   | No       | Features of IIS to install |
+| `install_method`        |  :windows_feature_dism, :windows_feature_powershell | No | install_method to be used to any windows_features  resources. Default is :windows_feature_dism |
 
 ## Examples
 

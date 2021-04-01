@@ -54,6 +54,8 @@ jobs:
           - 'section'
           - 'site'
           - 'vdir'
+          - 'default-windowsfeatures-powershell'
+          - 'site-windowsfeatures-powershell'
       fail-fast: false
 
     steps:
