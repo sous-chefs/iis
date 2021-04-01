@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- A change that will never be merged...
+
 ## 7.5.1 - *2021-03-25*
 
 - Cookstyle fixes
