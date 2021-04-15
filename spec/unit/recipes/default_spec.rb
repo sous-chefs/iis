@@ -26,16 +26,13 @@ describe 'iis::default' do
       end.converge(described_recipe)
     end
 
+    it 'converges successfully' do
+      expect { chef_run }.to_not raise_error
+    end
+
     it 'installs windows feature foobar' do
       expect(chef_run).to install_iis_install('install IIS').with(additional_components: ['foobar'])
     end
-
-    # This does not currently get passed through correctly and needs a total rewrite to the test file
-    # it 'installs windows feature foobar with source' do
-    #   chef_run.node.override['iis']['source'] = 'somesource'
-    #   chef_run.converge(described_recipe)
-    #   expect(chef_run).to install_iis_install('install IIS').with(source: 'somesource')
-    # end
   end
 
   context 'When all attributes are default, on an unspecified platform' do
@@ -45,14 +42,6 @@ describe 'iis::default' do
 
     it 'converges successfully' do
       expect { chef_run }.to_not raise_error
-    end
-
-    it 'enables iis service with name W3WVC' do
-      expect(chef_run).to enable_service('iis').with(service_name: 'W3SVC')
-    end
-
-    it 'starts iis service with name W3WVC' do
-      expect(chef_run).to start_service('iis').with(service_name: 'W3SVC')
     end
   end
 
@@ -67,6 +56,24 @@ describe 'iis::default' do
       it "installs windows features using #{method}" do
         expect(chef_run).to install_iis_install('install IIS').with(install_method: method)
       end
+    end
+  end
+
+  context 'When source provided, on an unspecified platform' do
+    let(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.override['iis']['source'] = 'somesource'
+      end.converge(described_recipe)
+    end
+
+    it 'converges successfully' do
+      expect { chef_run }.to_not raise_error
+    end
+
+    it 'installs features with source' do
+      chef_run.node.override['iis']['source'] = 'somesource'
+      chef_run.converge(described_recipe)
+      expect(chef_run).to install_iis_install('install IIS').with(source: 'somesource')
     end
   end
 end

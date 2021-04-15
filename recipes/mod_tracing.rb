@@ -18,10 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-install_method = node['iis']['windows_feature_install_method']&.to_sym
-
-windows_feature transform_feature_name(install_method, 'IIS-HttpTracing') do
-  install_method install_method
+iis_install 'install IIS, Tracing' do
+  additional_components 'IIS-HttpTracing'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
 end

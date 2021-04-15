@@ -18,14 +18,11 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-include_recipe 'iis::mod_isapi'
-
-install_method = node['iis']['windows_feature_install_method']&.to_sym
-
-windows_feature transform_feature_name(install_method, %w(IIS-NetFxExtensibility IIS-ASPNET)) do
-  action :install
-  all !IISCookbook::Helper.older_than_windows2012?
-  source node['iis']['source'] unless node['iis']['source'].nil?
-  install_method install_method
+iis_install 'install IIS, ASPNET' do
+  additional_components %w(IIS-NetFxExtensibility IIS-ASPNET)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
 end
+
+include_recipe 'iis::mod_isapi'

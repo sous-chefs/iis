@@ -18,12 +18,11 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-install_method = node['iis']['windows_feature_install_method']&.to_sym
-
-windows_feature transform_feature_name(install_method, 'IIS-BasicAuthentication') do
-  install_method install_method
+iis_install 'install IIS, BasicAuth' do
+  additional_components 'IIS-BasicAuthentication'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
 end
 
 iis_section 'unlocks basic authentication control in web.config' do

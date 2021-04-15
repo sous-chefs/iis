@@ -18,11 +18,11 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-include_recipe 'iis::mod_isapi'
-
-install_method = node['iis']['windows_feature_install_method']&.to_sym
-
-windows_feature transform_feature_name(install_method, %w(NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45)) do
-  install_method install_method
+iis_install 'install IIS, ASPNET45' do
+  additional_components %w(NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
 end
+
+include_recipe 'iis::mod_isapi'
