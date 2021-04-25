@@ -64,9 +64,8 @@ action_class do
       if result.stderr.to_s.empty?
         next result.stdout.strip
       else
-        Chef::Log.warn("Unable to translate feature #{name}")
-        Chef::Log.warn(result.stderr)
-        next name
+        Chef::Log.error(result.stderr)
+        raise "Unable to translate feature #{name}"
       end
     end
   end
