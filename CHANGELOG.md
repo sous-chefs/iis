@@ -4,7 +4,11 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- Standardise files with files in sous-chefs/repo-management
+
 ## 7.5.2 - *2021-06-01*
+
+- Standardise files with files in sous-chefs/repo-management
 
 ## 7.5.1 - *2021-03-25*
 
