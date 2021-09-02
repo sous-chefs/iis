@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
+## Unreleased
+
 ## 7.6.0 - *2021-09-02*
 
 - resolved cookstyle error: resources/app.rb:127:1 refactor: `Chef/Modernize/ClassEvalActionClass`
