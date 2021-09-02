@@ -31,7 +31,7 @@ action :clear do
   config(:clear)
 end
 
-action_class.class_eval do
+action_class do
   def config(action = :set)
     converge_by "Executing IIS Config #{action}" do
       cmd = "#{appcmd(node)} #{action} config #{new_resource.cfg_cmd}"
