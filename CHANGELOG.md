@@ -10,6 +10,7 @@ This file is used to list changes made in each version of the iis cookbook.
 - resolved cookstyle error: resources/pool.rb:254:1 refactor: `Chef/Modernize/ClassEvalActionClass`
 - resolved cookstyle error: resources/site.rb:165:1 refactor: `Chef/Modernize/ClassEvalActionClass`
 - resolved cookstyle error: resources/vdir.rb:130:1 refactor: `Chef/Modernize/ClassEvalActionClass`
+
 ## 7.5.3 - *2021-08-30*
 
 - Standardise files with files in sous-chefs/repo-management
