@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 require 'rexml/document'
 
 include REXML

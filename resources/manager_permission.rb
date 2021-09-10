@@ -19,6 +19,8 @@
 #
 # Grants access to IIS manager against a site or application
 
+unified_mode true
+
 property :config_path,  String, name_property: true
 property :users,        Array,  default: []
 property :groups,       Array,  default: []

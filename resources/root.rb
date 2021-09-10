@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 include IISCookbook::Constants
 include IISCookbook::Helper
 include IISCookbook::Processors
