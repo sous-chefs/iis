@@ -4,7 +4,7 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
-- add `unifed_mode: true` to resources.
+- add `unified_mode: true` to resources.
 
 ## 7.6.0 - *2021-09-02*
 

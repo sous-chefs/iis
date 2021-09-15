@@ -10,7 +10,7 @@ transport:
 
 provisioner:
   name: chef_zero
-  deprecations_as_errors: false
+  deprecations_as_errors: true
   product_name: chef
   channel: stable
   chef_license: accept
