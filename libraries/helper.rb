@@ -32,7 +32,6 @@ module IISCookbook
 
     include Chef::Mixin::ShellOut
     include REXML
-    include Windows::Helper
 
     def self.older_than_windows2012?
       if RUBY_PLATFORM =~ /mswin|mingw32|windows/
