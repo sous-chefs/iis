@@ -58,12 +58,12 @@ def netsh_command
   # http://msdn.microsoft.com/en-us/library/aa384187(v=vs.85).aspx
   # especially important for 32-bit processes (like Ruby) on a
   # 64-bit instance of Windows.
-  if ::File.exist?("#{ENV["WINDIR"]}\\sysnative\\netsh.exe")
-    "#{ENV["WINDIR"]}\\sysnative\\netsh.exe"
-  elsif ::File.exist?("#{ENV["WINDIR"]}\\system32\\netsh.exe")
-    "#{ENV["WINDIR"]}\\system32\\netsh.exe"
+  if ::File.exist?("#{ENV['WINDIR']}\\sysnative\\netsh.exe")
+    "#{ENV['WINDIR']}\\sysnative\\netsh.exe"
+  elsif ::File.exist?("#{ENV['WINDIR']}\\system32\\netsh.exe")
+    "#{ENV['WINDIR']}\\system32\\netsh.exe"
   else
-    "netsh.exe"
+    'netsh.exe'
   end
 end
 
