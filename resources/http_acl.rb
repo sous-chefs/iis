@@ -20,6 +20,8 @@
 
 unified_mode true if respond_to?(:unified_mode)
 
+include IISCookbook::Helper
+
 property :url, String, name_property: true
 property :user, String
 property :sddl, String
