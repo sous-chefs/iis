@@ -4,6 +4,9 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- add `unified_mode: true` to resources.
+- moved `http_acl` and `certificate_binding` resources from `windows` cookbook.
+
 ## 7.6.0 - *2021-09-02*
 
 - resolved cookstyle error: resources/app.rb:127:1 refactor: `Chef/Modernize/ClassEvalActionClass`

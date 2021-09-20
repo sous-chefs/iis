@@ -32,7 +32,6 @@ module IISCookbook
 
     include Chef::Mixin::ShellOut
     include REXML
-    include Windows::Helper
 
     def self.older_than_windows2012?
       if RUBY_PLATFORM =~ /mswin|mingw32|windows/
@@ -84,6 +83,16 @@ module IISCookbook
         @iis_version = version_string
       end
       @iis_version.to_f
+    end
+
+    def locate_sysnative_cmd(cmd)
+      if ::File.exist?("#{ENV['WINDIR']}\\sysnative\\#{cmd}")
+        "#{ENV['WINDIR']}\\sysnative\\#{cmd}"
+      elsif ::File.exist?("#{ENV['WINDIR']}\\system32\\#{cmd}")
+        "#{ENV['WINDIR']}\\system32\\#{cmd}"
+      else
+        cmd
+      end
     end
   end
 end
