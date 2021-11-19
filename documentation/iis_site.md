@@ -90,7 +90,7 @@ end
 # the port 443, and the host header www.domain.com
 # now create and start the site (note this will use the default application pool which must exist)
 iis_site 'FooBar Site' do
-  bindings "http/10.12.0.136:80:www.domain.com,https/*:443:www.domain.com
+  bindings "http/10.12.0.136:80:www.domain.com,https/*:443:www.domain.com"
   path "#{node['iis']['docroot']}/testfu"
   action [:add,:start]
 end
