@@ -18,6 +18,8 @@
 #
 # Configures an IIS property (using powershell for idempotence)
 
+unified_mode true
+
 property :property, String, name_property: true
 property :ps_path, String, required: true
 property :location, String

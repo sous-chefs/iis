@@ -5,9 +5,7 @@ license          'Apache-2.0'
 description      'Installs/Configures Windows IIS'
 source_url       'https://github.com/sous-chefs/iis'
 issues_url       'https://github.com/sous-chefs/iis/issues'
-chef_version     '>= 12.14'
-version          '7.5.1'
+chef_version     '>= 15.3'
+version          '8.0.1'
 
 supports 'windows'
-
-depends 'windows', '>= 4.1.0'

@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 include IISCookbook::Helper
 
 property :source, String

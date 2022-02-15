@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 include IISCookbook::Helper
 include IISCookbook::Processors
 include IISCookbook::SectionHelper
@@ -126,7 +128,7 @@ action :uninstall do
   end
 end
 
-action_class.class_eval do
+action_class do
   def exists
     current_resource.type ? true : false
   end

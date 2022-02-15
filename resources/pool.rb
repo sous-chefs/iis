@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+unified_mode true
+
 require 'rexml/document'
 
 include REXML
@@ -251,7 +253,7 @@ action :recycle do
   end
 end
 
-action_class.class_eval do
+action_class do
   def exists
     current_resource.runtime_version ? true : false
   end

@@ -5,6 +5,33 @@ This file is used to list changes made in each version of the iis cookbook.
 ## Unreleased
 
 - Allow specifying install method for windows_feature resources
+- Remove delivery folder
+
+## 8.0.1 - *2021-11-19*
+
+- Add missing double quote in documentation code is iis_site.md
+
+## 8.0.0 - *2021-09-20*
+
+- add `unified_mode: true` to resources.
+- moved `http_acl` and `certificate_binding` resources from `windows` cookbook.
+
+## 7.6.0 - *2021-09-02*
+
+- resolved cookstyle error: resources/app.rb:127:1 refactor: `Chef/Modernize/ClassEvalActionClass`
+- resolved cookstyle error: resources/config.rb:34:1 refactor: `Chef/Modernize/ClassEvalActionClass`
+- resolved cookstyle error: resources/module.rb:129:1 refactor: `Chef/Modernize/ClassEvalActionClass`
+- resolved cookstyle error: resources/pool.rb:254:1 refactor: `Chef/Modernize/ClassEvalActionClass`
+- resolved cookstyle error: resources/site.rb:165:1 refactor: `Chef/Modernize/ClassEvalActionClass`
+- resolved cookstyle error: resources/vdir.rb:130:1 refactor: `Chef/Modernize/ClassEvalActionClass`
+
+## 7.5.3 - *2021-08-30*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 7.5.2 - *2021-06-01*
+
+- Standardise files with files in sous-chefs/repo-management
 
 ## 7.5.1 - *2021-03-25*
 
