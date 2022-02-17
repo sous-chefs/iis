@@ -4,7 +4,8 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
+- Remove delivery folder
 
 ## 8.0.1 - *2021-11-19*
 
