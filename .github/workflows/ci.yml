@@ -1,7 +1,7 @@
 ---
 name: ci
 
-'on':
+"on":
   pull_request:
   push:
     branches:
@@ -40,29 +40,29 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'windows-2019'
+          - "windows-2019"
         suite:
-          - 'default'
-          - 'disable-default'
-          - 'app'
-          - 'config-property'
-          - 'manager'
-          - 'manager-permission'
-          - 'module'
-          - 'pool'
-          - 'root'
-          - 'section'
-          - 'site'
-          - 'vdir'
+          - "default"
+          - "disable-default"
+          - "app"
+          - "config-property"
+          - "manager"
+          - "manager-permission"
+          - "module"
+          - "pool"
+          - "root"
+          - "section"
+          - "site"
+          - "vdir"
       fail-fast: false
 
     steps:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Install Chef
-        uses: actionshub/chef-install@main
+        uses: actionshub/chef-install@2.0.4
       - name: test-kitchen
-        uses: actionshub/test-kitchen@main
+        uses: actionshub/test-kitchen@2.1.0
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.exec.yml
