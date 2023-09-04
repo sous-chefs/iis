@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the iis cookbook.
 
-## Unreleased
+## 8.0.19 - *2023-09-04*
 
 ## 8.0.18 - *2023-09-04*
 
