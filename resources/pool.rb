@@ -60,6 +60,7 @@ property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
 property :log_event_on_recycle, String, default: lazy { node['iis']['recycle']['log_events'] }
 property :recycle_after_time, String
+property :recycle_after_requests, Integer, coerce: proc { |v| v.to_i }
 property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| Array(v).sort }
 property :private_memory, Integer, coerce: proc { |v| v.to_i }
 property :virtual_memory, Integer, coerce: proc { |v| v.to_i }
@@ -150,6 +151,7 @@ load_current_value do |desired|
     disallow_overlapping_rotation bool(value(doc.root, 'APPPOOL/add/recycling/@disallowOverlappingRotation'))
     disallow_rotation_on_config_change bool(value(doc.root, 'APPPOOL/add/recycling/@disallowRotationOnConfigChange'))
     recycle_after_time value doc.root, 'APPPOOL/add/recycling/periodicRestart/@time'
+    recycle_after_requests value(doc.root, 'APPPOOL/add/recycling/periodicRestart/@requests').to_i
     periodic_restart_schedule get_value(doc.root, 'APPPOOL/add/recycling/periodicRestart/schedule/add/@value').map(&:value)
     private_memory value(doc.root, 'APPPOOL/add/recycling/periodicRestart/@privateMemory').to_i
     virtual_memory value(doc.root, 'APPPOOL/add/recycling/periodicRestart/@memory').to_i
@@ -351,7 +353,9 @@ action_class do
     converge_if_changed :recycle_after_time do
       cmd << configure_application_pool("recycling.periodicRestart.time:#{new_resource.recycle_after_time}")
     end
-
+    converge_if_changed :recycle_after_requests do
+      cmd << configure_application_pool("recycling.periodicRestart.requests:#{new_resource.recycle_after_requests}")
+    end
     converge_if_changed :log_event_on_recycle do
       cmd << configure_application_pool("recycling.logEventOnRecycle:#{new_resource.log_event_on_recycle}")
     end

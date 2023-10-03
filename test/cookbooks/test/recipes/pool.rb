@@ -53,6 +53,7 @@ iis_pool 'testapppool' do
   start_mode :OnDemand
   identity_type :SpecificUser
   periodic_restart_schedule ['06:00:00', '14:00:00', '17:00:00']
+  recycle_after_requests '1024'
   environment_variables ['HELLO=WORLD', 'FOO=BAR', 'ALPHA=BETA2']
   username "#{node['hostname']}\\vagrant"
   password 'vagrant'

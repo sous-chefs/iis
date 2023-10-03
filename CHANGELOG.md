@@ -10,6 +10,7 @@ This file is used to list changes made in each version of the iis cookbook.
 - Change CI to test on Windows Latest
   This clarfies that we are testing on the latest version of Windows and not a specific version
   as per `platform: windows-latest` in ci.yml
+- Add support for IIS pool setting `recycling.periodicRestart.requests`
 
 ## 8.1.0 - *2023-10-03*
 

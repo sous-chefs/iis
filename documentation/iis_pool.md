@@ -62,6 +62,7 @@ Creates an application pool in IIS.
 | `recycle_schedule_clear`              |  String         | `false`     | No        | specifies a pool to clear all scheduled recycle times. | |
 | `log_event_on_recycle`                |  true, false    | `node['iis']['recycle']['log_events']`| No        | configure IIS to log an event when one or more of the following configured events cause an application pool to recycle (for additional information about [logging events] (<https://technet.microsoft.com/en-us/library/cc771318%28v=ws.10%29.aspx>). | |
 | `recycle_after_time`                  |  String         |             | No        | specifies a pool to recycle at regular time intervals, d.hh:mm:ss. | |
+| `recycle_after_requests`              |  Integer        |             | No        | specifies the number of requests after which you want the pool to recycle. | |
 | `periodic_restart_schedule`           |  Array, String  |             | No        | schedule a pool to recycle at specific times. | |
 | `private_memory`                      |  Integer        |             | No        | specifies the amount of private memory (in kilobytes) after which you want the pool to recycle. | |
 | `virtual_memory`                      |  Integer        |             | No        | specifies the amount of virtual memory (in kilobytes) after which you want the pool to recycle. | |
