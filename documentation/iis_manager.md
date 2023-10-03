@@ -12,11 +12,12 @@ Configures the IIS Manager service
 
 ## Properties
 
-| Name                        | Type          | Default | Description                          |
-| --------------------------- | ------------- | ------- |  ------------------------------------ |
-| `enable_remote_management`  |  true, false  | `true`  | If remote access allowed |
-| `log_directory`             |  String       |         | Optional. The directory to write log files to |
-| `port`                      |  Integer      | `8172`  | The port the service listens on. |
+| Name                        | Type            | Default | Description                          |
+| --------------------------- | --------------- | ------- |  ------------------------------------ |
+| `enable_remote_management`  |  true, false    | `true`  | If remote access allowed |
+| `log_directory`             |  String         |         | Optional. The directory to write log files to |
+| `port`                      |  Integer        | `8172`  | The port the service listens on. |
+| `install_method`            |  String, Symbol | `:windows_feature_dism` | Optional. install_method to be used to any windows_features resources. Valid options are :windows_feature_dism, :windows_feature_powershell |
 
 ## Examples
 

@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature %w(IIS-ISAPIFilter IIS-ISAPIExtensions)
+iis_install 'install IIS, ISAPI' do
+  additional_components %w(IIS-ISAPIFilter IIS-ISAPIExtensions)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

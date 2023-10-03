@@ -71,3 +71,21 @@ suites:
   - name: vdir
     run_list:
       - recipe[test::vdir]
+  - name: default-windowsfeatures-powershell
+    run_list:
+      - recipe[iis::default]
+    verifier:
+      inspec_tests:
+        - test/integration/default/spec
+    attributes:
+      iis:
+        windows_feature_install_method: windows_feature_powershell
+  - name: site-windowsfeatures-powershell
+    run_list:
+      - recipe[test::site]
+    verifier:
+      inspec_tests:
+        - test/integration/site
+    attributes:
+      iis:
+        windows_feature_install_method: windows_feature_powershell

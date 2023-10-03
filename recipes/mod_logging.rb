@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature 'IIS-CustomLogging'
+iis_install 'install IIS, CustomLogging' do
+  additional_components 'IIS-CustomLogging'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

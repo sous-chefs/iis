@@ -26,18 +26,20 @@ jobs:
         os:
           - "windows-2019"
         suite:
-          - "default"
-          - "disable-default"
-          - "app"
-          - "config-property"
-          - "manager"
-          - "manager-permission"
-          - "module"
-          - "pool"
-          - "root"
-          - "section"
-          - "site"
-          - "vdir"
+          - 'default'
+          - 'disable-default'
+          - 'app'
+          - 'config-property'
+          - 'manager'
+          - 'manager-permission'
+          - 'module'
+          - 'pool'
+          - 'root'
+          - 'section'
+          - 'site'
+          - 'vdir'
+          - 'default-windowsfeatures-powershell'
+          - 'site-windowsfeatures-powershell'
       fail-fast: false
 
     steps:

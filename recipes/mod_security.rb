@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature %w(IIS-URLAuthorization IIS-RequestFiltering IIS-IPSecurity)
+iis_install 'install IIS, Security' do
+  additional_components %w(IIS-URLAuthorization IIS-RequestFiltering IIS-IPSecurity)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

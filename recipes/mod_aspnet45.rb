@@ -18,7 +18,11 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-include_recipe 'iis::mod_isapi'
+iis_install 'install IIS, ASPNET45' do
+  additional_components %w(NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end
 
-windows_feature %w(NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45)
+include_recipe 'iis::mod_isapi'

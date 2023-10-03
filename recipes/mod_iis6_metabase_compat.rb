@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature %w(IIS-IIS6ManagementCompatibility IIS-Metabase)
+iis_install 'install IIS, Compatability, Metabase' do
+  additional_components %w(IIS-IIS6ManagementCompatibility IIS-Metabase)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

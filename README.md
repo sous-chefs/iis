@@ -36,6 +36,7 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 - `node['iis']['pubroot']` - . default is `%SYSTEMDRIVE%\inetpub`
 - `node['iis']['docroot']` - IIS web site home directory. default is `%SYSTEMDRIVE%\inetpub\wwwroot`
 - `node['iis']['cache_dir']` - location of cached data. default is `%SYSTEMDRIVE%\inetpub\temp`
+- `node['iis']['windows_feature_install_method']` - specify the install method that will be used by any windows_feature resources. If ommitted it will not be specified and will use `windows_feature_dism` by default. Valid options are `:windows_feature_dism`, `:windows_feature_powershell`, `:windows_feature_servermanagercmd`. Default is `:windows_feature_dism`
 
 ## Resources
 

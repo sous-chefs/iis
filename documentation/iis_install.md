@@ -12,10 +12,12 @@ Simple resource to install the IIS feature
 
 ## Properties
 
-| Name                    | Type     |  Required| Description                          |
-| ----------------------- | -------- | -------- | ------------------------------------ |
-| `source`                |  String  | No       | Source to install the features from. |
-| `additional_components` |  Array   | No       | Features of IIS to install |
+| Name                    | Type           |  Required| Description                          |
+| ----------------------- | -------------- | -------- | ------------------------------------ |
+| `source`                |  String        | No       | Source to install the features from. |
+| `additional_components` |  String,Array  | No       | Features of IIS to install |
+| `install_method`        |  String, Symbol| No       | install_method to be used to any windows_features  resources. Default is :windows_feature_dism. Options are :windows_feature_dism, :windows_feature_powershell |
+| `start_iis`             | true, false    | No       | Controls whether the W3WVC service is enabled and started. Default is false
 
 ## Examples
 

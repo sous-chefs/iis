@@ -18,9 +18,12 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature 'IIS-BasicAuthentication'
+iis_install 'install IIS, BasicAuth' do
+  additional_components 'IIS-BasicAuthentication'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end
 
 iis_section 'unlocks basic authentication control in web.config' do
   section 'system.webServer/security/authentication/basicAuthentication'

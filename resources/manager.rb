@@ -24,10 +24,17 @@ unified_mode true
 property :enable_remote_management, [true, false], default: true
 property :log_directory, String
 property :port, Integer, default: 8172
+property :install_method, [Symbol, String],
+  required: false,
+  coerce: proc { |m| m.to_sym },
+  equal_to: [:windows_feature_dism, :windows_feature_powershell, :windows_feature_servermanagercmd],
+  default: :windows_feature_dism
 
 action :config do
   iis_install 'Web-Mgmt-Service' do
     additional_components ['IIS-ManagementService']
+    install_method new_resource.install_method
+    start_iis false
   end
 
   # properties stored in the registry

@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- Allow specifying install method for windows_feature resources
+
 ## 8.0.20 - *2023-09-28*
 
 ## 8.0.19 - *2023-09-04*

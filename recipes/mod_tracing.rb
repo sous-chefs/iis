@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature 'IIS-HttpTracing'
+iis_install 'install IIS, Tracing' do
+  additional_components 'IIS-HttpTracing'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

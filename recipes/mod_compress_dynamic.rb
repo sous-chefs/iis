@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature 'IIS-HttpCompressionDynamic'
+iis_install 'install IIS, HttpCompressionDynamic' do
+  additional_components 'IIS-HttpCompressionDynamic'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

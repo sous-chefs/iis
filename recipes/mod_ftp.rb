@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature %w(IIS-FTPServer IIS-FTPSvc IIS-FTPExtensibility)
+iis_install 'install IIS, FTP' do
+  additional_components %w(IIS-FTPServer IIS-FTPSvc IIS-FTPExtensibility)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

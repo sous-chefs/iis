@@ -18,9 +18,12 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature 'IIS-DigestAuthentication'
+iis_install 'install IIS, DigestAuth' do
+  additional_components 'IIS-DigestAuthentication'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end
 
 iis_section 'unlocks digest authentication control in web.config' do
   section 'system.webServer/security/authentication/digestAuthentication'

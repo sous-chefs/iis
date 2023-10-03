@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature 'IIS-ApplicationInit'
+iis_install 'install IIS, ApplicationInit' do
+  additional_components 'IIS-ApplicationInit'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end

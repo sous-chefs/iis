@@ -18,9 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature %w(IIS-ManagementConsole IIS-ManagementService) do
-  action :install
-  all !IISCookbook::Helper.older_than_windows2012?
+iis_install 'install IIS, Management' do
+  additional_components %w(IIS-ManagementConsole IIS-ManagementService)
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
 end

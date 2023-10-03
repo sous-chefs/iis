@@ -18,9 +18,12 @@
 # limitations under the License.
 #
 
-include_recipe 'iis'
-
-windows_feature 'IIS-WindowsAuthentication'
+iis_install 'install IIS, WindowsAuth' do
+  additional_components 'IIS-WindowsAuthentication'
+  source node['iis']['source']
+  install_method node['iis']['windows_feature_install_method']
+  start_iis true
+end
 
 iis_section 'unlocks windows authentication control in web.config' do
   section 'system.webServer/security/authentication/windowsAuthentication'
