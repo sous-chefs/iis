@@ -40,6 +40,12 @@ iis_pool 'test_start' do
   action [:add, :config, :stop]
 end
 
+iis_pool 'test_no_managed_code' do
+  no_managed_code false
+  pipeline_mode :Integrated
+  action [:add, :config, :start]
+end
+
 iis_pool 'testapppool' do
   thirty_two_bit false
   runtime_version '4.0'
@@ -51,6 +57,12 @@ iis_pool 'testapppool' do
   username "#{node['hostname']}\\vagrant"
   password 'vagrant'
   action [:add, :config]
+end
+
+iis_pool 'test_no_managed_code' do
+  no_managed_code true
+  pipeline_mode :Classic
+  action [:add, :config, :start]
 end
 
 iis_pool 'passwordwithentityapppool' do

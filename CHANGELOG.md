@@ -5,6 +5,64 @@ This file is used to list changes made in each version of the iis cookbook.
 ## Unreleased
 
 - Allow specifying install method for windows_feature resources
+
+## 8.0.20 - *2023-09-28*
+
+## 8.0.19 - *2023-09-04*
+
+## 8.0.18 - *2023-09-04*
+
+## 8.0.17 - *2023-06-01*
+
+## 8.0.16 - *2023-04-17*
+
+## 8.0.15 - *2023-04-07*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.14 - *2023-04-01*
+
+## 8.0.13 - *2023-04-01*
+
+## 8.0.12 - *2023-04-01*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.11 - *2023-03-20*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.10 - *2023-03-15*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.9 - *2023-03-02*
+
+## 8.0.8 - *2023-02-23*
+
+## 8.0.7 - *2023-02-23*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.6 - *2023-02-16*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.5 - *2023-02-15*
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.4 - *2023-02-14*
+
+## 8.0.3 - *2022-12-11*
+
+Standardise files with files in sous-chefs/repo-management
+
+Standardise files with files in sous-chefs/repo-management
+
+## 8.0.2 - *2022-02-17*
+
+- Standardise files with files in sous-chefs/repo-management
 - Remove delivery folder
 
 ## 8.0.1 - *2021-11-19*

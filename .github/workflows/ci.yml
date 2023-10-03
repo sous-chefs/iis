@@ -1,46 +1,30 @@
 ---
 name: ci
 
-'on':
+"on":
   pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  delivery:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run Chef Delivery
-        uses: actionshub/chef-delivery@main
-        env:
-          CHEF_LICENSE: accept-no-persist
-
-  yamllint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run yaml Lint
-        uses: actionshub/yamllint@main
-
-  mdl:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Run Markdown Lint
-        uses: actionshub/markdownlint@main
+  lint-unit:
+    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@2.0.6
+    with:
+      platform: windows-latest
+    permissions:
+      actions: write
+      checks: write
+      pull-requests: write
+      statuses: write
+      issues: write
 
   integration:
-    needs: [mdl, yamllint, delivery]
+    needs: lint-unit
     runs-on: windows-latest
     strategy:
       matrix:
         os:
-          - 'windows-2019'
+          - "windows-2019"
         suite:
           - 'default'
           - 'disable-default'
@@ -60,11 +44,11 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Chef
-        uses: actionshub/chef-install@main
+        uses: actionshub/chef-install@2.0.4
       - name: test-kitchen
-        uses: actionshub/test-kitchen@main
+        uses: actionshub/test-kitchen@2.1.0
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.exec.yml

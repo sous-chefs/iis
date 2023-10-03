@@ -59,6 +59,13 @@ describe iis_pool('test_identity_type') do
   its('identity_type') { should eq 'NetworkService' }
 end
 
+describe iis_pool('test_no_managed_code') do
+  it { should exist }
+  it { should be_running }
+  its('managed_pipeline_mode') { should eq 'Classic' }
+  its('managed_runtime_version') { should eq '' }
+end
+
 describe iis_pool('Process Model Cleanup') do
   it { should exist }
   it { should be_running }
