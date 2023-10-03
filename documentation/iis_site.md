@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_site
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Allows for easy management of IIS virtual sites.
 

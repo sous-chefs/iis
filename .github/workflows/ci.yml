@@ -24,22 +24,22 @@ jobs:
     strategy:
       matrix:
         os:
-          - "windows-2019"
+          - "windows-latest"
         suite:
-          - 'default'
-          - 'disable-default'
-          - 'app'
-          - 'config-property'
-          - 'manager'
-          - 'manager-permission'
-          - 'module'
-          - 'pool'
-          - 'root'
-          - 'section'
-          - 'site'
-          - 'vdir'
-          - 'default-windowsfeatures-powershell'
-          - 'site-windowsfeatures-powershell'
+          - "default"
+          - "disable-default"
+          - "app"
+          - "config-property"
+          - "manager"
+          - "manager-permission"
+          - "module"
+          - "pool"
+          - "root"
+          - "section"
+          - "site"
+          - "vdir"
+          - "default-windowsfeatures-powershell"
+          - "site-windowsfeatures-powershell"
       fail-fast: false
 
     steps:

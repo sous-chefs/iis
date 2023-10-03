@@ -4,6 +4,11 @@ This file is used to list changes made in each version of the iis cookbook.
 
 ## Unreleased
 
+- Fix markdown
+- Change CI to test on Windows Latest
+  This clarfies that we are testing on the latest version of Windows and not a specific version
+  as per `platform: windows-latest` in ci.yml
+
 ## 8.1.0 - *2023-10-03*
 
 - Allow specifying install method for windows_feature resources
@@ -265,19 +270,19 @@ Standardise files with files in sous-chefs/repo-management
 
 ## 5.0.8 (2017-03-13)
 
-- [iis-root default_documents broke from last fix](#306)
+- iis-root default_documents broke from last fix #306
 
 ## 5.0.7 (2017-03-07)
 
-- [iis-root default_documents deleted every chef run](#306)
+- iis-root default_documents deleted every chef run (#306)
 
 ## 5.0.6 (2017-02-24)
 
-- [iis_version is not evaluated properly on if statement](#308)
+- iis_version is not evaluated properly on if statement (#308)
 
 ## 5.0.5 (2016-11-21)
 
-- [Fixed no_managed_code idempotency](#301)
+- Fixed no_managed_code idempotency (#301)
 
 ## 5.0.4 (2016-10-11)
 
@@ -289,8 +294,8 @@ Standardise files with files in sous-chefs/repo-management
 
 ## 5.0.2 (2016-10-07)
 
-- [Minor over oversight in IIS::mod_aspnet 5.0.1](#296)
-- [IIS Pool resource thirty_two_bit false doesn't](#292)
+- Minor over oversight in IIS::mod_aspnet 5.0.1 #296
+- IIS Pool resource thirty_two_bit false doesn't #292
 
 ## 5.0.1 (2016-09-21)
 
@@ -438,37 +443,37 @@ Adding extra windows platform checks to helper library
 
 ### Bug
 
-- **[COOK-4138](https://tickets.chef.io/browse/COOK-4138)** - iis cookbook won't load on non-Windows platforms
+- iis cookbook won't load on non-Windows platforms
 
 ## v1.6.2
 
 ### Improvement
 
-- **[COOK-3634](https://tickets.chef.io/browse/COOK-3634)** - provide ability to set app pool managedRuntimeVersion to "No Managed Code"
+- provide ability to set app pool managedRuntimeVersion to "No Managed Code"
 
 ## v1.6.0
 
 ### Improvement
 
-- **[COOK-3922](https://tickets.chef.io/browse/COOK-3922)** - refactor IIS cookbook to not require WebPI
+- refactor IIS cookbook to not require WebPI
 
 ## v1.5.6
 
 ### Improvement
 
-- **[COOK-3770](https://tickets.chef.io/browse/COOK-3770)** - Add Enabled Protocols to IIS App Recipe
+- Add Enabled Protocols to IIS App Recipe
 
 ## v1.5.4
 
 ### New Feature
 
-- **[COOK-3675](https://tickets.chef.io/browse/COOK-3675)** - Add recipe for CGI module
+- Add recipe for CGI module
 
 ## v1.5.2
 
 ### Bug
 
-- **[COOK-3232](https://tickets.chef.io/browse/COOK-3232)** - Allow `iis_app` resource `:config` action with a virtual path
+- Allow `iis_app` resource `:config` action with a virtual path
 
 ## v1.5.0
 
