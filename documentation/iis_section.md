@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_section
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Allows for the locking/unlocking of sections ([listed here](http://www.iis.net/configreference) or via the command `appcmd list config \"\" /config:* /xml`)
 

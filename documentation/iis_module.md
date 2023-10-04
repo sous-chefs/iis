@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_module
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Manages modules globally or on a per site basis.
 

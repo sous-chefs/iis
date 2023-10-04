@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_root
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Allows for easy management of the IIS Root Machine settings
 

@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_config
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Runs a config command on your IIS instance.
 

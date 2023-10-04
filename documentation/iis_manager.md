@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_manager
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Configures the IIS Manager service
 

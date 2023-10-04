@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # windows_certificate_binding
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Binds a certificate to an HTTP port to enable TLS communication.
 

@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_config_property
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Sets an IIS configuration property
 

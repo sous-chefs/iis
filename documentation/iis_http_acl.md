@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_http_acl
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Sets the Access Control List for an http URL to grant non-admin accounts permission to open HTTP endpoints.
 

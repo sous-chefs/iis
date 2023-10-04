@@ -1,8 +1,6 @@
-[back to resource list](https://github.com/sous-chefs/iis#resources)
-
----
-
 # iis_manager_permission
+
+[back to resource list](https://github.com/sous-chefs/iis#resources)
 
 Set the permissions for user access to the IIS Manager
 
