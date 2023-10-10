@@ -100,6 +100,10 @@ class IisPool < Inspec.resource(1)
     iis_pool[:recycling][:periodic_restart][:schedule]
   end
 
+  def recycle_after_requests
+    iis_pool[:recycling][:periodic_restart][:requests]
+  end
+
   def environment_variables
     iis_pool[:environment_variables]
   end
