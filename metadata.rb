@@ -6,6 +6,6 @@ description      'Installs/Configures Windows IIS'
 source_url       'https://github.com/sous-chefs/iis'
 issues_url       'https://github.com/sous-chefs/iis/issues'
 chef_version     '>= 15.3'
-version          '8.2.2'
+version          '8.2.4'
 
 supports 'windows'
