@@ -26,7 +26,7 @@ property :log_directory, String
 property :port, Integer, default: 8172
 property :install_method, [Symbol, String],
   required: false,
-  coerce: proc { |m| m.to_sym },
+  coerce: proc(&:to_sym),
   equal_to: [:windows_feature_dism, :windows_feature_powershell, :windows_feature_servermanagercmd],
   default: :windows_feature_dism
 
