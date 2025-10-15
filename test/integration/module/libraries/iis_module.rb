@@ -28,7 +28,7 @@ class IisModule < Inspec.resource(1)
     @module_provider = ModuleProvider.new(inspec)
 
     # verify that this resource is only supported on Windows
-    return skip_resource 'The `iis_module` resource is not supported on your OS.' unless inspec.os.windows?
+    skip_resource 'The `iis_module` resource is not supported on your OS.' unless inspec.os.windows?
   end
 
   def name

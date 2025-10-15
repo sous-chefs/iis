@@ -27,15 +27,15 @@ include IISCookbook::Processors
 
 property    :site_name, String, name_property: true
 property    :site_id, Integer
-property    :port, Integer, default: 80, coerce: proc { |v| v.to_i }
+property    :port, Integer, default: 80, coerce: proc(&:to_i)
 property    :path, String
-property    :protocol, [Symbol, String], equal_to: [:http, :https, :ftp], default: :http, coerce: proc { |v| v.to_sym }
+property    :protocol, [Symbol, String], equal_to: [:http, :https, :ftp], default: :http, coerce: proc(&:to_sym)
 property    :host_header, String
 property    :bindings, String
 property    :application_pool, String
 property    :options, String, default: ''
 property    :log_directory, String
-property    :log_period, [Symbol, String], equal_to: [:Daily, :Hourly, :MaxSize, :Monthly, :Weekly], default: :Daily, coerce: proc { |v| v.to_sym }
+property    :log_period, [Symbol, String], equal_to: [:Daily, :Hourly, :MaxSize, :Monthly, :Weekly], default: :Daily, coerce: proc(&:to_sym)
 property    :log_truncsize, Integer, default: 1_048_576
 property    :running, [true, false]
 

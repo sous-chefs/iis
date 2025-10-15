@@ -29,25 +29,25 @@ property :pool_name, String, name_property: true
 
 # root
 property :no_managed_code, [true, false], default: false
-property :pipeline_mode, [Symbol, String], equal_to: [:Integrated, :Classic], coerce: proc { |v| v.to_sym }
+property :pipeline_mode, [Symbol, String], equal_to: [:Integrated, :Classic], coerce: proc(&:to_sym)
 property :runtime_version, String
 
 # add items
-property :start_mode, [Symbol, String], equal_to: [:AlwaysRunning, :OnDemand], default: :OnDemand, coerce: proc { |v| v.to_sym }
+property :start_mode, [Symbol, String], equal_to: [:AlwaysRunning, :OnDemand], default: :OnDemand, coerce: proc(&:to_sym)
 property :auto_start, [true, false], default: true
-property :queue_length, Integer, default: 1000, coerce: proc { |v| v.to_i }
+property :queue_length, Integer, default: 1000, coerce: proc(&:to_i)
 property :thirty_two_bit, [true, false], default: false
 
 # processModel items
-property :max_processes, Integer, coerce: proc { |v| v.to_i }
+property :max_processes, Integer, coerce: proc(&:to_i)
 property :load_user_profile, [true, false], default: false
-property :identity_type, [Symbol, String], equal_to: [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity], default: :ApplicationPoolIdentity, coerce: proc { |v| v.to_sym }
+property :identity_type, [Symbol, String], equal_to: [:SpecificUser, :NetworkService, :LocalService, :LocalSystem, :ApplicationPoolIdentity], default: :ApplicationPoolIdentity, coerce: proc(&:to_sym)
 property :username, String
 property :password, String, sensitive: true
-property :logon_type, [Symbol, String], equal_to: [:LogonBatch, :LogonService], default: :LogonBatch, coerce: proc { |v| v.to_sym }
+property :logon_type, [Symbol, String], equal_to: [:LogonBatch, :LogonService], default: :LogonBatch, coerce: proc(&:to_sym)
 property :manual_group_membership, [true, false], default: false
 property :idle_timeout, String, default: '00:20:00'
-property :idle_timeout_action, [Symbol, String], equal_to: [:Terminate, :Suspend], default: :Terminate, coerce: proc { |v| v.to_sym }
+property :idle_timeout_action, [Symbol, String], equal_to: [:Terminate, :Suspend], default: :Terminate, coerce: proc(&:to_sym)
 property :shutdown_time_limit, String, default: '00:01:30'
 property :startup_time_limit, String, default: '00:01:30'
 property :pinging_enabled, [true, false], default: true
@@ -60,29 +60,29 @@ property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
 property :log_event_on_recycle, String, default: lazy { node['iis']['recycle']['log_events'] }
 property :recycle_after_time, String
-property :recycle_after_requests, Integer, coerce: proc { |v| v.to_i }
+property :recycle_after_requests, Integer, coerce: proc(&:to_i)
 property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| Array(v).sort }
-property :private_memory, Integer, coerce: proc { |v| v.to_i }
-property :virtual_memory, Integer, coerce: proc { |v| v.to_i }
+property :private_memory, Integer, coerce: proc(&:to_i)
+property :virtual_memory, Integer, coerce: proc(&:to_i)
 
 # failure items
-property :load_balancer_capabilities, [Symbol, String], equal_to: [:HttpLevel, :TcpLevel], default: :HttpLevel, coerce: proc { |v| v.to_sym }
+property :load_balancer_capabilities, [Symbol, String], equal_to: [:HttpLevel, :TcpLevel], default: :HttpLevel, coerce: proc(&:to_sym)
 property :orphan_worker_process, [true, false], default: false
 property :orphan_action_exe, String
 property :orphan_action_params, String
 property :rapid_fail_protection, [true, false], default: true
 property :rapid_fail_protection_interval, String, default: '00:05:00'
-property :rapid_fail_protection_max_crashes, Integer, default: 5, coerce: proc { |v| v.to_i }
+property :rapid_fail_protection_max_crashes, Integer, default: 5, coerce: proc(&:to_i)
 property :auto_shutdown_exe, String
 property :auto_shutdown_params, String
 
 # cpu items
-property :cpu_action, [Symbol, String], equal_to: [:NoAction, :KillW3wp, :Throttle, :ThrottleUnderLoad], default: :NoAction, coerce: proc { |v| v.to_sym }
-property :cpu_limit, Integer, default: 0, coerce: proc { |v| v.to_i }
+property :cpu_action, [Symbol, String], equal_to: [:NoAction, :KillW3wp, :Throttle, :ThrottleUnderLoad], default: :NoAction, coerce: proc(&:to_sym)
+property :cpu_limit, Integer, default: 0, coerce: proc(&:to_i)
 property :cpu_reset_interval, String, default: '00:05:00'
 property :cpu_smp_affinitized, [true, false], default: false
-property :smp_processor_affinity_mask, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
-property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce: proc { |v| v.to_f }
+property :smp_processor_affinity_mask, Float, default: 4_294_967_295.0, coerce: proc(&:to_f)
+property :smp_processor_affinity_mask_2, Float, default: 4_294_967_295.0, coerce: proc(&:to_f)
 
 # environment variables
 property :environment_variables, [Array, String], coerce: proc { |v| Array(v).sort }
@@ -426,12 +426,12 @@ action_class do
       converge_if_changed :environment_variables do
         # Remove the values that are no longer required
         (Array(current_resource.environment_variables) - Array(new_resource.environment_variables)).each do |environment_variable|
-          cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2)[0]}',value='#{environment_variable.split('=', 2)[1]}']", '-')
+          cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2).first}',value='#{environment_variable.split('=', 2)[1]}']", '-')
         end
 
         # Add the new values
         (Array(new_resource.environment_variables) - Array(current_resource.environment_variables)).each do |environment_variable|
-          cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2)[0]}',value='#{environment_variable.split('=', 2)[1]}']", '+')
+          cmd << configure_application_pool("environmentVariables.[name='#{environment_variable.split('=', 2).first}',value='#{environment_variable.split('=', 2)[1]}']", '+')
         end
       end
     end
@@ -450,7 +450,7 @@ action_class do
         cmd << " \"/[name='#{new_resource.pool_name}'].processModel.userName:#{new_resource.username}\""
       end
       converge_if_changed :password do
-        cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.password.gsub(/\"/, '\\\"')}\""
+        cmd << " \"/[name='#{new_resource.pool_name}'].processModel.password:#{new_resource.password.gsub('"', '\\\"')}\""
       end
       if cmd != default_app_pool_user
         converge_by "Configured Application Pool Identity Settings \"#{new_resource}\"" do

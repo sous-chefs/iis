@@ -36,7 +36,7 @@ action :config do
   # user permissions are accessed by .Net API
   all_users = (new_resource.users + new_resource.groups).map { |i| "\"#{i}\"" }.join ','
 
-  unless new_resource.users.count == 0
+  unless new_resource.users.none?
     set_users = <<-EOH
     foreach ($principal in #{new_resource.users.map { |i| "\"#{i}\"" }.join ','})
     {
@@ -48,7 +48,7 @@ action :config do
     EOH
   end
 
-  unless new_resource.groups.count == 0
+  unless new_resource.groups.none?
     set_groups = <<-EOH
     foreach ($principal in #{new_resource.groups.map { |i| "\"#{i}\"" }.join ','})
     {

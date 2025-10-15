@@ -27,7 +27,7 @@ property :additional_components, [Array, String],
  default: []
 property :install_method, [String, Symbol],
   required: false,
-  coerce: proc { |i| i.to_sym },
+  coerce: proc(&:to_sym),
   equal_to: [:windows_feature_dism, :windows_feature_powershell, :windows_feature_servermanagercmd],
   default: :windows_feature_dism
 property :start_iis, [true, false], default: false

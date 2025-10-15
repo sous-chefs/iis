@@ -38,7 +38,7 @@ describe 'iis_install' do
     shell_out.strerr = ''
     shell_out.stdout = 'WebServer'
     stubs_for_provider('iis_install[Just iis powershell]') do |provider|
-      allow(provider).to receive_shell_out().and_return(shell_out)
+      allow(provider).to receive_shell_out.and_return(shell_out)
     end
     recipe do
       iis_install 'Just iis powershell' do
@@ -58,7 +58,7 @@ describe 'iis_install' do
     shell_out.strerr = ''
     shell_out.stdout = 'WebServer'
     stubs_for_provider('iis_install[Just iis powershell]') do |provider|
-      allow(provider).to receive_shell_out().and_return(shell_out)
+      allow(provider).to receive_shell_out.and_return(shell_out)
     end
     recipe do
       iis_install 'Just iis powershell' do
