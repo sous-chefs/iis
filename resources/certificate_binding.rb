@@ -127,7 +127,7 @@ action_class do
 
   def hash_from_subject
     # escape wildcard subject name (*.acme.com)
-    subject = new_resource.cert_name.sub(/\*/, '`*')
+    subject = new_resource.cert_name.sub('*', '`*')
     ps_script = "& { gci cert:\\localmachine\\#{new_resource.store_name} | where { $_.subject -like '*#{subject}*' } | select -first 1 -expandproperty Thumbprint }"
 
     Chef::Log.debug "Running PS script #{ps_script}"
@@ -138,6 +138,6 @@ action_class do
 
     # seem to get a UTF-8 string with BOM returned sometimes! Strip any such BOM
     hash = p.stdout.strip
-    hash[0].ord == 239 ? hash.force_encoding('UTF-8').delete!("\xEF\xBB\xBF".force_encoding('UTF-8')) : hash
+    hash.first.ord == 239 ? hash.force_encoding('UTF-8').delete!("\xEF\xBB\xBF".force_encoding('UTF-8')) : hash
   end
 end

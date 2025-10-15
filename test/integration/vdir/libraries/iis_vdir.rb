@@ -120,7 +120,7 @@ class VdirProvider
   def iis_vdir(path, application_name)
     site_app = application_name.split('/', 2)
 
-    command = "Import-Module WebAdministration; Get-WebVirtualDirectory -Site \"#{site_app[0]}\""
+    command = "Import-Module WebAdministration; Get-WebVirtualDirectory -Site \"#{site_app.first}\""
     command = "#{command.dup} -Application \"#{site_app[1]}\"" if site_app.length > 1
     command = "#{command.dup} -Name \"#{path}\" | Select-Object path, physicalPath, userName, password, logonMethod, allowSubDirConfig, PSPath, ItemXPath | ConvertTo-Json"
     cmd = @inspec.command(command)

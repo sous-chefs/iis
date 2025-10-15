@@ -29,7 +29,7 @@ class IisPool < Inspec.resource(1)
     @pool_provider = PoolProvider.new(inspec)
 
     # verify that this resource is only supported on Windows
-    return skip_resource 'The `iis_pool` resource is not supported on your OS.' unless inspec.os.windows?
+    skip_resource 'The `iis_pool` resource is not supported on your OS.' unless inspec.os.windows?
   end
 
   def name
@@ -176,14 +176,11 @@ class PoolProvider
       return {}
     end
 
-    restart_schedules = []
-    pool_recycling_period_restart_schedule['Collection'].each { |schedule| restart_schedules.push(schedule['value']) }
+    restart_schedules = pool_recycling_period_restart_schedule['Collection'].map { |schedule| schedule['value'] }
 
-    worker_processes = []
-    pool_worker_processes['Collection'].each { |process| worker_processes.push(process_id: process['processId'], handles: process['Handles'], state: process['state'], start_time: process['StartTime']) }
+    worker_processes = pool_worker_processes['Collection'].map { |process| { process_id: process['processId'], handles: process['Handles'], state: process['state'], start_time: process['StartTime'] } }
 
-    environment_variables = []
-    pool_environment_variables['Collection'].each { |environment_variable| environment_variables.push("#{environment_variable['name']}=#{environment_variable['value']}") }
+    environment_variables = pool_environment_variables['Collection'].map { |environment_variable| "#{environment_variable['name']}=#{environment_variable['value']}" }
 
     # map our values to a hash table
     {
