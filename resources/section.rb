@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: section
@@ -17,6 +19,7 @@
 # limitations under the License.
 #
 
+provides :iis_section
 unified_mode true
 
 require 'rexml/document'

@@ -16,12 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'iis'
+include_recipe 'test::base_install'
+
+docroot = IISCookbook::Constants.iis_docroot
 
 # create and start a new site that maps to
 # the physical location C:\inetpub\wwwroot\testfu
 # first the physical location must exist
-directory "#{node['iis']['docroot']}/ConfigSite" do
+directory "#{docroot}\\ConfigSite" do
   action :create
 end
 
@@ -29,7 +31,7 @@ end
 iis_site 'ConfigSite' do
   protocol :http
   port 8080
-  path "#{node['iis']['docroot']}/ConfigSite"
+  path "#{docroot}\\ConfigSite"
   action [:add, :start]
 end
 

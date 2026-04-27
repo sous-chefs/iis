@@ -1,5 +1,6 @@
 driver:
   name: vagrant
+  boot_timeout: 900
   customize:
     cpus: 2
     memory: 4096
@@ -19,12 +20,6 @@ verifier:
   name: inspec
 
 platforms:
-  - name: windows-2008r2
-    driver_config:
-      box: tas50/windows_2008r2
-  - name: windows-2012r2
-    driver_config:
-      box: tas50/windows_2012r2
   - name: windows-2016
     driver_config:
       box: tas50/windows_2016
@@ -35,11 +30,10 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[iis::default]
+      - recipe[test::default]
   - name: disable_default
     run_list:
-      - recipe[iis::default]
-      - recipe[iis::remove_default_site]
+      - recipe[test::disable_default]
   - name: app
     run_list:
       - recipe[test::app]
@@ -52,7 +46,6 @@ suites:
   - name: manager_permission
     run_list:
       - recipe[test::manager_permission]
-    excludes: ["windows-2008r2", "windows-2012r2"]
   - name: module
     run_list:
       - recipe[test::module]
@@ -71,21 +64,15 @@ suites:
   - name: vdir
     run_list:
       - recipe[test::vdir]
-  - name: default-windowsfeatures-powershell
+  - name: default_powershell
     run_list:
-      - recipe[iis::default]
+      - recipe[test::default_powershell]
     verifier:
       inspec_tests:
         - test/integration/default/spec
-    attributes:
-      iis:
-        windows_feature_install_method: windows_feature_powershell
-  - name: site-windowsfeatures-powershell
+  - name: site_powershell
     run_list:
-      - recipe[test::site]
+      - recipe[test::site_powershell]
     verifier:
       inspec_tests:
         - test/integration/site
-    attributes:
-      iis:
-        windows_feature_install_method: windows_feature_powershell

@@ -16,16 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'iis'
+include_recipe 'test::base_install'
 
 # Defines default app pool recycle time(s)
 iis_config "/section:system.applicationHost/applicationPools /+\"applicationPoolDefaults.recycling.periodicRestart.schedule.[value='06:00:00']\" /commit:apphost" do
   returns [0, 183]
   action :set
-end
-
-directory "#{node['iis']['docroot']}\\test" do
-  recursive true
 end
 
 # creates a new app pool

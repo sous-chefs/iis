@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author:: Jason Field
 # Cookbook:: iis
@@ -19,6 +21,7 @@
 #
 # Configures IIS Manager
 
+provides :iis_manager
 unified_mode true
 
 property :enable_remote_management, [true, false], default: true

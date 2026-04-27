@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: vdir
@@ -17,6 +19,7 @@
 # limitations under the License.
 #
 
+provides :iis_vdir
 unified_mode true
 
 require 'rexml/document'

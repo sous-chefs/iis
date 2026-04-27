@@ -46,12 +46,15 @@ end
 ```
 
 ```ruby
-# Loads an array of commands from the node
-cfg_cmds = node['iis']['cfg_cmd']
+# Loads an array of commands from local recipe data
+cfg_cmds = [
+  '/section:system.applicationHost/sites /siteDefaults.logfile.directory:"D:\\logs"',
+  '"MySite" /section:requestfiltering /requestlimits.maxallowedcontentlength:50000000',
+]
 cfg_cmds.each do |cmd|
-    iis_config "#{cmd}" do
-        action :set
-    end
+  iis_config cmd do
+    action :set
+  end
 end
 ```
 

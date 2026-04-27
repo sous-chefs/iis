@@ -8,7 +8,7 @@ name: ci
 
 jobs:
   lint-unit:
-    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@5.0.8
+    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@6.0.0
     with:
       platform: windows-latest
     permissions:
@@ -23,35 +23,30 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        os:
-          - "windows-latest"
-        suite:
-          - "default"
-          - "disable-default"
-          - "app"
-          - "config-property"
-          - "manager"
-          - "manager-permission"
-          - "module"
-          - "pool"
-          - "root"
-          - "section"
-          - "site"
-          - "vdir"
-          - "default-windowsfeatures-powershell"
-          - "site-windowsfeatures-powershell"
+        instance:
+          - default-windows-latest
+          - disable-default-windows-latest
+          - app-windows-latest
+          - config-property-windows-latest
+          - manager-windows-latest
+          - manager-permission-windows-latest
+          - module-windows-latest
+          - pool-windows-latest
+          - root-windows-latest
+          - section-windows-latest
+          - site-windows-latest
+          - vdir-windows-latest
+          - default-powershell-windows-latest
+          - site-powershell-windows-latest
       fail-fast: false
 
     steps:
       - name: Check out code
         uses: actions/checkout@v6
-      - name: Install Chef
-        uses: actionshub/chef-install@6.0.0
-      - name: test-kitchen
-        uses: actionshub/test-kitchen@3.0.0
+      - name: Install Cinc Workstation
+        uses: sous-chefs/.github/.github/actions/install-workstation@6.0.0
+      - name: Run Test Kitchen
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.exec.yml
-        with:
-          suite: ${{ matrix.suite }}
-          os: ${{ matrix.os }}
+        run: chef exec kitchen test ${{ matrix.instance }} --destroy=always
