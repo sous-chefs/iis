@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author:: Richard Lavey (richard.lavey@calastone.com)
 # Cookbook:: windows
@@ -18,6 +20,7 @@
 # limitations under the License.
 #
 
+provides :iis_http_acl
 unified_mode true
 
 include IISCookbook::Helper

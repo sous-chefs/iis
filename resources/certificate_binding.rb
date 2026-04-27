@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author:: Richard Lavey (richard.lavey@calastone.com)
 # Cookbook:: windows
@@ -19,6 +21,7 @@
 # limitations under the License.
 #
 
+provides :iis_certificate_binding
 unified_mode true
 
 property :cert_name, String, name_property: true

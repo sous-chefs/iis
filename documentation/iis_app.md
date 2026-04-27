@@ -27,7 +27,7 @@ Creates an application in IIS.
 iis_app 'myApp' do
   path '/v1_1'
   application_pool 'myAppPool_v1_1'
-  physical_path "#{node['iis']['docroot']}/testfu/v1_1"
+  physical_path 'C:\\inetpub\\wwwroot\\testfu\\v1_1'
   enabled_protocols 'http,net.pipe'
   action :add
 end

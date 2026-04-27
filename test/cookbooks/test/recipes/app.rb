@@ -16,16 +16,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'iis'
+include_recipe 'test::base_install'
 
-directory "#{node['iis']['docroot']}\\v1_1" do
+docroot = IISCookbook::Constants.iis_docroot
+
+directory "#{docroot}\\v1_1" do
   recursive true
 end
 
 iis_app 'Default Web Site' do
   path '/v1_1'
   application_pool 'DefaultAppPool'
-  physical_path "#{node['iis']['docroot']}/v1_1"
+  physical_path "#{docroot}\\v1_1"
   enabled_protocols 'http,net.pipe'
   action [:add, :config]
 end

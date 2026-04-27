@@ -10,6 +10,14 @@
 
 Installs and configures Microsoft Internet Information Services (IIS) 7.0 and later
 
+## Migration
+
+This cookbook is now resource-only.
+
+- Root `recipes/` and `attributes/` are removed in favor of explicit custom resource usage.
+- Legacy recipe migrations and attribute replacements are documented in [migration.md](migration.md).
+- Platform and installation constraints are documented in [LIMITATIONS.md](LIMITATIONS.md).
+
 ## Maintainers
 
 This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of Chef cookbook maintainers working together to maintain important cookbooks. If you’d like to know more please visit [sous-chefs.org](https://sous-chefs.org/) or come chat with us on the Chef Community Slack in [#sous-chefs](https://chefcommunity.slack.com/messages/C2V7B88SF).
@@ -18,25 +26,19 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 
 ### Platforms
 
-- Windows Server 2016
-- Windows Server 2019
+- Windows
+- See [LIMITATIONS.md](LIMITATIONS.md) for the current IIS support envelope and Windows-only constraints.
 
 ### Chef
 
-- Chef 12.14+
+- Chef Infra Client 15.3+
 
-### Cookbooks
+## Defaults
 
-- windows if running on chef < 16
+This cookbook no longer exposes node attributes.
 
-## Attributes
-
-- `node['iis']['home']` - IIS main home directory. default is `%WINDIR%\System32\inetsrv`
-- `node['iis']['conf_dir']` - location where main IIS configs lives. default is `%WINDIR%\System32\inetsrv\config`
-- `node['iis']['pubroot']` - . default is `%SYSTEMDRIVE%\inetpub`
-- `node['iis']['docroot']` - IIS web site home directory. default is `%SYSTEMDRIVE%\inetpub\wwwroot`
-- `node['iis']['cache_dir']` - location of cached data. default is `%SYSTEMDRIVE%\inetpub\temp`
-- `node['iis']['windows_feature_install_method']` - specify the install method that will be used by any windows_feature resources. If ommitted it will not be specified and will use `windows_feature_dism` by default. Valid options are `:windows_feature_dism`, `:windows_feature_powershell`, `:windows_feature_servermanagercmd`. Default is `:windows_feature_dism`
+- Set installation and configuration choices directly on resources such as `iis_install`, `iis_site`, `iis_pool`, and `iis_module`.
+- When you need the conventional IIS paths in Ruby code, use `IISCookbook::Constants.iis_home`, `iis_conf_dir`, `iis_pubroot`, `iis_docroot`, and `iis_cache_dir`.
 
 ## Resources
 
@@ -53,33 +55,31 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 - [iis_site](https://github.com/sous-chefs/iis/tree/master/documentation/iis_site.md)
 - [iis_vdir](https://github.com/sous-chefs/iis/tree/master/documentation/iis_vdir.md)
 
-## Recipies
+## Usage
 
-These recipies still exist but are highly likely to be removed in future major releases of this cookbook.
+```ruby
+iis_install 'install IIS' do
+  additional_components %w(IIS-DefaultDocument IIS-StaticContent)
+  start_iis true
+end
+```
 
-### default recipe
+```ruby
+iis_site 'Default Web Site' do
+  action [:stop, :delete]
+end
 
-Installs and configures IIS 7.0/7.5/8.0 using the default configuration.
+iis_pool 'DefaultAppPool' do
+  action [:stop, :delete]
+end
+```
 
-### mod_* recipes
-
-This cookbook also contains recipes for installing individual IIS modules (extensions). These recipes can be included in a node's run_list to build the minimal desired custom IIS installation.
-
-- `mod_aspnet` - installs ASP.NET runtime components
-- `mod_aspnet45` - installs ASP.NET 4.5 runtime components
-- `mod_auth_basic` - installs Basic Authentication support
-- `mod_auth_windows` - installs Windows Authentication (authenticate clients by using NTLM or Kerberos) support
-- `mod_compress_dynamic` - installs dynamic content compression support. _PLEASE NOTE_ - enabling dynamic compression always gives you more efficient use of bandwidth, but if your server's processor utilization is already very high, the CPU load imposed by dynamic compression might make your site perform more slowly.
-- `mod_compress_static` - installs static content compression support
-- `mod_ftp` - installs FTP service
-- `mod_iis6_metabase_compat` - installs IIS 6 Metabase Compatibility component.
-- `mod_isapi` - installs ISAPI (Internet Server Application Programming Interface) extension and filter support.
-- `mod_logging` - installs and enables HTTP Logging (logging of Web site activity), Logging Tools (logging tools and scripts) and Custom Logging (log any of the HTTP request/response headers, IIS server variables, and client-side fields with simple configuration) support
-- `mod_management` - installs Web server Management Console which supports management of local and remote Web servers
-- `mod_security` - installs URL Authorization (Authorizes client access to the URLs that comprise a Web application), Request Filtering (configures rules to block selected client requests) and IP Security (allows or denies content access based on IP address or domain name) support.
-- `mod_tracing` - installs support for tracing ASP.NET applications and failed requests.
-
-Note: Not every possible IIS module has a corresponding recipe. The foregoing recipes are included for convenience, but users may also place additional IIS modules that are installable as Windows features into the `node['iis']['components']` array.
+```ruby
+iis_install 'install module prerequisites' do
+  additional_components %w(IIS-ASPNET45 IIS-ISAPIFilter IIS-ISAPIExtensions)
+  start_iis true
+end
+```
 
 ## Contributors
 

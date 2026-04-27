@@ -16,16 +16,69 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'iis'
+docroot = IISCookbook::Constants.iis_docroot
+legacy_module_components = %w(
+  IIS-ApplicationInit
+  IIS-NetFxExtensibility
+  IIS-ASPNET
+  NetFx4Extended-ASPNET45
+  IIS-NetFxExtensibility45
+  IIS-ASPNET45
+  IIS-BasicAuthentication
+  IIS-DigestAuthentication
+  IIS-WindowsAuthentication
+  IIS-CGI
+  IIS-HttpCompressionDynamic
+  IIS-HttpCompressionStatic
+  IIS-FTPServer
+  IIS-FTPSvc
+  IIS-FTPExtensibility
+  IIS-IIS6ManagementCompatibility
+  IIS-Metabase
+  IIS-ISAPIFilter
+  IIS-ISAPIExtensions
+  IIS-CustomLogging
+  IIS-ManagementConsole
+  IIS-ManagementService
+  IIS-URLAuthorization
+  IIS-RequestFiltering
+  IIS-IPSecurity
+  IIS-HttpTracing
+)
 
-directory "#{node['iis']['docroot']}\\v1_1" do
+iis_install 'install IIS legacy module components' do
+  additional_components legacy_module_components
+  start_iis true
+end
+
+iis_section 'unlocks anonymous authentication control in web.config' do
+  section 'system.webServer/security/authentication/anonymousAuthentication'
+  action :unlock
+end
+
+iis_section 'unlocks basic authentication control in web.config' do
+  section 'system.webServer/security/authentication/basicAuthentication'
+  action :unlock
+end
+
+iis_section 'unlocks digest authentication control in web.config' do
+  section 'system.webServer/security/authentication/digestAuthentication'
+  action :unlock
+end
+
+iis_section 'unlocks windows authentication control in web.config' do
+  section 'system.webServer/security/authentication/windowsAuthentication'
+  action :unlock
+end
+
+directory "#{docroot}\\v1_1" do
   recursive true
 end
 
 iis_app 'Default Web Site' do
   path '/v1_1'
   application_pool 'DefaultAppPool'
-  physical_path "#{node['iis']['docroot']}/v1_1"
+  physical_path "#{docroot}\\v1_1"
   enabled_protocols 'http,net.pipe'
   action :add
 end

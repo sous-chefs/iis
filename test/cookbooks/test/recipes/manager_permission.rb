@@ -1,4 +1,4 @@
-include_recipe 'iis'
+include_recipe 'test::base_install'
 
 iis_manager 'IIS Manager' do
   enable_remote_management true

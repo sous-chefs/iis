@@ -43,7 +43,7 @@ end
 # create and start a new site that maps to
 # the physical location C:\inetpub\wwwroot\testfu
 # first the physical location must exist
-directory "#{node['iis']['docroot']}/testfu" do
+directory 'C:\\inetpub\\wwwroot\\testfu' do
   action :create
 end
 
@@ -51,7 +51,7 @@ end
 iis_site 'Testfu Site' do
   protocol :http
   port 80
-  path "#{node['iis']['docroot']}/testfu"
+  path 'C:\\inetpub\\wwwroot\\testfu'
   action [:add,:start]
 end
 ```
@@ -59,7 +59,7 @@ end
 ```ruby
 # do the same but map to testfu.chef.io domain
 # first the physical location must exist
-directory "#{node['iis']['docroot']}/testfu" do
+directory 'C:\\inetpub\\wwwroot\\testfu' do
   action :create
 end
 
@@ -67,7 +67,7 @@ end
 iis_site 'Testfu Site' do
   protocol :http
   port 80
-  path "#{node['iis']['docroot']}/testfu"
+  path 'C:\\inetpub\\wwwroot\\testfu'
   host_header "testfu.chef.io"
   action [:add,:start]
 end
@@ -77,7 +77,7 @@ end
 # create and start a new site that maps to
 # the physical C:\inetpub\wwwroot\testfu
 # first the physical location must exist
-directory "#{node['iis']['docroot']}/testfu" do
+directory 'C:\\inetpub\\wwwroot\\testfu' do
   action :create
 end
 
@@ -89,7 +89,7 @@ end
 # now create and start the site (note this will use the default application pool which must exist)
 iis_site 'FooBar Site' do
   bindings "http/10.12.0.136:80:www.domain.com,https/*:443:www.domain.com"
-  path "#{node['iis']['docroot']}/testfu"
+  path 'C:\\inetpub\\wwwroot\\testfu'
   action [:add,:start]
 end
 ```
@@ -99,7 +99,7 @@ end
 iis_site 'mysite.com' do
   protocol :http
   port 80
-  path "#{node['iis']['docroot']}\dataverify"
+  path 'C:\\inetpub\\wwwroot\\dataverify'
   application_pool 'dataverify.com'
   options "-applicationDefaults.preloadEnabled:True"
   action [:add, :start, :config]

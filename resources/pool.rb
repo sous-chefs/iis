@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: pool
@@ -17,6 +19,7 @@
 # limitations under the License.
 #
 
+provides :iis_pool
 unified_mode true
 
 require 'rexml/document'
@@ -58,7 +61,7 @@ property :ping_response_time, String, default: '00:01:30'
 property :disallow_rotation_on_config_change, [true, false], default: false
 property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
-property :log_event_on_recycle, String, default: lazy { node['iis']['recycle']['log_events'] }
+property :log_event_on_recycle, String, default: lazy { IISCookbook::Constants.default_recycle_log_events }
 property :recycle_after_time, String
 property :recycle_after_requests, Integer, coerce: proc(&:to_i)
 property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| Array(v).sort }

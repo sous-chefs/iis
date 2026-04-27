@@ -20,6 +20,38 @@
 module IISCookbook
   # Contains functions that are used throughout this cookbook
   module Constants
+    def self.windows_dir
+      ENV.fetch('WINDIR', 'C:\Windows')
+    end
+
+    def self.system_drive
+      ENV.fetch('SYSTEMDRIVE', 'C:')
+    end
+
+    def self.iis_home
+      "#{windows_dir}\\System32\\inetsrv"
+    end
+
+    def self.iis_conf_dir
+      "#{iis_home}\\config"
+    end
+
+    def self.iis_pubroot
+      "#{system_drive}\\inetpub"
+    end
+
+    def self.iis_docroot
+      "#{iis_pubroot}\\wwwroot"
+    end
+
+    def self.iis_cache_dir
+      "#{iis_pubroot}\\temp"
+    end
+
+    def self.default_recycle_log_events
+      'Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory'
+    end
+
     def self.default_documents
       %w(
         Default.htm
