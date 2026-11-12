@@ -39,7 +39,7 @@ load_current_value do |desired|
   section desired.section
   site desired.site
   application_path desired.application_path
-  command_path = 'MACHINE/WEBROOT/APPHOST'
+  command_path = +'MACHINE/WEBROOT/APPHOST'
   command_path << "/#{site}" if site
   command_path << application_path.to_s if application_path
   cmd = "#{appcmd(node)} list config \"#{command_path}\""

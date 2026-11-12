@@ -21,6 +21,14 @@ Research refreshed on 12 November 2026 against Microsoft Learn and endoflife.dat
 * [Windows Server lifecycle](https://endoflife.date/windows-server)
 * [Microsoft Windows Server release information](https://learn.microsoft.com/en-gb/windows/release-health/windows-server-release-info)
 
+## Action coverage findings
+
+* Step-into tests cover every custom resource. Stub Windows command execution and output, not action helpers.
+* Section paths must remain mutable with frozen string literals enabled. Module changes must restore the previous section lock.
+* Certificate subjects may return a UTF-8 BOM; strip it before binding. SDDL creation must use the requested descriptor even when no reservation exists.
+* Hosted Windows images can lack the normal WMSVC self-signed certificate. The manager test creates that prerequisite explicitly; the resource still uses the platform certificate by subject.
+* InSpec pool probes run in separate PowerShell processes. Import WebAdministration in every probe so each process has the IIS drive.
+
 ## Product scope
 
 This cookbook manages Microsoft Internet Information Services (IIS), which is a Windows

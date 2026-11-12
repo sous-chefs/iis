@@ -47,8 +47,8 @@ load_current_value do |desired|
   # 'MODULE "Module Name" ( native, preCondition:condition )'
 
   Chef::Log.debug("#{desired.name} list module command output: #{cmd_result.stdout}")
+  previous_lock get_current_lock(node, 'system.webServer/modules', desired.application)
   unless cmd_result.stdout.empty?
-    previous_lock get_current_lock(node, 'system.webServer/modules', desired.application)
     cmd = "#{appcmd(node)} list module /module.name:\"#{desired.module_name}\""
     cmd << " /app.name:\"#{desired.application}\"" if desired.application
     cmd << ' /config:* /xml'

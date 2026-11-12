@@ -97,7 +97,7 @@ action_class do
   end
 
   def apply_acl
-    if current_resource.sddl
+    if new_resource.sddl
       shell_out!("#{netsh_command} http add urlacl url=#{new_resource.url} sddl=\"#{new_resource.sddl}\"")
     else
       shell_out!("#{netsh_command} http add urlacl url=#{new_resource.url} user=\"#{new_resource.user}\"")

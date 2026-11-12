@@ -38,9 +38,9 @@ module IISCookbook
     end
 
     def get_current_lock(node, section, location = '')
-      command_path = 'MACHINE/WEBROOT/APPHOST'
+      command_path = +'MACHINE/WEBROOT/APPHOST'
       command_path << "/#{location}" if location
-      cmd = "#{appcmd(node)} list config \"#{command_path}}\""
+      cmd = "#{appcmd(node)} list config \"#{command_path}\""
       cmd << " -section:#{section} -commit:apphost /config:* /xml"
       result = shell_out cmd
       if result.stderr.empty?
@@ -49,9 +49,8 @@ module IISCookbook
         value(doc.root, 'CONFIG/@overrideMode')
       else
         Chef::Log.info(result.stderr)
+        nil
       end
-
-      nil
     end
 
     def cmd_section(node, check, section, location, returns)
@@ -70,8 +69,14 @@ module IISCookbook
 
     def cmd_list_section(node, action, section, location, returns)
       current_lock = get_current_lock(node, section, location)
-      check = action if action == 'Inherit'
-      check = (action == :lock ? 'Deny' : 'Allow') if action != 'Inherit'
+      check = case action
+              when 'Inherit', 'Deny', 'Allow'
+                action
+              when :lock
+                'Deny'
+              else
+                'Allow'
+              end
 
       cmd_section node, check, section, location, returns unless current_lock == check
     end

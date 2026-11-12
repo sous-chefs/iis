@@ -140,7 +140,6 @@ action_class do
     raise "Couldn't find thumbprint for subject #{new_resource.cert_name}" if p.stdout.nil? || p.stdout.empty?
 
     # seem to get a UTF-8 string with BOM returned sometimes! Strip any such BOM
-    hash = p.stdout.strip
-    hash.first.ord == 239 ? hash.force_encoding('UTF-8').delete!("\xEF\xBB\xBF".force_encoding('UTF-8')) : hash
+    p.stdout.strip.force_encoding('UTF-8').delete_prefix("\uFEFF")
   end
 end
