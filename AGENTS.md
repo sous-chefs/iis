@@ -11,6 +11,8 @@ Research refreshed on 12 November 2026 against Microsoft Learn and endoflife.dat
 * Chef 16 or newer supplies the native Windows resources; do not declare support for Chef 15 without restoring its windows cookbook dependency.
 * Dependency resolution uses Policyfile.rb; Kitchen suites select the matching named run list.
 * Keep the current main branch workflow pins and OCI release configuration when updating this PR.
+* Windows ChefSpec requires rake in the shared workflow gem input: Chef 19 builds its win32-eventlog extension with rake, but does not declare the build dependency.
+* Exec skips a second client installation and uses the installed Workstation client path. The older chef_omnibus_install option alone does not disable installation in current Kitchen.
 * Local macOS exec cannot test Windows resources. Use the Windows CI integration matrix for native convergence.
 * Vagrant remains the optional local Windows test driver. Do not run the exec profile on macOS.
 

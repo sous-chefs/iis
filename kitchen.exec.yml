@@ -4,6 +4,8 @@ transport: { name: exec }
 
 provisioner:
   chef_omnibus_install: false
+  install_strategy: skip
+  chef_client_path: <%= File.expand_path('../../bin/chef-client.bat', RbConfig::CONFIG['bindir']) %>
 
 platforms:
   - name: windows-latest
