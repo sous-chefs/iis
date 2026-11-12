@@ -27,6 +27,7 @@ Research refreshed on 12 November 2026 against Microsoft Learn and endoflife.dat
 * Section paths must remain mutable with frozen string literals enabled. Module changes must restore the previous section lock.
 * Certificate subjects may return a UTF-8 BOM; strip it before binding. SDDL creation must use the requested descriptor even when no reservation exists.
 * Default and default_powershell suites enforce a second unchanged converge. Other suites deliberately exercise lifecycle transitions (stop/start, lock/unlock or unconditional config commands), so they verify the final state instead. The repo kitchen.global.yml loads only when KITCHEN_GLOBAL_YAML is set; CI does not implicitly load direnv.
+* Import Microsoft.PowerShell.Security before certificate-store probes in non-interactive sessions; the Cert drive is otherwise absent on hosted runners.
 * Hosted Windows images can lack the normal WMSVC self-signed certificate. The manager test creates that prerequisite explicitly; the resource still uses the platform certificate by subject.
 * InSpec pool probes run in separate PowerShell processes. Import WebAdministration in every probe so each process has the IIS drive.
 

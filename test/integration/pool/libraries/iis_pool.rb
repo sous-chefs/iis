@@ -180,7 +180,10 @@ class PoolProvider
       return {}
     end
 
-    restart_schedules = pool_recycling_period_restart_schedule['Collection'].map { |schedule| schedule['value'] }
+    restart_schedules = pool_recycling_period_restart_schedule['Collection'].map do |schedule|
+      value = schedule['value']
+      value.is_a?(Hash) ? format('%02d:%02d:%02d', value['Hours'], value['Minutes'], value['Seconds']) : value
+    end
 
     worker_processes = pool_worker_processes['Collection'].map { |process| { process_id: process['processId'], handles: process['Handles'], state: process['state'], start_time: process['StartTime'] } }
 

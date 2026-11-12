@@ -120,7 +120,7 @@ action_class do
   end
 
   def check_hash(hash)
-    p = powershell_out!("Test-Path \"cert:\\LocalMachine\\#{current_resource.store_name}\\#{hash}\"")
+    p = powershell_out!("Import-Module Microsoft.PowerShell.Security; Test-Path \"cert:\\LocalMachine\\#{current_resource.store_name}\\#{hash}\"")
 
     unless p.stderr.empty? && p.stdout =~ /True/i
       raise "A Cert with hash of #{hash} doesn't exist in keystore LocalMachine\\#{current_resource.store_name}"
@@ -131,7 +131,7 @@ action_class do
   def hash_from_subject
     # escape wildcard subject name (*.acme.com)
     subject = new_resource.cert_name.sub('*', '`*')
-    ps_script = "& { gci cert:\\localmachine\\#{new_resource.store_name} | where { $_.subject -like '*#{subject}*' } | select -first 1 -expandproperty Thumbprint }"
+    ps_script = "Import-Module Microsoft.PowerShell.Security; & { gci cert:\\localmachine\\#{new_resource.store_name} | where { $_.subject -like '*#{subject}*' } | select -first 1 -expandproperty Thumbprint }"
 
     Chef::Log.debug "Running PS script #{ps_script}"
     p = powershell_out!(ps_script)
