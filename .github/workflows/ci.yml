@@ -54,4 +54,6 @@ jobs:
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.exec.yml
-        run: chef exec kitchen test ${{ matrix.instance }} --destroy=always
+        run: |
+          Remove-Item Env:PSModulePath -ErrorAction SilentlyContinue
+          chef exec kitchen test ${{ matrix.instance }} --destroy=always
