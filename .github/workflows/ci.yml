@@ -6,9 +6,13 @@ name: ci
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   lint-unit:
-    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@6.0.0
+    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@9.0.1
     with:
       platform: windows-latest
     permissions:
@@ -42,9 +46,9 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install Cinc Workstation
-        uses: sous-chefs/.github/.github/actions/install-workstation@6.0.0
+        uses: sous-chefs/.github/.github/actions/install-workstation@9.0.1
       - name: Run Test Kitchen
         env:
           CHEF_LICENSE: accept-no-persist

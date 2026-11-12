@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 control 'Manager Property' do
   title 'Check manager is setup and listening correctly'
 

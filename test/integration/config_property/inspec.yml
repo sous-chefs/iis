@@ -1,0 +1,8 @@
+---
+name: iis-config_property
+title: IIS config property tests
+maintainer: Sous Chefs
+license: Apache-2.0
+version: 1.0.0
+summary: IIS resource integration tests
+copyright: Sous Chefs

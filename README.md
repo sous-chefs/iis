@@ -16,7 +16,7 @@ This cookbook is now resource-only.
 
 - Root `recipes/` and `attributes/` are removed in favor of explicit custom resource usage.
 - Legacy recipe migrations and attribute replacements are documented in [migration.md](migration.md).
-- Platform and installation constraints are documented in [LIMITATIONS.md](LIMITATIONS.md).
+- Platform and installation constraints are documented in [AGENTS.md](AGENTS.md).
 
 ## Maintainers
 
@@ -27,11 +27,11 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 ### Platforms
 
 - Windows
-- See [LIMITATIONS.md](LIMITATIONS.md) for the current IIS support envelope and Windows-only constraints.
+- See [AGENTS.md](AGENTS.md) for the current IIS support envelope and Windows-only constraints.
 
 ### Chef
 
-- Chef Infra Client 15.3+
+- Chef Infra Client 16.0+
 
 ## Defaults
 

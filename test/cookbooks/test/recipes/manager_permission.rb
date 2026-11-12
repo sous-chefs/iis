@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 include_recipe 'test::base_install'
 
 iis_manager 'IIS Manager' do

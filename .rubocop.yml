@@ -4,7 +4,7 @@ Lint/ParenthesesAsGroupedExpression:
   Exclude:
     - 'test/**/*.rb'
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Exclude:
     - 'spec/**/*'
     - 'test/integration/**/*'

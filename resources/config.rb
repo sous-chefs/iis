@@ -25,8 +25,8 @@ unified_mode true
 include IISCookbook::Helper
 include IISCookbook::Processors
 
-property    :cfg_cmd,   String,             name_property: true
-property    :returns,   [Integer, Array],   default: 0
+property    :cfg_cmd, String,             name_property: true
+property    :returns, [Integer, Array],   default: 0
 
 action :set do
   config

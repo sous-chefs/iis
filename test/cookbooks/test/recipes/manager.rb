@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 iis_manager 'IIS Manager' do
   port                      19500
   enable_remote_management  true

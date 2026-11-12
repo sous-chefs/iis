@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 control 'Manager Permissions' do
   title 'Check permissions to access the manager has been correctly granted'
 

@@ -1,6 +1,23 @@
-# IIS Cookbook Limitations
+# IIS cookbook agent guidance
 
-Research verified on April 27, 2026 against current Microsoft Learn documentation.
+Research refreshed on 12 November 2026 against Microsoft Learn and endoflife.date.
+
+## Owner decision and migration requirements
+
+* The owner explicitly confirmed Full Migration on 12 November 2026 for PR #546.
+* Keep root recipes and attributes absent. Preserve existing custom resource names and defaults.
+* Windows Server 2016 and 2019 remain supported; their extended support has not ended.
+* Windows Server 2022 and 2025 are supported by Microsoft; Windows CI runs on the GitHub windows-latest image.
+* Chef 16 or newer supplies the native Windows resources; do not declare support for Chef 15 without restoring its windows cookbook dependency.
+* Dependency resolution uses Policyfile.rb; Kitchen suites select the matching named run list.
+* Keep the current main branch workflow pins and OCI release configuration when updating this PR.
+* Local macOS exec cannot test Windows resources. Use the Windows CI integration matrix for native convergence.
+* Vagrant remains the optional local Windows test driver. Do not run the exec profile on macOS.
+
+## Verification sources
+
+* [Windows Server lifecycle](https://endoflife.date/windows-server)
+* [Microsoft Windows Server release information](https://learn.microsoft.com/en-gb/windows/release-health/windows-server-release-info)
 
 ## Product scope
 
