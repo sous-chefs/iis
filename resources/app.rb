@@ -37,15 +37,15 @@ load_current_value do |desired|
   site_name desired.site_name
   # Sanitize physical path
   desired.physical_path = windows_cleanpath(desired.physical_path) if desired.physical_path
-  cmd = shell_out("#{appcmd(node)} list app \"#{desired.site_name}#{desired.path}\"")
-  Chef::Log.debug("#{appcmd(node)} list app command output: #{cmd.stdout}")
+  cmd = shell_out("#{appcmd} list app \"#{desired.site_name}#{desired.path}\"")
+  Chef::Log.debug("#{appcmd} list app command output: #{cmd.stdout}")
   if cmd.stderr.empty?
     Chef::Log.debug('Running regex')
     regex = /^APP\s\"#{desired.site_name}#{desired.path}\"/
     result = cmd.stdout.match(regex)
     Chef::Log.debug("#{desired} current_resource match output: #{result}")
     if !result.nil?
-      cmd_current_values = "#{appcmd(node)} list app \"#{desired.site_name}#{desired.path}\" /config:* /xml"
+      cmd_current_values = "#{appcmd} list app \"#{desired.site_name}#{desired.path}\" /config:* /xml"
       Chef::Log.debug(cmd_current_values)
       cmd_current_values = shell_out(cmd_current_values)
       if cmd_current_values.stderr.empty?
@@ -69,7 +69,7 @@ action :add do
     Chef::Log.debug("#{new_resource.inspect} app already exists - nothing to do")
   else
     converge_by "Creating the Application - \"#{new_resource}\"" do
-      cmd = "#{appcmd(node)} add app /site.name:\"#{new_resource.site_name}\""
+      cmd = "#{appcmd} add app /site.name:\"#{new_resource.site_name}\""
       cmd << " /path:\"#{new_resource.path}\""
       cmd << " /applicationPool:\"#{new_resource.application_pool}\"" if new_resource.application_pool
       cmd << " /physicalPath:\"#{new_resource.physical_path}\"" if new_resource.physical_path
@@ -108,7 +108,7 @@ action :config do
     end
 
     converge_if_changed :physical_path do
-      cmd = "#{appcmd(node)} set vdir /vdir.name:\"#{vdir_identifier}\""
+      cmd = "#{appcmd} set vdir /vdir.name:\"#{vdir_identifier}\""
       cmd << " /physicalPath:\"#{new_resource.physical_path}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
@@ -121,7 +121,7 @@ end
 action :delete do
   if exists
     converge_by "Deleting the Application - \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} delete app \"#{site_identifier}\"")
+      shell_out!("#{appcmd} delete app \"#{site_identifier}\"")
       Chef::Log.info("#{new_resource} deleted")
     end
   else
@@ -135,7 +135,7 @@ action_class do
   end
 
   def cmd_set_app
-    "#{appcmd(node)} set app \"#{site_identifier}\""
+    "#{appcmd} set app \"#{site_identifier}\""
   end
 
   def site_identifier

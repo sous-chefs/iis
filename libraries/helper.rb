@@ -74,7 +74,7 @@ module IISCookbook
       value == 'true'
     end
 
-    def appcmd(_node)
+    def appcmd
       @appcmd ||= "#{IISCookbook::Constants.iis_home}\\appcmd.exe"
     end
 

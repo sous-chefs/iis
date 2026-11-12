@@ -43,7 +43,7 @@ load_current_value do |desired|
   desired.physical_path = windows_cleanpath(desired.physical_path) if desired.physical_path
   application_name desired.application_name
   path desired.path
-  cmd = shell_out("#{appcmd(node)} list vdir \"#{application_name.chomp('/') + path}\"")
+  cmd = shell_out("#{appcmd} list vdir \"#{application_name.chomp('/') + path}\"")
   Chef::Log.debug("#{desired} list vdir command output: #{cmd.stdout}")
 
   if cmd.stderr.empty?
@@ -51,7 +51,7 @@ load_current_value do |desired|
     result = cmd.stdout.match(/^VDIR\s\"#{Regexp.escape(application_name.chomp('/') + path)}\"/)
     Chef::Log.debug("#{desired} current_resource match output: #{result}")
     unless result.nil?
-      cmd = shell_out("#{appcmd(node)} list vdir \"#{application_name.chomp('/') + path}\" /config:* /xml")
+      cmd = shell_out("#{appcmd} list vdir \"#{application_name.chomp('/') + path}\" /config:* /xml")
       if cmd.stderr.empty?
         xml = cmd.stdout
         doc = Document.new(xml)
@@ -72,7 +72,7 @@ action :add do
     Chef::Log.debug("#{new_resource} virtual directory already exists - nothing to do")
   else
     converge_by "Created the VDIR - \"#{new_resource}\"" do
-      cmd = "#{appcmd(node)} add vdir /app.name:\"#{vdir_identifier}\""
+      cmd = "#{appcmd} add vdir /app.name:\"#{vdir_identifier}\""
       cmd << " /path:\"#{new_resource.path}\""
       cmd << " /physicalPath:\"#{new_resource.physical_path}\""
       cmd << " /userName:\"#{new_resource.username}\"" if new_resource.username
@@ -89,7 +89,7 @@ end
 
 action :config do
   if exists
-    cmd = "#{appcmd(node)} set vdir \"#{application_identifier}\""
+    cmd = "#{appcmd} set vdir \"#{application_identifier}\""
     converge_if_changed :physical_path do
       cmd << " /physicalPath:\"#{new_resource.physical_path}\""
     end
@@ -110,7 +110,7 @@ action :config do
       cmd << " /allowSubDirConfig:#{new_resource.allow_sub_dir_config}"
     end
 
-    if cmd != "#{appcmd(node)} set vdir \"#{application_identifier}\""
+    if cmd != "#{appcmd} set vdir \"#{application_identifier}\""
       converge_by "Updated the VDIR - \"#{new_resource}\"" do
         Chef::Log.debug(cmd)
         shell_out!(cmd)
@@ -124,8 +124,8 @@ end
 action :delete do
   if exists
     converge_by "Deleted the VDIR - \"#{new_resource}\"" do
-      Chef::Log.debug("#{appcmd(node)} delete vdir \"#{application_identifier}\"")
-      shell_out!("#{appcmd(node)} delete vdir \"#{application_identifier}\"", returns: [0, 42])
+      Chef::Log.debug("#{appcmd} delete vdir \"#{application_identifier}\"")
+      shell_out!("#{appcmd} delete vdir \"#{application_identifier}\"", returns: [0, 42])
     end
   else
     Chef::Log.debug("#{new_resource} virtual directory does not exist - nothing to do")

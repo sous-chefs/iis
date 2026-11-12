@@ -102,19 +102,19 @@ module IISCookbook
     private
 
     def get_default_documents_command(specifier = '')
-      "#{appcmd(node)} list config #{specifier} /section:defaultDocument /config:* /xml"
+      "#{appcmd} list config #{specifier} /section:defaultDocument /config:* /xml"
     end
 
     def default_documents_command(specifier = '')
-      "#{appcmd(node)} set config #{specifier} /section:defaultDocument"
+      "#{appcmd} set config #{specifier} /section:defaultDocument"
     end
 
     def get_mime_map_command(specifier = '')
-      "#{appcmd(node)} list config #{specifier} /section:staticContent /config:* /xml"
+      "#{appcmd} list config #{specifier} /section:staticContent /config:* /xml"
     end
 
     def mime_map_command(specifier = '')
-      "#{appcmd(node)} set config #{specifier} /section:staticContent"
+      "#{appcmd} set config #{specifier} /section:staticContent"
     end
   end
 end

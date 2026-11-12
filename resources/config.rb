@@ -39,7 +39,7 @@ end
 action_class do
   def config(action = :set)
     converge_by "Executing IIS Config #{action}" do
-      cmd = "#{appcmd(node)} #{action} config #{new_resource.cfg_cmd}"
+      cmd = "#{appcmd} #{action} config #{new_resource.cfg_cmd}"
       Chef::Log.debug(cmd)
       shell_out!(cmd, returns: new_resource.returns)
     end
