@@ -5,6 +5,23 @@ This file is used to list changes made in each version of the iis cookbook.
 Standardise files with files in sous-chefs/repo-management
 Standardise files with files in sous-chefs/repo-management
 
+## [9.0.0](https://github.com/sous-chefs/iis/compare/v8.2.9...v9.0.0) (2026-11-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate IIS cookbook to custom resources ([#546](https://github.com/sous-chefs/iis/issues/546))
+
+### Features
+
+* migrate IIS cookbook to custom resources ([#546](https://github.com/sous-chefs/iis/issues/546)) ([05cacf5](https://github.com/sous-chefs/iis/commit/05cacf57a576da69e31c2e830dd5f8c067d93362))
+
+
+### Bug Fixes
+
+* **ci:** Update workflows to use release pipeline ([#539](https://github.com/sous-chefs/iis/issues/539)) ([14e131a](https://github.com/sous-chefs/iis/commit/14e131a8c39ac8c643a29572130b789ff5a0c555))
+* permit PR title checks and manual release recovery ([#558](https://github.com/sous-chefs/iis/issues/558)) ([b2c1306](https://github.com/sous-chefs/iis/commit/b2c1306ded0c6387dbf0a940290bbec9d294c1e8))
+
 ## [8.2.9](https://github.com/sous-chefs/iis/compare/8.2.8...v8.2.9) (2025-10-15)
 
 
