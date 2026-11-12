@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Library:: helper
@@ -72,8 +74,8 @@ module IISCookbook
       value == 'true'
     end
 
-    def appcmd(node)
-      @appcmd ||= "#{node['iis']['home']}\\appcmd.exe"
+    def appcmd
+      @appcmd ||= "#{IISCookbook::Constants.iis_home}\\appcmd.exe"
     end
 
     def iis_version

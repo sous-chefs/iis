@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: config_property
@@ -18,6 +20,7 @@
 #
 # Configures an IIS property (using powershell for idempotence)
 
+provides :iis_config_property
 unified_mode true
 
 property :property, String, name_property: true

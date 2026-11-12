@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: pool
@@ -17,6 +19,7 @@
 # limitations under the License.
 #
 
+provides :iis_pool
 unified_mode true
 
 require 'rexml/document'
@@ -58,7 +61,7 @@ property :ping_response_time, String, default: '00:01:30'
 property :disallow_rotation_on_config_change, [true, false], default: false
 property :disallow_overlapping_rotation, [true, false], default: false
 property :recycle_schedule_clear, [true, false], default: false
-property :log_event_on_recycle, String, default: lazy { node['iis']['recycle']['log_events'] }
+property :log_event_on_recycle, String, default: lazy { IISCookbook::Constants.default_recycle_log_events }
 property :recycle_after_time, String
 property :recycle_after_requests, Integer, coerce: proc(&:to_i)
 property :periodic_restart_schedule, [Array, String], default: [], coerce: proc { |v| Array(v).sort }
@@ -94,7 +97,7 @@ property :running, [true, false]
 alias_method :recycle_at_time, :periodic_restart_schedule
 
 load_current_value do |desired|
-  cmd = shell_out("#{appcmd(node)} list apppool \"#{desired.pool_name}\"")
+  cmd = shell_out("#{appcmd} list apppool \"#{desired.pool_name}\"")
   # APPPOOL "DefaultAppPool" (MgdVersion:v2.0,MgdMode:Integrated,state:Started)
   Chef::Log.debug("#{desired} list apppool command output: #{cmd.stdout}")
   unless cmd.stderr.empty?
@@ -111,7 +114,7 @@ load_current_value do |desired|
   end
 
   running result[4] =~ /Started/ ? true : false
-  cmd_current_values = "#{appcmd(node)} list apppool \"#{desired.pool_name}\" /config:* /xml"
+  cmd_current_values = "#{appcmd} list apppool \"#{desired.pool_name}\" /config:* /xml"
   Chef::Log.debug(cmd_current_values)
   cmd_current_values = shell_out(cmd_current_values)
   if cmd_current_values.stderr.empty?
@@ -188,7 +191,7 @@ action :add do
     Chef::Log.debug("#{new_resource} pool already exists - nothing to do")
   else
     converge_by "Created Application Pool \"#{new_resource}\"" do
-      cmd = "#{appcmd(node)} add apppool /name:\"#{new_resource.pool_name}\""
+      cmd = "#{appcmd} add apppool /name:\"#{new_resource.pool_name}\""
       if new_resource.no_managed_code
         cmd << ' /managedRuntimeVersion:'
       elsif new_resource.runtime_version
@@ -210,7 +213,7 @@ end
 action :delete do
   if exists
     converge_by "Deleted Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} delete apppool \"#{new_resource.pool_name}\"")
+      shell_out!("#{appcmd} delete apppool \"#{new_resource.pool_name}\"")
     end
   else
     Chef::Log.debug("#{new_resource} pool does not exist - nothing to do")
@@ -220,7 +223,7 @@ end
 action :start do
   if exists && !current_resource.running
     converge_by "Started Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} start apppool \"#{new_resource.pool_name}\"")
+      shell_out!("#{appcmd} start apppool \"#{new_resource.pool_name}\"")
     end
   else
     Chef::Log.debug("#{new_resource} already running - nothing to do")
@@ -230,7 +233,7 @@ end
 action :stop do
   if exists && current_resource.running
     converge_by "Stopped Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} stop apppool \"#{new_resource.pool_name}\"")
+      shell_out!("#{appcmd} stop apppool \"#{new_resource.pool_name}\"")
     end
   else
     Chef::Log.debug("#{new_resource} already stopped - nothing to do")
@@ -240,9 +243,9 @@ end
 action :restart do
   if exists
     converge_by "Restarted Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} stop APPPOOL \"#{new_resource.pool_name}\"") if current_resource.running
+      shell_out!("#{appcmd} stop APPPOOL \"#{new_resource.pool_name}\"") if current_resource.running
       sleep 2
-      shell_out!("#{appcmd(node)} start APPPOOL \"#{new_resource.pool_name}\"")
+      shell_out!("#{appcmd} start APPPOOL \"#{new_resource.pool_name}\"")
     end
   end
 end
@@ -250,7 +253,7 @@ end
 action :recycle do
   if exists
     converge_by "Recycled Application Pool \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} recycle APPPOOL \"#{new_resource.pool_name}\"") if current_resource.running
+      shell_out!("#{appcmd} recycle APPPOOL \"#{new_resource.pool_name}\"") if current_resource.running
     end
   end
 end
@@ -262,7 +265,7 @@ action_class do
 
   def configure
     # Application Pool Config
-    cmd = "#{appcmd(node)} set config /section:applicationPools"
+    cmd = "#{appcmd} set config /section:applicationPools"
 
     # root items
     if iis_version >= 7.0
@@ -436,7 +439,7 @@ action_class do
       end
     end
 
-    unless current_resource.runtime_version && cmd == "#{appcmd(node)} set config /section:applicationPools"
+    unless current_resource.runtime_version && cmd == "#{appcmd} set config /section:applicationPools"
       converge_by "Configured Application Pool \"#{new_resource}\"" do
         Chef::Log.debug(cmd)
         shell_out!(cmd)
@@ -460,7 +463,7 @@ action_class do
       end
     elsif new_resource.identity_type != 'SpecificUser'
       converge_if_changed :identity_type do
-        cmd = "#{appcmd(node)} set config /section:applicationPools"
+        cmd = "#{appcmd} set config /section:applicationPools"
         cmd << " \"/[name='#{new_resource.pool_name}'].processModel.identityType:#{new_resource.identity_type}\""
         cmd << " \"/[name='#{new_resource.name}'].processModel.userName:\""
         cmd << " \"/[name='#{new_resource.name}'].processModel.password:\""
@@ -471,7 +474,7 @@ action_class do
   end
 
   def default_app_pool_user
-    cmd_default = "#{appcmd(node)} set config /section:applicationPools"
+    cmd_default = "#{appcmd} set config /section:applicationPools"
     cmd_default << " \"/[name='#{new_resource.pool_name}'].processModel.identityType:SpecificUser\""
   end
 

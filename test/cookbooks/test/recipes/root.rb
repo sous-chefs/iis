@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: test
 # Recipe:: root
@@ -16,7 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'iis'
+include_recipe 'test::base_install'
 
 iis_root 'adding test html' do
   add_default_documents ['test.html']

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: config
@@ -17,13 +19,14 @@
 # limitations under the License.
 #
 
+provides :iis_config
 unified_mode true
 
 include IISCookbook::Helper
 include IISCookbook::Processors
 
-property    :cfg_cmd,   String,             name_property: true
-property    :returns,   [Integer, Array],   default: 0
+property    :cfg_cmd, String,             name_property: true
+property    :returns, [Integer, Array],   default: 0
 
 action :set do
   config
@@ -36,7 +39,7 @@ end
 action_class do
   def config(action = :set)
     converge_by "Executing IIS Config #{action}" do
-      cmd = "#{appcmd(node)} #{action} config #{new_resource.cfg_cmd}"
+      cmd = "#{appcmd} #{action} config #{new_resource.cfg_cmd}"
       Chef::Log.debug(cmd)
       shell_out!(cmd, returns: new_resource.returns)
     end

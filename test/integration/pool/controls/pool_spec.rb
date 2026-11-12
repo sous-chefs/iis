@@ -1,76 +1,83 @@
+# frozen_string_literal: true
+
 # copyright: 2017, Chef Software, Inc.
 # license: All rights reserved
 
 title 'iis_app section'
 
-describe service('W3SVC') do
-  it { should be_installed }
-  it { should be_running }
-  its('startmode') { should eq 'Auto' }
-end
+control 'iis-pool-01' do
+  impact 1.0
+  title 'Verify IIS pool configuration'
 
-describe iis_pool('myAppPool_v1_1') do
-  it { should exist }
-  it { should_not be_running }
-  its('managed_runtime_version') { should eq 'v2.0' }
-  it { should have_name('myAppPool_v1_1') }
-  it { should have_queue_length(1000) }
-end
+  describe service('W3SVC') do
+    it { should be_installed }
+    it { should be_running }
+    its('startmode') { should eq 'Auto' }
+  end
 
-describe iis_pool('testapppool') do
-  it { should exist }
-  it { should be_running }
-  its('managed_runtime_version') { should eq 'v4.0' }
-  its('managed_pipeline_mode') { should eq 'Integrated' }
-  it { should have_name('testapppool') }
-  its('start_mode') { should eq 'OnDemand' }
-  its('identity_type') { should eq 'SpecificUser' }
-  its('periodic_restart_schedule') { should eq ['06:00:00', '14:00:00', '17:00:00'] }
-  its('recycle_after_requests') { should eq 1024 }
-  its('environment_variables') { should eq ['ALPHA=BETA2', 'FOO=BAR', 'HELLO=WORLD'] }
-  its('username') { should include('\\vagrant') }
-  its('password') { should eq 'vagrant' }
-end
+  describe iis_pool('myAppPool_v1_1') do
+    it { should exist }
+    it { should_not be_running }
+    its('managed_runtime_version') { should eq 'v2.0' }
+    it { should have_name('myAppPool_v1_1') }
+    it { should have_queue_length(1000) }
+  end
 
-describe iis_pool('passwordwithentityapppool') do
-  it { should exist }
-  its('password') { should eq 'vagrant&' }
-  its('environment_variables') { should eq ['HELLO=WORLD'] }
-end
+  describe iis_pool('testapppool') do
+    it { should exist }
+    it { should be_running }
+    its('managed_runtime_version') { should eq 'v4.0' }
+    its('managed_pipeline_mode') { should eq 'Integrated' }
+    it { should have_name('testapppool') }
+    its('start_mode') { should eq 'OnDemand' }
+    its('identity_type') { should eq 'SpecificUser' }
+    its('periodic_restart_schedule') { should eq ['06:00:00', '14:00:00', '17:00:00'] }
+    its('recycle_after_requests') { should eq 1024 }
+    its('environment_variables') { should eq ['ALPHA=BETA2', 'FOO=BAR', 'HELLO=WORLD'] }
+    its('username') { should include('\\vagrant') }
+    its('password') { should eq 'vagrant' }
+  end
 
-describe iis_pool('test_start') do
-  it { should exist }
-  it { should be_running }
-  its('managed_pipeline_mode') { should eq 'Classic' }
-  it { should have_name('test_start') }
-end
+  describe iis_pool('passwordwithentityapppool') do
+    it { should exist }
+    its('password') { should eq 'vagrant&' }
+    its('environment_variables') { should eq ['HELLO=WORLD'] }
+  end
 
-describe iis_pool('My App Pool') do
-  it { should exist }
-  it { should be_running }
-  it { should be_enable_32bit_app_on_win64 }
-  its('managed_runtime_version') { should eq 'v4.0.30319' }
-  its('managed_pipeline_mode') { should eq 'Integrated' }
-  it { should have_name('My App Pool') }
-end
+  describe iis_pool('test_start') do
+    it { should exist }
+    it { should be_running }
+    its('managed_pipeline_mode') { should eq 'Classic' }
+    it { should have_name('test_start') }
+  end
 
-describe iis_pool('test_identity_type') do
-  it { should exist }
-  it { should be_running }
-  its('identity_type') { should eq 'NetworkService' }
-end
+  describe iis_pool('My App Pool') do
+    it { should exist }
+    it { should be_running }
+    it { should be_enable_32bit_app_on_win64 }
+    its('managed_runtime_version') { should eq 'v4.0.30319' }
+    its('managed_pipeline_mode') { should eq 'Integrated' }
+    it { should have_name('My App Pool') }
+  end
 
-describe iis_pool('test_no_managed_code') do
-  it { should exist }
-  it { should be_running }
-  its('managed_pipeline_mode') { should eq 'Classic' }
-  its('managed_runtime_version') { should eq '' }
-end
+  describe iis_pool('test_identity_type') do
+    it { should exist }
+    it { should be_running }
+    its('identity_type') { should eq 'NetworkService' }
+  end
 
-describe iis_pool('Process Model Cleanup') do
-  it { should exist }
-  it { should be_running }
-  its('identity_type') { should eq 'ApplicationPoolIdentity' }
-  its('username') { should eq '' }
-  its('password') { should eq '' }
+  describe iis_pool('test_no_managed_code') do
+    it { should exist }
+    it { should be_running }
+    its('managed_pipeline_mode') { should eq 'Classic' }
+    its('managed_runtime_version') { should eq '' }
+  end
+
+  describe iis_pool('Process Model Cleanup') do
+    it { should exist }
+    it { should be_running }
+    its('identity_type') { should eq 'ApplicationPoolIdentity' }
+    its('username') { should eq '' }
+    its('password') { should eq '' }
+  end
 end

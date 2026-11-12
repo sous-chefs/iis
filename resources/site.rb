@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: site
@@ -17,6 +19,7 @@
 # limitations under the License.
 #
 
+provides :iis_site
 unified_mode true
 
 require 'rexml/document'
@@ -45,8 +48,8 @@ load_current_value do |desired|
   desired.path = windows_cleanpath(desired.path) if desired.path
   desired.log_directory = windows_cleanpath(desired.log_directory) if desired.log_directory
   desired.port = desired.port.to_i if desired.port
-  cmd = shell_out "#{appcmd(node)} list site \"#{site_name}\""
-  Chef::Log.debug(appcmd(node))
+  cmd = shell_out "#{appcmd} list site \"#{site_name}\""
+  Chef::Log.debug(appcmd)
   # 'SITE "Default Web Site" (id:1,bindings:http/*:80:,state:Started)'
   Chef::Log.debug("#{desired} list site command output: #{cmd.stdout}")
   if cmd.stderr.empty?
@@ -64,7 +67,7 @@ load_current_value do |desired|
     if site_id
       values = "#{bindings},".match(%r{(?<protocol>[^,\/]+)\/\*:(?<port>[^:]+):(?<host_header>[^,]*),?})
       # get current values
-      cmd = "#{appcmd(node)} list site \"#{site_name}\" /config:* /xml"
+      cmd = "#{appcmd} list site \"#{site_name}\" /config:* /xml"
       Chef::Log.debug(cmd)
       cmd = shell_out cmd
       if cmd.stderr.empty?
@@ -95,7 +98,7 @@ action :add do
     Chef::Log.debug("#{new_resource} site already exists - nothing to do")
   else
     converge_by "Created the Site - \"#{new_resource}\"" do
-      cmd = "#{appcmd(node)} add site /name:\"#{new_resource.site_name}\""
+      cmd = "#{appcmd} add site /name:\"#{new_resource.site_name}\""
       cmd << " /id:#{new_resource.site_id}" if new_resource.site_id
       cmd << " /physicalPath:\"#{new_resource.path}\"" if new_resource.path
       if new_resource.bindings
@@ -113,7 +116,7 @@ action :add do
       configure
 
       if new_resource.application_pool
-        shell_out!("#{appcmd(node)} set site /site.name:\"#{new_resource.site_name}\" /[path='/'].applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
+        shell_out!("#{appcmd} set site /site.name:\"#{new_resource.site_name}\" /[path='/'].applicationPool:\"#{new_resource.application_pool}\"", returns: [0, 42])
       end
       Chef::Log.info("#{new_resource} added new site '#{new_resource.site_name}'")
     end
@@ -127,8 +130,8 @@ end
 action :delete do
   if exists
     converge_by "Deleted the Site - \"#{new_resource}\"" do
-      Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-      shell_out!("#{appcmd(node)} delete site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+      Chef::Log.info("#{appcmd} stop site /site.name:\"#{new_resource.site_name}\"")
+      shell_out!("#{appcmd} delete site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
     end
   else
     Chef::Log.debug("#{new_resource} site does not exist - nothing to do")
@@ -138,7 +141,7 @@ end
 action :start do
   if exists && !current_resource.running
     converge_by "Started the Site - \"#{new_resource}\"" do
-      shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+      shell_out!("#{appcmd} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
     end
   else
     Chef::Log.debug("#{new_resource} already running - nothing to do")
@@ -148,8 +151,8 @@ end
 action :stop do
   if exists && current_resource.running
     converge_by "Stopped the Site - \"#{new_resource}\"" do
-      Chef::Log.info("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"")
-      shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+      Chef::Log.info("#{appcmd} stop site /site.name:\"#{new_resource.site_name}\"")
+      shell_out!("#{appcmd} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
     end
   else
     Chef::Log.debug("#{new_resource} already stopped - nothing to do")
@@ -158,9 +161,9 @@ end
 
 action :restart do
   converge_by "Restarted the Site - \"#{new_resource}\"" do
-    shell_out!("#{appcmd(node)} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42]) if current_resource.running
+    shell_out!("#{appcmd} stop site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42]) if current_resource.running
     sleep 2
-    shell_out!("#{appcmd(node)} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
+    shell_out!("#{appcmd} start site /site.name:\"#{new_resource.site_name}\"", returns: [0, 42])
   end
 end
 
@@ -172,14 +175,14 @@ action_class do
   def configure
     if new_resource.bindings
       converge_if_changed :bindings do
-        cmd = "#{appcmd(node)} set site /site.name:\"#{new_resource.site_name}\""
+        cmd = "#{appcmd} set site /site.name:\"#{new_resource.site_name}\""
         cmd << " /bindings:\"#{new_resource.bindings}\""
         Chef::Log.debug(cmd)
         shell_out!(cmd)
       end
     elsif new_resource.port || new_resource.host_header || new_resource.protocol
       converge_if_changed :host_header, :protocol, :port do
-        cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+        cmd = "#{appcmd} set site \"#{new_resource.site_name}\""
         cmd << " /bindings:#{new_resource.protocol}/*:#{new_resource.port}:#{new_resource.host_header}"
         Chef::Log.debug(cmd)
         shell_out!(cmd)
@@ -187,41 +190,41 @@ action_class do
     end
 
     converge_if_changed :application_pool do
-      cmd = "#{appcmd(node)} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\""
+      cmd = "#{appcmd} set app \"#{new_resource.site_name}/\" /applicationPool:\"#{new_resource.application_pool}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd, returns: [0, 42])
     end
 
     converge_if_changed :path do
-      cmd = "#{appcmd(node)} set vdir \"#{new_resource.site_name}/\""
+      cmd = "#{appcmd} set vdir \"#{new_resource.site_name}/\""
       cmd << " /physicalPath:\"#{new_resource.path}\""
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     converge_if_changed :site_id do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+      cmd = "#{appcmd} set site \"#{new_resource.site_name}\""
       cmd << " /id:#{new_resource.site_id}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     converge_if_changed :log_directory do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+      cmd = "#{appcmd} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.directory:#{new_resource.log_directory}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     converge_if_changed :log_period do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+      cmd = "#{appcmd} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.period:#{new_resource.log_period}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)
     end
 
     converge_if_changed :log_truncsize do
-      cmd = "#{appcmd(node)} set site \"#{new_resource.site_name}\""
+      cmd = "#{appcmd} set site \"#{new_resource.site_name}\""
       cmd << " /logFile.truncateSize:#{new_resource.log_truncsize}"
       Chef::Log.debug(cmd)
       shell_out!(cmd)

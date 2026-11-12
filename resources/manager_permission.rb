@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author:: Jason Field
 # Cookbook:: iis
@@ -19,6 +21,7 @@
 #
 # Grants access to IIS manager against a site or application
 
+provides :iis_manager_permission
 unified_mode true
 
 property :config_path,  String, name_property: true

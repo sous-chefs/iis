@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Resource:: root
@@ -17,6 +19,7 @@
 # limitations under the License.
 #
 
+provides :iis_root
 unified_mode true
 
 include IISCookbook::Constants

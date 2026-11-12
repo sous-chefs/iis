@@ -1,4 +1,9 @@
-include_recipe 'iis'
+# frozen_string_literal: true
+
+powershell_script 'ensure the WMSVC test certificate exists' do
+  code "Import-Module Microsoft.PowerShell.Security; New-SelfSignedCertificate -DnsName 'WMSVC' -CertStoreLocation 'Cert:\\LocalMachine\\My' | Out-Null"
+  not_if "Import-Module Microsoft.PowerShell.Security; Get-ChildItem Cert:\\LocalMachine\\My | Where-Object { $_.Subject -like '*WMSVC*' }"
+end
 
 iis_manager 'IIS Manager' do
   port                      19500

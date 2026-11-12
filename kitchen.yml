@@ -1,5 +1,7 @@
+---
 driver:
   name: vagrant
+  boot_timeout: 900
   customize:
     cpus: 2
     memory: 4096
@@ -9,7 +11,8 @@ transport:
   elevated: true
 
 provisioner:
-  name: chef_zero
+  name: chef_infra
+  policyfile_path: Policyfile.rb
   deprecations_as_errors: true
   product_name: chef
   channel: stable
@@ -19,12 +22,6 @@ verifier:
   name: inspec
 
 platforms:
-  - name: windows-2008r2
-    driver_config:
-      box: tas50/windows_2008r2
-  - name: windows-2012r2
-    driver_config:
-      box: tas50/windows_2012r2
   - name: windows-2016
     driver_config:
       box: tas50/windows_2016
@@ -34,58 +31,54 @@ platforms:
 
 suites:
   - name: default
-    run_list:
-      - recipe[iis::default]
+    provisioner:
+      named_run_list: default
+      multiple_converge: 2
+      enforce_idempotency: true
   - name: disable_default
-    run_list:
-      - recipe[iis::default]
-      - recipe[iis::remove_default_site]
+    provisioner:
+      named_run_list: disable_default
   - name: app
-    run_list:
-      - recipe[test::app]
+    provisioner:
+      named_run_list: app
   - name: config_property
-    run_list:
-      - recipe[test::config_property]
+    provisioner:
+      named_run_list: config_property
   - name: manager
-    run_list:
-      - recipe[test::manager]
+    provisioner:
+      named_run_list: manager
   - name: manager_permission
-    run_list:
-      - recipe[test::manager_permission]
-    excludes: ["windows-2008r2", "windows-2012r2"]
+    provisioner:
+      named_run_list: manager_permission
   - name: module
-    run_list:
-      - recipe[test::module]
+    provisioner:
+      named_run_list: module
   - name: pool
-    run_list:
-      - recipe[test::pool]
+    provisioner:
+      named_run_list: pool
   - name: root
-    run_list:
-      - recipe[test::root]
+    provisioner:
+      named_run_list: root
   - name: section
-    run_list:
-      - recipe[test::section]
+    provisioner:
+      named_run_list: section
   - name: site
-    run_list:
-      - recipe[test::site]
+    provisioner:
+      named_run_list: site
   - name: vdir
-    run_list:
-      - recipe[test::vdir]
-  - name: default-windowsfeatures-powershell
-    run_list:
-      - recipe[iis::default]
+    provisioner:
+      named_run_list: vdir
+  - name: default_powershell
+    provisioner:
+      named_run_list: default_powershell
+      multiple_converge: 2
+      enforce_idempotency: true
     verifier:
       inspec_tests:
-        - test/integration/default/spec
-    attributes:
-      iis:
-        windows_feature_install_method: windows_feature_powershell
-  - name: site-windowsfeatures-powershell
-    run_list:
-      - recipe[test::site]
+        - test/integration/default
+  - name: site_powershell
+    provisioner:
+      named_run_list: site_powershell
     verifier:
       inspec_tests:
         - test/integration/site
-    attributes:
-      iis:
-        windows_feature_install_method: windows_feature_powershell

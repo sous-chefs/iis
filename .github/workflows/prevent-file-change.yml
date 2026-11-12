@@ -9,6 +9,10 @@ name: prevent-file-change
       - edited
       - synchronize
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   prevent-file-change:
     uses: sous-chefs/.github/.github/workflows/prevent-file-change.yml@9.0.1

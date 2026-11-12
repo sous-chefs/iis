@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author:: Richard Lavey (richard.lavey@calastone.com)
 # Cookbook:: windows
@@ -18,6 +20,7 @@
 # limitations under the License.
 #
 
+provides :iis_http_acl
 unified_mode true
 
 include IISCookbook::Helper
@@ -94,7 +97,7 @@ action_class do
   end
 
   def apply_acl
-    if current_resource.sddl
+    if new_resource.sddl
       shell_out!("#{netsh_command} http add urlacl url=#{new_resource.url} sddl=\"#{new_resource.sddl}\"")
     else
       shell_out!("#{netsh_command} http add urlacl url=#{new_resource.url} user=\"#{new_resource.user}\"")

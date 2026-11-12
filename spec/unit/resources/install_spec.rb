@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: iis
 # Spec:: install
@@ -20,6 +22,7 @@ require 'ostruct'
 require 'spec_helper'
 
 describe 'iis_install' do
+  platform 'windows', '2019'
   step_into :iis_install
   context 'When no additional iis components provided, on an unspecified platform' do
     recipe do

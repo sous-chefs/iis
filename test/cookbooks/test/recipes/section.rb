@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook:: test
 # Recipe:: site
@@ -16,7 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe 'iis'
+include_recipe 'test::base_install'
 
 iis_section 'unlock staticContent of default web site' do
   section 'system.webServer/staticContent'
